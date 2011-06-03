@@ -104,6 +104,16 @@ void LL_Delete( LinkedList_T* list, int index, BOOL free_contents);
  * */
 void LL_Free( LinkedList_T* list, BOOL free_contents);
 
-#define LL_FOREACH(item,list) for( item = list; item != NULL; item = item->next )
+/**
+ * @brief Returns the number of elements in the list.
+ * 
+ * Loops through the supplied list and returns a count of the number of elements
+ * contained in the list.
+ *
+ * @param list        The list to be counted.
+ *
+ * @return The number of elements in the list.
+ **/
+U32 LL_Length(LinkedList_T* list);
 
 #endif

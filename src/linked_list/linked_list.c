@@ -43,7 +43,7 @@ LinkedList_T* LL_Get( LinkedList_T* list, int index )
 	int current = 0;
 	LinkedList_T* node = list;
 	LinkedList_T* indexed_node = NULL;
-	while ((node != NULL) && (node->next != NULL))
+	while ((node != NULL))
 	{
 		if ( current == index )
 		{
@@ -104,5 +104,16 @@ void LL_Free( LinkedList_T* list, BOOL free_contents)
 		free(node);
 		node = next;
 	}
+}
+
+U32 LL_Length(LinkedList_T* list)
+{
+	U32 length = 0;
+	LinkedList_T* item = list;
+	for ( item = list; item != NULL; item = item->next )
+	{
+		length++;	
+	}
+	return length;
 }
 
