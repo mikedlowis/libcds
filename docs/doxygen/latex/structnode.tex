@@ -1,0 +1,98 @@
+\hypertarget{structnode}{
+\section{node Struct Reference}
+\label{structnode}\index{node@{node}}
+}
+
+
+A node in a hash table.  
+
+
+
+
+{\ttfamily \#include $<$ht.h$>$}
+
+
+
+Collaboration diagram for node:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=155pt]{structnode__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+void $\ast$ \hyperlink{structnode_a72c8a0c41b801c92db89c5078642f28b}{key}
+\begin{DoxyCompactList}\small\item\em Pointer to the key. \item\end{DoxyCompactList}\item 
+void $\ast$ \hyperlink{structnode_a3866f55c05d50265b730d8cdeec0a1f8}{val}
+\begin{DoxyCompactList}\small\item\em Pointer to tke value. \item\end{DoxyCompactList}\item 
+struct \hyperlink{structnode}{node} $\ast$ \hyperlink{structnode_a111a569ab2765add9b91c9f94cf9f063}{next}
+\begin{DoxyCompactList}\small\item\em Pointer to the next node in the collision chain. \item\end{DoxyCompactList}\item 
+void $\ast$ \hyperlink{structnode_a6658978058886a89ccc39f1d1a56e6d1}{contents}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+A node in a hash table. 
+
+Definition at line 24 of file ht.h.
+
+
+
+\subsection{Member Data Documentation}
+\hypertarget{structnode_a6658978058886a89ccc39f1d1a56e6d1}{
+\index{node@{node}!contents@{contents}}
+\index{contents@{contents}!node@{node}}
+\subsubsection[{contents}]{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ {\bf node::contents}}}
+\label{structnode_a6658978058886a89ccc39f1d1a56e6d1}
+
+
+Definition at line 22 of file sll.h.
+
+\hypertarget{structnode_a72c8a0c41b801c92db89c5078642f28b}{
+\index{node@{node}!key@{key}}
+\index{key@{key}!node@{node}}
+\subsubsection[{key}]{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ {\bf node::key}}}
+\label{structnode_a72c8a0c41b801c92db89c5078642f28b}
+
+
+Pointer to the key. 
+
+
+
+Definition at line 27 of file ht.h.
+
+\hypertarget{structnode_a111a569ab2765add9b91c9f94cf9f063}{
+\index{node@{node}!next@{next}}
+\index{next@{next}!node@{node}}
+\subsubsection[{next}]{\setlength{\rightskip}{0pt plus 5cm}struct {\bf node} $\ast$ {\bf node::next}}}
+\label{structnode_a111a569ab2765add9b91c9f94cf9f063}
+
+
+Pointer to the next node in the collision chain. 
+
+
+
+Definition at line 31 of file ht.h.
+
+\hypertarget{structnode_a3866f55c05d50265b730d8cdeec0a1f8}{
+\index{node@{node}!val@{val}}
+\index{val@{val}!node@{node}}
+\subsubsection[{val}]{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ {\bf node::val}}}
+\label{structnode_a3866f55c05d50265b730d8cdeec0a1f8}
+
+
+Pointer to tke value. 
+
+
+
+Definition at line 29 of file ht.h.
+
+
+
+The documentation for this struct was generated from the following files:\begin{DoxyCompactItemize}
+\item 
+src/ht/\hyperlink{ht_8h}{ht.h}\item 
+src/lists/single\_\-link/\hyperlink{sll_8h}{sll.h}\end{DoxyCompactItemize}

@@ -1,0 +1,352 @@
+\hypertarget{sll_8h}{
+\section{src/lists/single\_\-link/sll.h File Reference}
+\label{sll_8h}\index{src/lists/single\_\-link/sll.h@{src/lists/single\_\-link/sll.h}}
+}
+This graph shows which files directly or indirectly include this file:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=200pt]{sll_8h__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structnode}{node}
+\begin{DoxyCompactList}\small\item\em A node in a hash table. \item\end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \hyperlink{structnode}{node} \hyperlink{sll_8h_a74030fe22c7f9308540aee0c4259b111}{sll\_\-node}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{structnode}{sll\_\-node} $\ast$ \hyperlink{sll_8h_a471151d11dc385e3364c9a38b19ecba7}{sll\_\-new} (void $\ast$contents)
+\begin{DoxyCompactList}\small\item\em Creates a new linked list node with the supplied value. \item\end{DoxyCompactList}\item 
+\hyperlink{structnode}{sll\_\-node} $\ast$ \hyperlink{sll_8h_af7327f24d1900d495c1bf914a592b631}{sll\_\-last} (\hyperlink{structnode}{sll\_\-node} $\ast$list)
+\begin{DoxyCompactList}\small\item\em Finds and returns the last node in the supplied linked list. \item\end{DoxyCompactList}\item 
+\hyperlink{structnode}{sll\_\-node} $\ast$ \hyperlink{sll_8h_aaf7e4557200dec55dec679f63de2b4d1}{sll\_\-get} (\hyperlink{structnode}{sll\_\-node} $\ast$list, int index)
+\begin{DoxyCompactList}\small\item\em Return the node at the specified index in a linked list. \item\end{DoxyCompactList}\item 
+\hyperlink{structnode}{sll\_\-node} $\ast$ \hyperlink{sll_8h_a0751beeb21d1540c9ddcd5e01964e23e}{sll\_\-add} (\hyperlink{structnode}{sll\_\-node} $\ast$list, void $\ast$contents)
+\begin{DoxyCompactList}\small\item\em Adds a new node to an existing linked list. \item\end{DoxyCompactList}\item 
+\hyperlink{structnode}{sll\_\-node} $\ast$ \hyperlink{sll_8h_a66769edc21579f71972ac90de6da4a9f}{sll\_\-insert} (\hyperlink{structnode}{sll\_\-node} $\ast$list, int index, void $\ast$contents)
+\begin{DoxyCompactList}\small\item\em Inserts a new node in a linked list at the specified index. \item\end{DoxyCompactList}\item 
+\hyperlink{structnode}{sll\_\-node} $\ast$ \hyperlink{sll_8h_afd494f171c24981f0d7a007841f21cfe}{sll\_\-delete} (\hyperlink{structnode}{sll\_\-node} $\ast$list, int index, int free\_\-contents)
+\begin{DoxyCompactList}\small\item\em Deletes a node from the supplied list. \item\end{DoxyCompactList}\item 
+void \hyperlink{sll_8h_a7373cc6bac0876b330da73722e24910b}{sll\_\-free} (\hyperlink{structnode}{sll\_\-node} $\ast$list, int free\_\-contents)
+\begin{DoxyCompactList}\small\item\em Frees all memory used by a linked list. \item\end{DoxyCompactList}\item 
+unsigned int \hyperlink{sll_8h_af5f6589df6d0ef48ed6f57ac5527ddfe}{sll\_\-length} (\hyperlink{structnode}{sll\_\-node} $\ast$list)
+\begin{DoxyCompactList}\small\item\em Returns the number of elements in the list. \item\end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Typedef Documentation}
+\hypertarget{sll_8h_a74030fe22c7f9308540aee0c4259b111}{
+\index{sll.h@{sll.h}!sll\_\-node@{sll\_\-node}}
+\index{sll\_\-node@{sll\_\-node}!sll.h@{sll.h}}
+\subsubsection[{sll\_\-node}]{\setlength{\rightskip}{0pt plus 5cm}typedef struct {\bf node}  {\bf sll\_\-node}}}
+\label{sll_8h_a74030fe22c7f9308540aee0c4259b111}
+
+
+\subsection{Function Documentation}
+\hypertarget{sll_8h_a0751beeb21d1540c9ddcd5e01964e23e}{
+\index{sll.h@{sll.h}!sll\_\-add@{sll\_\-add}}
+\index{sll\_\-add@{sll\_\-add}!sll.h@{sll.h}}
+\subsubsection[{sll\_\-add}]{\setlength{\rightskip}{0pt plus 5cm}{\bf sll\_\-node}$\ast$ sll\_\-add (
+\begin{DoxyParamCaption}
+\item[{{\bf sll\_\-node} $\ast$}]{list, }
+\item[{void $\ast$}]{contents}
+\end{DoxyParamCaption}
+)}}
+\label{sll_8h_a0751beeb21d1540c9ddcd5e01964e23e}
+
+
+Adds a new node to an existing linked list. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em list} & \\
+\hline
+{\em contents} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the newly added node. 
+\end{DoxyReturn}
+
+
+Definition at line 59 of file sll.c.
+
+
+
+Here is the call graph for this function:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=214pt]{sll_8h_a0751beeb21d1540c9ddcd5e01964e23e_cgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{sll_8h_afd494f171c24981f0d7a007841f21cfe}{
+\index{sll.h@{sll.h}!sll\_\-delete@{sll\_\-delete}}
+\index{sll\_\-delete@{sll\_\-delete}!sll.h@{sll.h}}
+\subsubsection[{sll\_\-delete}]{\setlength{\rightskip}{0pt plus 5cm}{\bf sll\_\-node}$\ast$ sll\_\-delete (
+\begin{DoxyParamCaption}
+\item[{{\bf sll\_\-node} $\ast$}]{list, }
+\item[{int}]{index, }
+\item[{int}]{free\_\-contents}
+\end{DoxyParamCaption}
+)}}
+\label{sll_8h_afd494f171c24981f0d7a007841f21cfe}
+
+
+Deletes a node from the supplied list. 
+
+Deletes the node found at the supplied index from the supplied list and frees the memory used by the node and its contents.
+
+
+\begin{DoxyParams}{Parameters}
+{\em list} & \\
+\hline
+{\em index} & \\
+\hline
+{\em free\_\-contents} & Whether or not to also free the contents of the node.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the node that is now at the supplied index. 
+\end{DoxyReturn}
+
+
+Definition at line 79 of file sll.c.
+
+
+
+Here is the call graph for this function:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=220pt]{sll_8h_afd494f171c24981f0d7a007841f21cfe_cgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{sll_8h_a7373cc6bac0876b330da73722e24910b}{
+\index{sll.h@{sll.h}!sll\_\-free@{sll\_\-free}}
+\index{sll\_\-free@{sll\_\-free}!sll.h@{sll.h}}
+\subsubsection[{sll\_\-free}]{\setlength{\rightskip}{0pt plus 5cm}void sll\_\-free (
+\begin{DoxyParamCaption}
+\item[{{\bf sll\_\-node} $\ast$}]{list, }
+\item[{int}]{free\_\-contents}
+\end{DoxyParamCaption}
+)}}
+\label{sll_8h_a7373cc6bac0876b330da73722e24910b}
+
+
+Frees all memory used by a linked list. 
+
+Loops through the supplied list and frees all nodes. Also frees contents if free\_\-contents is passed TRUE. This is to avoid trying to free memory allocated on the stack.
+
+
+\begin{DoxyParams}{Parameters}
+{\em list} & The list to be freed. \\
+\hline
+{\em free\_\-contents} & Whether or not to also free the contents of each node. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 96 of file sll.c.
+
+\hypertarget{sll_8h_aaf7e4557200dec55dec679f63de2b4d1}{
+\index{sll.h@{sll.h}!sll\_\-get@{sll\_\-get}}
+\index{sll\_\-get@{sll\_\-get}!sll.h@{sll.h}}
+\subsubsection[{sll\_\-get}]{\setlength{\rightskip}{0pt plus 5cm}{\bf sll\_\-node}$\ast$ sll\_\-get (
+\begin{DoxyParamCaption}
+\item[{{\bf sll\_\-node} $\ast$}]{list, }
+\item[{int}]{index}
+\end{DoxyParamCaption}
+)}}
+\label{sll_8h_aaf7e4557200dec55dec679f63de2b4d1}
+
+
+Return the node at the specified index in a linked list. 
+
+Loops through the linked list and returns the node in the list at the specified index. Returns NULL if the index is out of range.
+
+
+\begin{DoxyParams}{Parameters}
+{\em list} & The list to search for the supplied index. \\
+\hline
+{\em index} & The index of the node to return.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A pointer to the node and the supplied index, NULL if out of range. 
+\end{DoxyReturn}
+
+
+Definition at line 41 of file sll.c.
+
+
+
+Here is the caller graph for this function:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=220pt]{sll_8h_aaf7e4557200dec55dec679f63de2b4d1_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{sll_8h_a66769edc21579f71972ac90de6da4a9f}{
+\index{sll.h@{sll.h}!sll\_\-insert@{sll\_\-insert}}
+\index{sll\_\-insert@{sll\_\-insert}!sll.h@{sll.h}}
+\subsubsection[{sll\_\-insert}]{\setlength{\rightskip}{0pt plus 5cm}{\bf sll\_\-node}$\ast$ sll\_\-insert (
+\begin{DoxyParamCaption}
+\item[{{\bf sll\_\-node} $\ast$}]{list, }
+\item[{int}]{index, }
+\item[{void $\ast$}]{contents}
+\end{DoxyParamCaption}
+)}}
+\label{sll_8h_a66769edc21579f71972ac90de6da4a9f}
+
+
+Inserts a new node in a linked list at the specified index. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em list} & \\
+\hline
+{\em index} & \\
+\hline
+{\em contents} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the newly inserted node, NULL if index is out of range. 
+\end{DoxyReturn}
+
+
+Definition at line 65 of file sll.c.
+
+
+
+Here is the call graph for this function:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=222pt]{sll_8h_a66769edc21579f71972ac90de6da4a9f_cgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{sll_8h_af7327f24d1900d495c1bf914a592b631}{
+\index{sll.h@{sll.h}!sll\_\-last@{sll\_\-last}}
+\index{sll\_\-last@{sll\_\-last}!sll.h@{sll.h}}
+\subsubsection[{sll\_\-last}]{\setlength{\rightskip}{0pt plus 5cm}{\bf sll\_\-node}$\ast$ sll\_\-last (
+\begin{DoxyParamCaption}
+\item[{{\bf sll\_\-node} $\ast$}]{list}
+\end{DoxyParamCaption}
+)}}
+\label{sll_8h_af7327f24d1900d495c1bf914a592b631}
+
+
+Finds and returns the last node in the supplied linked list. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em list} & The linked list to search.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the last node in the supplied list. 
+\end{DoxyReturn}
+
+
+Definition at line 31 of file sll.c.
+
+
+
+Here is the caller graph for this function:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=212pt]{sll_8h_af7327f24d1900d495c1bf914a592b631_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{sll_8h_af5f6589df6d0ef48ed6f57ac5527ddfe}{
+\index{sll.h@{sll.h}!sll\_\-length@{sll\_\-length}}
+\index{sll\_\-length@{sll\_\-length}!sll.h@{sll.h}}
+\subsubsection[{sll\_\-length}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int sll\_\-length (
+\begin{DoxyParamCaption}
+\item[{{\bf sll\_\-node} $\ast$}]{list}
+\end{DoxyParamCaption}
+)}}
+\label{sll_8h_af5f6589df6d0ef48ed6f57ac5527ddfe}
+
+
+Returns the number of elements in the list. 
+
+Loops through the supplied list and returns a count of the number of elements contained in the list.
+
+
+\begin{DoxyParams}{Parameters}
+{\em list} & The list to be counted.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The number of elements in the list. 
+\end{DoxyReturn}
+
+
+Definition at line 111 of file sll.c.
+
+\hypertarget{sll_8h_a471151d11dc385e3364c9a38b19ecba7}{
+\index{sll.h@{sll.h}!sll\_\-new@{sll\_\-new}}
+\index{sll\_\-new@{sll\_\-new}!sll.h@{sll.h}}
+\subsubsection[{sll\_\-new}]{\setlength{\rightskip}{0pt plus 5cm}{\bf sll\_\-node}$\ast$ sll\_\-new (
+\begin{DoxyParamCaption}
+\item[{void $\ast$}]{contents}
+\end{DoxyParamCaption}
+)}}
+\label{sll_8h_a471151d11dc385e3364c9a38b19ecba7}
+
+
+Creates a new linked list node with the supplied value. 
+
+Allocates a new node on the heap and populates the node contents with the supplied contents pointer.
+
+
+\begin{DoxyParams}{Parameters}
+{\em contents} & The contents of the newly created node.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A pointer to the newly created node. 
+\end{DoxyReturn}
+
+
+Definition at line 23 of file sll.c.
+
+
+
+Here is the caller graph for this function:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=222pt]{sll_8h_a471151d11dc385e3364c9a38b19ecba7_icgraph}
+\end{center}
+\end{figure}
+
+
