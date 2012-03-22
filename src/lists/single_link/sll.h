@@ -17,96 +17,96 @@
 #ifndef LINKED_LIST_H
 #define LINKED_LIST_H
 
-#include "common.h"
-
-#define   PTR_TYPE  void *
-
-typedef struct LinkedList
+typedef struct node
 {
-	PTR_TYPE contents;
-	struct LinkedList * next;
-} LinkedList_T;
+    void* contents;
+    struct node* next;
+} sll_node;
 
 /**
- * @brief	Creates a new linked list node with the supplied value.
- * 
- * Allocates a new node on the heap and populates the node contents with the 
+ * @brief   Creates a new linked list node with the supplied value.
+ *
+ * Allocates a new node on the heap and populates the node contents with the
  * supplied contents pointer.
  *
- * @param	contents    The contents of the newly created node.
+ * @param   contents    The contents of the newly created node.
  *
- * @return	A pointer to the newly created node.
+ * @return  A pointer to the newly created node.
  * */
-LinkedList_T* LL_New( PTR_TYPE contents );
+sll_node* sll_new( void* contents );
 
 /**
- * @brief	Finds and returns the last node in the supplied linked list.
+ * @brief   Finds and returns the last node in the supplied linked list.
  *
- * @param	list    The linked list to search.
+ * @param   list    The linked list to search.
  *
- * @return	Pointer to the last node in the supplied list.
+ * @return  Pointer to the last node in the supplied list.
  * */
-LinkedList_T* LL_Last(LinkedList_T* list);
+sll_node* sll_last(sll_node* list);
 
 /**
- * @brief	Return the node at the specified index in a linked list.
+ * @brief   Return the node at the specified index in a linked list.
  *
  * Loops through the linked list and returns the node in the list at the
  * specified index. Returns NULL if the index is out of range.
  *
- * @param	list    The list to search for the supplied index.
- * @param	index   The index of the node to return.
+ * @param   list    The list to search for the supplied index.
+ * @param   index   The index of the node to return.
  *
- * @return	A pointer to the node and the supplied index, NULL if out of range.
+ * @return  A pointer to the node and the supplied index, NULL if out of range.
  * */
-LinkedList_T* LL_Get(LinkedList_T* list, int index);
+sll_node* sll_get(sll_node* list, int index);
 
 /**
- * @brief	Adds a new node to an existing linked list.
+ * @brief   Adds a new node to an existing linked list.
  *
- * @param	list
- * @param	contents
+ * @param   list
+ * @param   contents
+ *
+ * @return Pointer to the newly added node.
  * */
-void LL_Add( LinkedList_T* list, PTR_TYPE contents );
+sll_node* sll_add( sll_node* list, void* contents );
 
 /**
- * @brief	Inserts a new node in a linked list at the specified index.
+ * @brief   Inserts a new node in a linked list at the specified index.
  *
- * @param	list
- * @param	index
- * @param	contents
+ * @param   list
+ * @param   index
+ * @param   contents
  *
- * @return	Pointer to the newly inserted node, NULL if index is out of range.
+ * @return  Pointer to the newly inserted node, NULL if index is out of range.
  * */
-LinkedList_T* LL_Insert( LinkedList_T* list, int index, PTR_TYPE contents);
+sll_node* sll_insert( sll_node* list, int index, void* contents);
 
 /**
- * @brief	Deletes a node from the supplied list.
+ * @brief   Deletes a node from the supplied list.
  *
  * Deletes the node found at the supplied index from the supplied list and frees
  * the memory used by the node and its contents.
  *
- * @param	list
- * @param	index
+ * @param   list
+ * @param   index
  * @param   free_contents Whether or not to also free the contents of the node.
+ *
+ * @return Pointer to the node that is now at the supplied index.
  * */
-void LL_Delete( LinkedList_T* list, int index, BOOL free_contents);
+sll_node* sll_delete( sll_node* list, int index, int free_contents);
 
 /**
- * @brief	Frees all memory used by a linked list.
+ * @brief   Frees all memory used by a linked list.
  *
  * Loops through the supplied list and frees all nodes. Also frees contents if
- * free_contents is passed TRUE. This is to avoid trying to free memory 
+ * free_contents is passed TRUE. This is to avoid trying to free memory
  * allocated on the stack.
  *
- * @param	list          The list to be freed.
+ * @param   list          The list to be freed.
  * @param   free_contents Whether or not to also free the contents of each node.
  * */
-void LL_Free( LinkedList_T* list, BOOL free_contents);
+void sll_free( sll_node* list, int free_contents);
 
 /**
  * @brief Returns the number of elements in the list.
- * 
+ *
  * Loops through the supplied list and returns a count of the number of elements
  * contained in the list.
  *
@@ -114,6 +114,6 @@ void LL_Free( LinkedList_T* list, BOOL free_contents);
  *
  * @return The number of elements in the list.
  **/
-U32 LL_Length(LinkedList_T* list);
+unsigned int sll_length(sll_node* list);
 
 #endif
