@@ -2,8 +2,7 @@
 \section{src/ht/ht.h File Reference}
 \label{ht_8h}\index{src/ht/ht.h@{src/ht/ht.h}}
 }
-This graph shows which files directly or indirectly include this file:
-\nopagebreak
+This graph shows which files directly or indirectly include this file:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -13,7 +12,7 @@ This graph shows which files directly or indirectly include this file:
 \subsection*{Classes}
 \begin{DoxyCompactItemize}
 \item 
-struct \hyperlink{structnode}{node}
+struct \hyperlink{structht__node}{ht\_\-node}
 \begin{DoxyCompactList}\small\item\em A node in a hash table. \item\end{DoxyCompactList}\item 
 struct \hyperlink{structht__table}{ht\_\-table}
 \begin{DoxyCompactList}\small\item\em A hash table. \item\end{DoxyCompactList}\end{DoxyCompactItemize}
@@ -22,7 +21,7 @@ struct \hyperlink{structht__table}{ht\_\-table}
 \item 
 typedef unsigned int($\ast$ \hyperlink{ht_8h_a91a8d03489ef281e6f26d389c44d42cf}{ht\_\-hash\_\-func} )(void $\ast$)
 \begin{DoxyCompactList}\small\item\em Hash function for hashing keys in a hash table. \item\end{DoxyCompactList}\item 
-typedef struct \hyperlink{structnode}{node} \hyperlink{ht_8h_a27a2fadaf99569e4b5c18dbd0b0a8160}{ht\_\-node}
+typedef struct \hyperlink{structht__node}{ht\_\-node} \hyperlink{ht_8h_a3b70269a378f408bce2ae501e7ed1205}{ht\_\-node}
 \begin{DoxyCompactList}\small\item\em A node in a hash table. \item\end{DoxyCompactList}\end{DoxyCompactItemize}
 \subsection*{Functions}
 \begin{DoxyCompactItemize}
@@ -55,13 +54,13 @@ Hash function for hashing keys in a hash table.
 
 
 
-Definition at line 21 of file ht.h.
+Definition at line 31 of file ht.h.
 
-\hypertarget{ht_8h_a27a2fadaf99569e4b5c18dbd0b0a8160}{
+\hypertarget{ht_8h_a3b70269a378f408bce2ae501e7ed1205}{
 \index{ht.h@{ht.h}!ht\_\-node@{ht\_\-node}}
 \index{ht\_\-node@{ht\_\-node}!ht.h@{ht.h}}
-\subsubsection[{ht\_\-node}]{\setlength{\rightskip}{0pt plus 5cm}typedef struct {\bf node}  {\bf ht\_\-node}}}
-\label{ht_8h_a27a2fadaf99569e4b5c18dbd0b0a8160}
+\subsubsection[{ht\_\-node}]{\setlength{\rightskip}{0pt plus 5cm}typedef struct {\bf ht\_\-node}  {\bf ht\_\-node}}}
+\label{ht_8h_a3b70269a378f408bce2ae501e7ed1205}
 
 
 A node in a hash table. 
@@ -96,6 +95,10 @@ Deletes a key/value pair from the provided hash table.
 {\em free\_\-value} & Determines whether the value pointer will be freed. \\
 \hline
 \end{DoxyParams}
+
+
+Definition at line 125 of file ht.c.
+
 \hypertarget{ht_8h_a96de71bf3880ed0a879f60b6e5254803}{
 \index{ht.h@{ht.h}!ht\_\-free@{ht\_\-free}}
 \index{ht\_\-free@{ht\_\-free}!ht.h@{ht.h}}
@@ -120,6 +123,10 @@ Frees all memory used by the provided hash table.
 {\em free\_\-value} & Determines whether the value pointers will be freed. \\
 \hline
 \end{DoxyParams}
+
+
+Definition at line 55 of file ht.c.
+
 \hypertarget{ht_8h_a5bc0ba0d31b944797e17a96372bce33e}{
 \index{ht.h@{ht.h}!ht\_\-get@{ht\_\-get}}
 \index{ht\_\-get@{ht\_\-get}!ht.h@{ht.h}}
@@ -144,6 +151,10 @@ Retrieves a value from the provided table.
 \begin{DoxyReturn}{Returns}
 A pointer to the value associated with the provided key. 
 \end{DoxyReturn}
+
+
+Definition at line 108 of file ht.c.
+
 \hypertarget{ht_8h_a278174a0154a10b8b10b23937ca4c721}{
 \index{ht.h@{ht.h}!ht\_\-hash\_\-string@{ht\_\-hash\_\-string}}
 \index{ht\_\-hash\_\-string@{ht\_\-hash\_\-string}!ht.h@{ht.h}}
@@ -167,12 +178,11 @@ The hashed value of the key.
 \end{DoxyReturn}
 
 
-Definition at line 22 of file ht.c.
+Definition at line 32 of file ht.c.
 
 
 
-Here is the caller graph for this function:
-\nopagebreak
+Here is the caller graph for this function:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -207,12 +217,11 @@ The newly created table.
 \end{DoxyReturn}
 
 
-Definition at line 34 of file ht.c.
+Definition at line 44 of file ht.c.
 
 
 
-Here is the call graph for this function:
-\nopagebreak
+Here is the call graph for this function:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -247,7 +256,7 @@ Inserts a key/value pair into the provided table.
 \end{DoxyParams}
 
 
-Definition at line 63 of file ht.c.
+Definition at line 73 of file ht.c.
 
 \hypertarget{ht_8h_ad9cac6da8b459d5960079b0d95489960}{
 \index{ht.h@{ht.h}!ht\_\-resize@{ht\_\-resize}}
@@ -275,5 +284,5 @@ A pointer to the resized table.
 \end{DoxyReturn}
 
 
-Definition at line 121 of file ht.c.
+Definition at line 130 of file ht.c.
 

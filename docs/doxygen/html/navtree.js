@@ -2,8 +2,11 @@ var NAVTREE =
 [
   [ "Data Structures", "index.html", [
     [ "Class List", "annotated.html", [
+      [ "bt_node", "structbt__node.html", null ],
+      [ "bt_tree", "structbt__tree.html", null ],
+      [ "ht_node", "structht__node.html", null ],
       [ "ht_table", "structht__table.html", null ],
-      [ "node", "structnode.html", null ]
+      [ "sll_node", "structsll__node.html", null ]
     ] ],
     [ "Class Index", "classes.html", null ],
     [ "Class Members", "functions.html", null ],

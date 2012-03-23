@@ -97,67 +97,64 @@ Include dependency graph for sll.c:</div>
 <table class="memberdecls">
 <tr><td colspan="2"><h2><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="structnode.html">sll_node</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sll_8c.html#a471151d11dc385e3364c9a38b19ecba7">sll_new</a> (void *contents)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsll__node.html">sll_node</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sll_8c.html#a471151d11dc385e3364c9a38b19ecba7">sll_new</a> (void *contents)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new linked list node with the supplied value.  <a href="#a471151d11dc385e3364c9a38b19ecba7"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="structnode.html">sll_node</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sll_8c.html#af7327f24d1900d495c1bf914a592b631">sll_last</a> (<a class="el" href="structnode.html">sll_node</a> *list)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds and returns the last node in the supplied linked list.  <a href="#af7327f24d1900d495c1bf914a592b631"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="structnode.html">sll_node</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sll_8c.html#aaf7e4557200dec55dec679f63de2b4d1">sll_get</a> (<a class="el" href="structnode.html">sll_node</a> *list, int index)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the node at the specified index in a linked list.  <a href="#aaf7e4557200dec55dec679f63de2b4d1"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="structnode.html">sll_node</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sll_8c.html#a0751beeb21d1540c9ddcd5e01964e23e">sll_add</a> (<a class="el" href="structnode.html">sll_node</a> *list, void *contents)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a new node to an existing linked list.  <a href="#a0751beeb21d1540c9ddcd5e01964e23e"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="structnode.html">sll_node</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sll_8c.html#a66769edc21579f71972ac90de6da4a9f">sll_insert</a> (<a class="el" href="structnode.html">sll_node</a> *list, int index, void *contents)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsll__node.html">sll_node</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sll_8c.html#abe6fe02fbfcbf1d647ff94295b855e7e">sll_front</a> (<a class="el" href="structsll__node.html">sll_node</a> *list)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds and returns the first node in the supplied linked list.  <a href="#abe6fe02fbfcbf1d647ff94295b855e7e"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsll__node.html">sll_node</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sll_8c.html#a78ef5151212d47bb63f2fd93453283ed">sll_back</a> (<a class="el" href="structsll__node.html">sll_node</a> *list)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds and returns the last node in the supplied linked list.  <a href="#a78ef5151212d47bb63f2fd93453283ed"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsll__node.html">sll_node</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sll_8c.html#a0582f263482ead73d53b018978513540">sll_index</a> (<a class="el" href="structsll__node.html">sll_node</a> *list, int index)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the node at the specified index in a linked list.  <a href="#a0582f263482ead73d53b018978513540"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsll__node.html">sll_node</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sll_8c.html#a19ad0a86a87451a3ab68ad6d18c3e3e0">sll_push_back</a> (<a class="el" href="structsll__node.html">sll_node</a> *list, void *contents)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a new node to the end of an existing linked list.  <a href="#a19ad0a86a87451a3ab68ad6d18c3e3e0"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsll__node.html">sll_node</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sll_8c.html#acfe3ebc296fe75f1d0ee21195dd7b9bf">sll_push_front</a> (<a class="el" href="structsll__node.html">sll_node</a> *list, void *contents)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a new node to the front of an existing linked list.  <a href="#acfe3ebc296fe75f1d0ee21195dd7b9bf"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsll__node.html">sll_node</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sll_8c.html#af72e93329186ac936d2bf6f544aa1f6b">sll_pop_back</a> (<a class="el" href="structsll__node.html">sll_node</a> *list)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes and returns a pointer to the last element of the list.  <a href="#af72e93329186ac936d2bf6f544aa1f6b"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsll__node.html">sll_node</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sll_8c.html#a1588e5a1f90852ee48403d5313d64269">sll_pop_front</a> (<a class="el" href="structsll__node.html">sll_node</a> *list)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes and returns a pointer to the first element of the list.  <a href="#a1588e5a1f90852ee48403d5313d64269"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsll__node.html">sll_node</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sll_8c.html#a66769edc21579f71972ac90de6da4a9f">sll_insert</a> (<a class="el" href="structsll__node.html">sll_node</a> *list, int index, void *contents)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Inserts a new node in a linked list at the specified index.  <a href="#a66769edc21579f71972ac90de6da4a9f"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="structnode.html">sll_node</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sll_8c.html#afd494f171c24981f0d7a007841f21cfe">sll_delete</a> (<a class="el" href="structnode.html">sll_node</a> *list, int index, int free_contents)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsll__node.html">sll_node</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sll_8c.html#afd494f171c24981f0d7a007841f21cfe">sll_delete</a> (<a class="el" href="structsll__node.html">sll_node</a> *list, int index, int free_contents)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Deletes a node from the supplied list.  <a href="#afd494f171c24981f0d7a007841f21cfe"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sll_8c.html#a7373cc6bac0876b330da73722e24910b">sll_free</a> (<a class="el" href="structnode.html">sll_node</a> *list, int free_contents)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sll_8c.html#a7373cc6bac0876b330da73722e24910b">sll_free</a> (<a class="el" href="structsll__node.html">sll_node</a> *list, int free_contents)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees all memory used by a linked list.  <a href="#a7373cc6bac0876b330da73722e24910b"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sll_8c.html#af5f6589df6d0ef48ed6f57ac5527ddfe">sll_length</a> (<a class="el" href="structnode.html">sll_node</a> *list)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sll_8c.html#af5f6589df6d0ef48ed6f57ac5527ddfe">sll_length</a> (<a class="el" href="structsll__node.html">sll_node</a> *list)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the number of elements in the list.  <a href="#af5f6589df6d0ef48ed6f57ac5527ddfe"></a><br/></td></tr>
 </table>
 <hr/><h2>Function Documentation</h2>
-<a class="anchor" id="a0751beeb21d1540c9ddcd5e01964e23e"></a><!-- doxytag: member="sll.c::sll_add" ref="a0751beeb21d1540c9ddcd5e01964e23e" args="(sll_node *list, void *contents)" -->
+<a class="anchor" id="a78ef5151212d47bb63f2fd93453283ed"></a><!-- doxytag: member="sll.c::sll_back" ref="a78ef5151212d47bb63f2fd93453283ed" args="(sll_node *list)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structnode.html">sll_node</a>* sll_add </td>
+          <td class="memname"><a class="el" href="structsll__node.html">sll_node</a>* sll_back </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structnode.html">sll_node</a> *&#160;</td>
-          <td class="paramname"><em>list</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramtype"><a class="el" href="structsll__node.html">sll_node</a> *&#160;</td>
+          <td class="paramname"><em>list</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">void *&#160;</td>
-          <td class="paramname"><em>contents</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
 
-<p>Adds a new node to an existing linked list. </p>
+<p>Finds and returns the last node in the supplied linked list. </p>
 <dl><dt><b>Parameters:</b></dt><dd>
   <table class="params">
-    <tr><td class="paramname">list</td><td></td></tr>
-    <tr><td class="paramname">contents</td><td></td></tr>
+    <tr><td class="paramname">list</td><td>The linked list to search.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="return"><dt><b>Returns:</b></dt><dd>Pointer to the newly added node. </dd></dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Pointer to the last node in the supplied list. </dd></dl>
 
-<p>Definition at line <a class="el" href="sll_8c_source.html#l00059">59</a> of file <a class="el" href="sll_8c_source.html">sll.c</a>.</p>
+<p>Definition at line <a class="el" href="sll_8c_source.html#l00042">42</a> of file <a class="el" href="sll_8c_source.html">sll.c</a>.</p>
 
 <p><div class="dynheader">
-Here is the call graph for this function:</div>
+Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="sll_8c_a0751beeb21d1540c9ddcd5e01964e23e_cgraph.png" border="0" usemap="#sll_8c_a0751beeb21d1540c9ddcd5e01964e23e_cgraph" alt=""/></div>
-<map name="sll_8c_a0751beeb21d1540c9ddcd5e01964e23e_cgraph" id="sll_8c_a0751beeb21d1540c9ddcd5e01964e23e_cgraph">
-<area shape="rect" id="node3" href="sll_8c.html#af7327f24d1900d495c1bf914a592b631" title="Finds and returns the last node in the supplied linked list." alt="" coords="120,5,181,35"/><area shape="rect" id="node5" href="sll_8c.html#a471151d11dc385e3364c9a38b19ecba7" title="Creates a new linked list node with the supplied value." alt="" coords="119,59,183,88"/></map>
+<div class="center"><img src="sll_8c_a78ef5151212d47bb63f2fd93453283ed_icgraph.png" border="0" usemap="#sll_8c_a78ef5151212d47bb63f2fd93453283ed_icgraph" alt=""/></div>
+<map name="sll_8c_a78ef5151212d47bb63f2fd93453283ed_icgraph" id="sll_8c_a78ef5151212d47bb63f2fd93453283ed_icgraph">
+<area shape="rect" id="node3" href="sll_8h.html#a19ad0a86a87451a3ab68ad6d18c3e3e0" title="Adds a new node to the end of an existing linked list." alt="" coords="127,5,231,35"/></map>
 </div>
 </p>
 
@@ -168,9 +165,9 @@ Here is the call graph for this function:</div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structnode.html">sll_node</a>* sll_delete </td>
+          <td class="memname"><a class="el" href="structsll__node.html">sll_node</a>* sll_delete </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structnode.html">sll_node</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="structsll__node.html">sll_node</a> *&#160;</td>
           <td class="paramname"><em>list</em>, </td>
         </tr>
         <tr>
@@ -206,14 +203,14 @@ Here is the call graph for this function:</div>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>Pointer to the node that is now at the supplied index. </dd></dl>
 
-<p>Definition at line <a class="el" href="sll_8c_source.html#l00079">79</a> of file <a class="el" href="sll_8c_source.html">sll.c</a>.</p>
+<p>Definition at line <a class="el" href="sll_8c_source.html#l00102">102</a> of file <a class="el" href="sll_8c_source.html">sll.c</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="sll_8c_afd494f171c24981f0d7a007841f21cfe_cgraph.png" border="0" usemap="#sll_8c_afd494f171c24981f0d7a007841f21cfe_cgraph" alt=""/></div>
 <map name="sll_8c_afd494f171c24981f0d7a007841f21cfe_cgraph" id="sll_8c_afd494f171c24981f0d7a007841f21cfe_cgraph">
-<area shape="rect" id="node3" href="sll_8c.html#aaf7e4557200dec55dec679f63de2b4d1" title="Return the node at the specified index in a linked list." alt="" coords="132,5,191,35"/></map>
+<area shape="rect" id="node3" href="sll_8c.html#a0582f263482ead73d53b018978513540" title="Return the node at the specified index in a linked list." alt="" coords="132,5,204,35"/></map>
 </div>
 </p>
 
@@ -226,7 +223,7 @@ Here is the call graph for this function:</div>
         <tr>
           <td class="memname">void sll_free </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structnode.html">sll_node</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="structsll__node.html">sll_node</a> *&#160;</td>
           <td class="paramname"><em>list</em>, </td>
         </tr>
         <tr>
@@ -254,18 +251,46 @@ Here is the call graph for this function:</div>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="sll_8c_source.html#l00096">96</a> of file <a class="el" href="sll_8c_source.html">sll.c</a>.</p>
+<p>Definition at line <a class="el" href="sll_8c_source.html#l00119">119</a> of file <a class="el" href="sll_8c_source.html">sll.c</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="aaf7e4557200dec55dec679f63de2b4d1"></a><!-- doxytag: member="sll.c::sll_get" ref="aaf7e4557200dec55dec679f63de2b4d1" args="(sll_node *list, int index)" -->
+<a class="anchor" id="abe6fe02fbfcbf1d647ff94295b855e7e"></a><!-- doxytag: member="sll.c::sll_front" ref="abe6fe02fbfcbf1d647ff94295b855e7e" args="(sll_node *list)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structnode.html">sll_node</a>* sll_get </td>
+          <td class="memname"><a class="el" href="structsll__node.html">sll_node</a>* sll_front </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structnode.html">sll_node</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="structsll__node.html">sll_node</a> *&#160;</td>
+          <td class="paramname"><em>list</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Finds and returns the first node in the supplied linked list. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">list</td><td>The linked list to search.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Pointer to the last node in the supplied list. </dd></dl>
+
+<p>Definition at line <a class="el" href="sll_8c_source.html#l00038">38</a> of file <a class="el" href="sll_8c_source.html">sll.c</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a0582f263482ead73d53b018978513540"></a><!-- doxytag: member="sll.c::sll_index" ref="a0582f263482ead73d53b018978513540" args="(sll_node *list, int index)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structsll__node.html">sll_node</a>* sll_index </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structsll__node.html">sll_node</a> *&#160;</td>
           <td class="paramname"><em>list</em>, </td>
         </tr>
         <tr>
@@ -294,14 +319,14 @@ Here is the call graph for this function:</div>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>A pointer to the node and the supplied index, NULL if out of range. </dd></dl>
 
-<p>Definition at line <a class="el" href="sll_8c_source.html#l00041">41</a> of file <a class="el" href="sll_8c_source.html">sll.c</a>.</p>
+<p>Definition at line <a class="el" href="sll_8c_source.html#l00052">52</a> of file <a class="el" href="sll_8c_source.html">sll.c</a>.</p>
 
 <p><div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><img src="sll_8c_aaf7e4557200dec55dec679f63de2b4d1_icgraph.png" border="0" usemap="#sll_8c_aaf7e4557200dec55dec679f63de2b4d1_icgraph" alt=""/></div>
-<map name="sll_8c_aaf7e4557200dec55dec679f63de2b4d1_icgraph" id="sll_8c_aaf7e4557200dec55dec679f63de2b4d1_icgraph">
-<area shape="rect" id="node3" href="sll_8h.html#afd494f171c24981f0d7a007841f21cfe" title="Deletes a node from the supplied list." alt="" coords="115,5,192,35"/><area shape="rect" id="node5" href="sll_8h.html#a66769edc21579f71972ac90de6da4a9f" title="Inserts a new node in a linked list at the specified index." alt="" coords="116,59,191,88"/></map>
+<div class="center"><img src="sll_8c_a0582f263482ead73d53b018978513540_icgraph.png" border="0" usemap="#sll_8c_a0582f263482ead73d53b018978513540_icgraph" alt=""/></div>
+<map name="sll_8c_a0582f263482ead73d53b018978513540_icgraph" id="sll_8c_a0582f263482ead73d53b018978513540_icgraph">
+<area shape="rect" id="node3" href="sll_8h.html#afd494f171c24981f0d7a007841f21cfe" title="Deletes a node from the supplied list." alt="" coords="128,5,205,35"/><area shape="rect" id="node5" href="sll_8h.html#a66769edc21579f71972ac90de6da4a9f" title="Inserts a new node in a linked list at the specified index." alt="" coords="129,59,204,88"/></map>
 </div>
 </p>
 
@@ -312,9 +337,9 @@ Here is the caller graph for this function:</div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structnode.html">sll_node</a>* sll_insert </td>
+          <td class="memname"><a class="el" href="structsll__node.html">sll_node</a>* sll_insert </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structnode.html">sll_node</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="structsll__node.html">sll_node</a> *&#160;</td>
           <td class="paramname"><em>list</em>, </td>
         </tr>
         <tr>
@@ -349,51 +374,14 @@ Here is the caller graph for this function:</div>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>Pointer to the newly inserted node, NULL if index is out of range. </dd></dl>
 
-<p>Definition at line <a class="el" href="sll_8c_source.html#l00065">65</a> of file <a class="el" href="sll_8c_source.html">sll.c</a>.</p>
+<p>Definition at line <a class="el" href="sll_8c_source.html#l00088">88</a> of file <a class="el" href="sll_8c_source.html">sll.c</a>.</p>
 
 <p><div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="sll_8c_a66769edc21579f71972ac90de6da4a9f_cgraph.png" border="0" usemap="#sll_8c_a66769edc21579f71972ac90de6da4a9f_cgraph" alt=""/></div>
 <map name="sll_8c_a66769edc21579f71972ac90de6da4a9f_cgraph" id="sll_8c_a66769edc21579f71972ac90de6da4a9f_cgraph">
-<area shape="rect" id="node3" href="sll_8c.html#aaf7e4557200dec55dec679f63de2b4d1" title="Return the node at the specified index in a linked list." alt="" coords="132,5,191,35"/><area shape="rect" id="node5" href="sll_8c.html#a471151d11dc385e3364c9a38b19ecba7" title="Creates a new linked list node with the supplied value." alt="" coords="129,59,193,88"/></map>
-</div>
-</p>
-
-</div>
-</div>
-<a class="anchor" id="af7327f24d1900d495c1bf914a592b631"></a><!-- doxytag: member="sll.c::sll_last" ref="af7327f24d1900d495c1bf914a592b631" args="(sll_node *list)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="structnode.html">sll_node</a>* sll_last </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structnode.html">sll_node</a> *&#160;</td>
-          <td class="paramname"><em>list</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-
-<p>Finds and returns the last node in the supplied linked list. </p>
-<dl><dt><b>Parameters:</b></dt><dd>
-  <table class="params">
-    <tr><td class="paramname">list</td><td>The linked list to search.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="return"><dt><b>Returns:</b></dt><dd>Pointer to the last node in the supplied list. </dd></dl>
-
-<p>Definition at line <a class="el" href="sll_8c_source.html#l00031">31</a> of file <a class="el" href="sll_8c_source.html">sll.c</a>.</p>
-
-<p><div class="dynheader">
-Here is the caller graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><img src="sll_8c_af7327f24d1900d495c1bf914a592b631_icgraph.png" border="0" usemap="#sll_8c_af7327f24d1900d495c1bf914a592b631_icgraph" alt=""/></div>
-<map name="sll_8c_af7327f24d1900d495c1bf914a592b631_icgraph" id="sll_8c_af7327f24d1900d495c1bf914a592b631_icgraph">
-<area shape="rect" id="node3" href="sll_8h.html#a0751beeb21d1540c9ddcd5e01964e23e" title="Adds a new node to an existing linked list." alt="" coords="119,5,180,35"/></map>
+<area shape="rect" id="node3" href="sll_8c.html#a0582f263482ead73d53b018978513540" title="Return the node at the specified index in a linked list." alt="" coords="129,5,201,35"/><area shape="rect" id="node5" href="sll_8c.html#a471151d11dc385e3364c9a38b19ecba7" title="Creates a new linked list node with the supplied value." alt="" coords="133,59,197,88"/></map>
 </div>
 </p>
 
@@ -406,7 +394,7 @@ Here is the caller graph for this function:</div>
         <tr>
           <td class="memname">unsigned int sll_length </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structnode.html">sll_node</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="structsll__node.html">sll_node</a> *&#160;</td>
           <td class="paramname"><em>list</em></td><td>)</td>
           <td></td>
         </tr>
@@ -424,7 +412,7 @@ Here is the caller graph for this function:</div>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>The number of elements in the list. </dd></dl>
 
-<p>Definition at line <a class="el" href="sll_8c_source.html#l00111">111</a> of file <a class="el" href="sll_8c_source.html">sll.c</a>.</p>
+<p>Definition at line <a class="el" href="sll_8c_source.html#l00134">134</a> of file <a class="el" href="sll_8c_source.html">sll.c</a>.</p>
 
 </div>
 </div>
@@ -433,7 +421,7 @@ Here is the caller graph for this function:</div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structnode.html">sll_node</a>* sll_new </td>
+          <td class="memname"><a class="el" href="structsll__node.html">sll_node</a>* sll_new </td>
           <td>(</td>
           <td class="paramtype">void *&#160;</td>
           <td class="paramname"><em>contents</em></td><td>)</td>
@@ -444,7 +432,7 @@ Here is the caller graph for this function:</div>
 <div class="memdoc">
 
 <p>Creates a new linked list node with the supplied value. </p>
-<p>Allocates a new node on the heap and populates the node contents with the supplied contents pointer.</p>
+<p>This function allocates a new node on the heap and populates the node contents with the supplied contents pointer.</p>
 <dl><dt><b>Parameters:</b></dt><dd>
   <table class="params">
     <tr><td class="paramname">contents</td><td>The contents of the newly created node.</td></tr>
@@ -453,16 +441,161 @@ Here is the caller graph for this function:</div>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>A pointer to the newly created node. </dd></dl>
 
-<p>Definition at line <a class="el" href="sll_8c_source.html#l00023">23</a> of file <a class="el" href="sll_8c_source.html">sll.c</a>.</p>
+<p>Definition at line <a class="el" href="sll_8c_source.html#l00030">30</a> of file <a class="el" href="sll_8c_source.html">sll.c</a>.</p>
 
 <p><div class="dynheader">
 Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="sll_8c_a471151d11dc385e3364c9a38b19ecba7_icgraph.png" border="0" usemap="#sll_8c_a471151d11dc385e3364c9a38b19ecba7_icgraph" alt=""/></div>
 <map name="sll_8c_a471151d11dc385e3364c9a38b19ecba7_icgraph" id="sll_8c_a471151d11dc385e3364c9a38b19ecba7_icgraph">
-<area shape="rect" id="node3" href="sll_8h.html#a0751beeb21d1540c9ddcd5e01964e23e" title="Adds a new node to an existing linked list." alt="" coords="127,5,188,35"/><area shape="rect" id="node5" href="sll_8h.html#a66769edc21579f71972ac90de6da4a9f" title="Inserts a new node in a linked list at the specified index." alt="" coords="120,59,195,88"/></map>
+<area shape="rect" id="node3" href="sll_8h.html#a66769edc21579f71972ac90de6da4a9f" title="Inserts a new node in a linked list at the specified index." alt="" coords="136,5,211,35"/><area shape="rect" id="node5" href="sll_8h.html#a19ad0a86a87451a3ab68ad6d18c3e3e0" title="Adds a new node to the end of an existing linked list." alt="" coords="121,59,225,88"/></map>
 </div>
 </p>
+
+</div>
+</div>
+<a class="anchor" id="af72e93329186ac936d2bf6f544aa1f6b"></a><!-- doxytag: member="sll.c::sll_pop_back" ref="af72e93329186ac936d2bf6f544aa1f6b" args="(sll_node *list)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structsll__node.html">sll_node</a>* sll_pop_back </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structsll__node.html">sll_node</a> *&#160;</td>
+          <td class="paramname"><em>list</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Removes and returns a pointer to the last element of the list. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">list</td><td></td></tr>
+    <tr><td class="paramname">contents</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Pointer to the newly added node. </dd></dl>
+
+<p>Definition at line <a class="el" href="sll_8c_source.html#l00080">80</a> of file <a class="el" href="sll_8c_source.html">sll.c</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a1588e5a1f90852ee48403d5313d64269"></a><!-- doxytag: member="sll.c::sll_pop_front" ref="a1588e5a1f90852ee48403d5313d64269" args="(sll_node *list)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structsll__node.html">sll_node</a>* sll_pop_front </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structsll__node.html">sll_node</a> *&#160;</td>
+          <td class="paramname"><em>list</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Removes and returns a pointer to the first element of the list. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">list</td><td></td></tr>
+    <tr><td class="paramname">contents</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Pointer to the newly added node. </dd></dl>
+
+<p>Definition at line <a class="el" href="sll_8c_source.html#l00084">84</a> of file <a class="el" href="sll_8c_source.html">sll.c</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a19ad0a86a87451a3ab68ad6d18c3e3e0"></a><!-- doxytag: member="sll.c::sll_push_back" ref="a19ad0a86a87451a3ab68ad6d18c3e3e0" args="(sll_node *list, void *contents)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structsll__node.html">sll_node</a>* sll_push_back </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structsll__node.html">sll_node</a> *&#160;</td>
+          <td class="paramname"><em>list</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>contents</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Adds a new node to the end of an existing linked list. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">list</td><td></td></tr>
+    <tr><td class="paramname">contents</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Pointer to the newly added node. </dd></dl>
+
+<p>Definition at line <a class="el" href="sll_8c_source.html#l00070">70</a> of file <a class="el" href="sll_8c_source.html">sll.c</a>.</p>
+
+<p><div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="sll_8c_a19ad0a86a87451a3ab68ad6d18c3e3e0_cgraph.png" border="0" usemap="#sll_8c_a19ad0a86a87451a3ab68ad6d18c3e3e0_cgraph" alt=""/></div>
+<map name="sll_8c_a19ad0a86a87451a3ab68ad6d18c3e3e0_cgraph" id="sll_8c_a19ad0a86a87451a3ab68ad6d18c3e3e0_cgraph">
+<area shape="rect" id="node3" href="sll_8c.html#a78ef5151212d47bb63f2fd93453283ed" title="Finds and returns the last node in the supplied linked list." alt="" coords="161,5,231,35"/><area shape="rect" id="node5" href="sll_8c.html#a471151d11dc385e3364c9a38b19ecba7" title="Creates a new linked list node with the supplied value." alt="" coords="164,59,228,88"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="acfe3ebc296fe75f1d0ee21195dd7b9bf"></a><!-- doxytag: member="sll.c::sll_push_front" ref="acfe3ebc296fe75f1d0ee21195dd7b9bf" args="(sll_node *list, void *contents)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structsll__node.html">sll_node</a>* sll_push_front </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structsll__node.html">sll_node</a> *&#160;</td>
+          <td class="paramname"><em>list</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>contents</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+
+<p>Adds a new node to the front of an existing linked list. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">list</td><td></td></tr>
+    <tr><td class="paramname">contents</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>Pointer to the newly added node. </dd></dl>
+
+<p>Definition at line <a class="el" href="sll_8c_source.html#l00076">76</a> of file <a class="el" href="sll_8c_source.html">sll.c</a>.</p>
 
 </div>
 </div>
@@ -471,7 +604,7 @@ Here is the caller graph for this function:</div>
   <div id="nav-path" class="navpath">
     <ul>
       <li class="navelem"><a class="el" href="sll_8c.html">sll.c</a>      </li>
-      <li class="footer">Generated on Thu Mar 22 2012 16:12:15 for Data Structures by&#160;
+      <li class="footer">Generated on Fri Mar 23 2012 11:12:04 for Data Structures by&#160;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.3 </li>
     </ul>

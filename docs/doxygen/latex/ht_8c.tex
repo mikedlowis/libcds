@@ -6,8 +6,7 @@
 {\ttfamily \#include $<$stdlib.h$>$}\par
 {\ttfamily \#include $<$string.h$>$}\par
 {\ttfamily \#include $<$stdio.h$>$}\par
-Include dependency graph for ht.c:
-\nopagebreak
+Include dependency graph for ht.c:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -21,59 +20,105 @@ unsigned int \hyperlink{ht_8c_a278174a0154a10b8b10b23937ca4c721}{ht\_\-hash\_\-s
 \begin{DoxyCompactList}\small\item\em Takes a string key value and returns it's hashed value. \item\end{DoxyCompactList}\item 
 \hyperlink{structht__table}{ht\_\-table} $\ast$ \hyperlink{ht_8c_a0a3e03a29413673acd8899d250cd0844}{ht\_\-new} (unsigned int size, \hyperlink{ht_8h_a91a8d03489ef281e6f26d389c44d42cf}{ht\_\-hash\_\-func} fn)
 \begin{DoxyCompactList}\small\item\em Creates a new hash table of the given size using the provided hash function or the built-\/in string hashing function otherwise. \item\end{DoxyCompactList}\item 
-void \hyperlink{ht_8c_a36132061ce1dfb439cde8c8caa2b63bc}{ht\_\-free} (\hyperlink{structht__table}{ht\_\-table} $\ast$table)
-\item 
-int \hyperlink{ht_8c_a41caab4f2767cdd00399b2fb6f6ec424}{ht\_\-put} (\hyperlink{structht__table}{ht\_\-table} $\ast$table, void $\ast$key, void $\ast$val)
+void \hyperlink{ht_8c_a96de71bf3880ed0a879f60b6e5254803}{ht\_\-free} (\hyperlink{structht__table}{ht\_\-table} $\ast$table, int free\_\-key, int free\_\-value)
+\begin{DoxyCompactList}\small\item\em Frees all memory used by the provided hash table. \item\end{DoxyCompactList}\item 
+void \hyperlink{ht_8c_a8c17c7288d2f510dd5c091cccc6dd056}{ht\_\-put} (\hyperlink{structht__table}{ht\_\-table} $\ast$table, void $\ast$key, void $\ast$val)
 \begin{DoxyCompactList}\small\item\em Inserts a key/value pair into the provided table. \item\end{DoxyCompactList}\item 
-void $\ast$ \hyperlink{ht_8c_a3d4217bc8aafc5cf0e37dda811afc3c5}{ht\_\-get} (\hyperlink{structht__table}{ht\_\-table} $\ast$table, char $\ast$key)
-\item 
-unsigned int \hyperlink{ht_8c_abb67271f276fde7155cbbe63566d97c4}{ht\_\-delete} (\hyperlink{structht__table}{ht\_\-table} $\ast$table, char $\ast$key)
-\item 
-unsigned int \hyperlink{ht_8c_a4c967f60d2129911b4311d9f4c7f3424}{ht\_\-resize} (\hyperlink{structht__table}{ht\_\-table} $\ast$table, unsigned int size)
+void $\ast$ \hyperlink{ht_8c_a5bc0ba0d31b944797e17a96372bce33e}{ht\_\-get} (\hyperlink{structht__table}{ht\_\-table} $\ast$table, void $\ast$key)
+\begin{DoxyCompactList}\small\item\em Retrieves a value from the provided table. \item\end{DoxyCompactList}\item 
+void \hyperlink{ht_8c_a81a813f472a9b689032704fca76b3ce8}{ht\_\-delete} (\hyperlink{structht__table}{ht\_\-table} $\ast$table, void $\ast$key, int free\_\-key, int free\_\-value)
+\begin{DoxyCompactList}\small\item\em Deletes a key/value pair from the provided hash table. \item\end{DoxyCompactList}\item 
+\hyperlink{structht__table}{ht\_\-table} $\ast$ \hyperlink{ht_8c_ad9cac6da8b459d5960079b0d95489960}{ht\_\-resize} (\hyperlink{structht__table}{ht\_\-table} $\ast$table, unsigned int size)
 \begin{DoxyCompactList}\small\item\em Resizes the underlying table used for storing key/value pairs. \item\end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \subsection{Function Documentation}
-\hypertarget{ht_8c_abb67271f276fde7155cbbe63566d97c4}{
+\hypertarget{ht_8c_a81a813f472a9b689032704fca76b3ce8}{
 \index{ht.c@{ht.c}!ht\_\-delete@{ht\_\-delete}}
 \index{ht\_\-delete@{ht\_\-delete}!ht.c@{ht.c}}
-\subsubsection[{ht\_\-delete}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int ht\_\-delete (
+\subsubsection[{ht\_\-delete}]{\setlength{\rightskip}{0pt plus 5cm}void ht\_\-delete (
 \begin{DoxyParamCaption}
 \item[{{\bf ht\_\-table} $\ast$}]{table, }
-\item[{char $\ast$}]{key}
+\item[{void $\ast$}]{key, }
+\item[{int}]{free\_\-key, }
+\item[{int}]{free\_\-value}
 \end{DoxyParamCaption}
 )}}
-\label{ht_8c_abb67271f276fde7155cbbe63566d97c4}
+\label{ht_8c_a81a813f472a9b689032704fca76b3ce8}
 
 
-Definition at line 116 of file ht.c.
+Deletes a key/value pair from the provided hash table. 
 
-\hypertarget{ht_8c_a36132061ce1dfb439cde8c8caa2b63bc}{
+
+\begin{DoxyParams}{Parameters}
+{\em table} & The table from which the key/value pait will be deleted. \\
+\hline
+{\em key} & The key for the key/value pair to be deleted. \\
+\hline
+{\em free\_\-key} & Determines whether the key pointer will be freed. \\
+\hline
+{\em free\_\-value} & Determines whether the value pointer will be freed. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 125 of file ht.c.
+
+\hypertarget{ht_8c_a96de71bf3880ed0a879f60b6e5254803}{
 \index{ht.c@{ht.c}!ht\_\-free@{ht\_\-free}}
 \index{ht\_\-free@{ht\_\-free}!ht.c@{ht.c}}
 \subsubsection[{ht\_\-free}]{\setlength{\rightskip}{0pt plus 5cm}void ht\_\-free (
 \begin{DoxyParamCaption}
-\item[{{\bf ht\_\-table} $\ast$}]{table}
+\item[{{\bf ht\_\-table} $\ast$}]{table, }
+\item[{int}]{free\_\-key, }
+\item[{int}]{free\_\-value}
 \end{DoxyParamCaption}
 )}}
-\label{ht_8c_a36132061ce1dfb439cde8c8caa2b63bc}
+\label{ht_8c_a96de71bf3880ed0a879f60b6e5254803}
 
 
-Definition at line 45 of file ht.c.
+Frees all memory used by the provided hash table. 
 
-\hypertarget{ht_8c_a3d4217bc8aafc5cf0e37dda811afc3c5}{
+
+\begin{DoxyParams}{Parameters}
+{\em table} & The table to be freed. \\
+\hline
+{\em free\_\-key} & Determines whether the key pointers will be freed. \\
+\hline
+{\em free\_\-value} & Determines whether the value pointers will be freed. \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 55 of file ht.c.
+
+\hypertarget{ht_8c_a5bc0ba0d31b944797e17a96372bce33e}{
 \index{ht.c@{ht.c}!ht\_\-get@{ht\_\-get}}
 \index{ht\_\-get@{ht\_\-get}!ht.c@{ht.c}}
 \subsubsection[{ht\_\-get}]{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ ht\_\-get (
 \begin{DoxyParamCaption}
 \item[{{\bf ht\_\-table} $\ast$}]{table, }
-\item[{char $\ast$}]{key}
+\item[{void $\ast$}]{key}
 \end{DoxyParamCaption}
 )}}
-\label{ht_8c_a3d4217bc8aafc5cf0e37dda811afc3c5}
+\label{ht_8c_a5bc0ba0d31b944797e17a96372bce33e}
 
 
-Definition at line 99 of file ht.c.
+Retrieves a value from the provided table. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em table} & The table in which to find the associated value. \\
+\hline
+{\em key} & The key to lookup.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A pointer to the value associated with the provided key. 
+\end{DoxyReturn}
+
+
+Definition at line 108 of file ht.c.
 
 \hypertarget{ht_8c_a278174a0154a10b8b10b23937ca4c721}{
 \index{ht.c@{ht.c}!ht\_\-hash\_\-string@{ht\_\-hash\_\-string}}
@@ -98,12 +143,11 @@ The hashed value of the key.
 \end{DoxyReturn}
 
 
-Definition at line 22 of file ht.c.
+Definition at line 32 of file ht.c.
 
 
 
-Here is the caller graph for this function:
-\nopagebreak
+Here is the caller graph for this function:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -138,12 +182,11 @@ The newly created table.
 \end{DoxyReturn}
 
 
-Definition at line 34 of file ht.c.
+Definition at line 44 of file ht.c.
 
 
 
-Here is the call graph for this function:
-\nopagebreak
+Here is the call graph for this function:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -152,17 +195,17 @@ Here is the call graph for this function:
 \end{figure}
 
 
-\hypertarget{ht_8c_a41caab4f2767cdd00399b2fb6f6ec424}{
+\hypertarget{ht_8c_a8c17c7288d2f510dd5c091cccc6dd056}{
 \index{ht.c@{ht.c}!ht\_\-put@{ht\_\-put}}
 \index{ht\_\-put@{ht\_\-put}!ht.c@{ht.c}}
-\subsubsection[{ht\_\-put}]{\setlength{\rightskip}{0pt plus 5cm}int ht\_\-put (
+\subsubsection[{ht\_\-put}]{\setlength{\rightskip}{0pt plus 5cm}void ht\_\-put (
 \begin{DoxyParamCaption}
 \item[{{\bf ht\_\-table} $\ast$}]{table, }
 \item[{void $\ast$}]{key, }
 \item[{void $\ast$}]{val}
 \end{DoxyParamCaption}
 )}}
-\label{ht_8c_a41caab4f2767cdd00399b2fb6f6ec424}
+\label{ht_8c_a8c17c7288d2f510dd5c091cccc6dd056}
 
 
 Inserts a key/value pair into the provided table. 
@@ -178,18 +221,18 @@ Inserts a key/value pair into the provided table.
 \end{DoxyParams}
 
 
-Definition at line 63 of file ht.c.
+Definition at line 73 of file ht.c.
 
-\hypertarget{ht_8c_a4c967f60d2129911b4311d9f4c7f3424}{
+\hypertarget{ht_8c_ad9cac6da8b459d5960079b0d95489960}{
 \index{ht.c@{ht.c}!ht\_\-resize@{ht\_\-resize}}
 \index{ht\_\-resize@{ht\_\-resize}!ht.c@{ht.c}}
-\subsubsection[{ht\_\-resize}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int ht\_\-resize (
+\subsubsection[{ht\_\-resize}]{\setlength{\rightskip}{0pt plus 5cm}{\bf ht\_\-table}$\ast$ ht\_\-resize (
 \begin{DoxyParamCaption}
 \item[{{\bf ht\_\-table} $\ast$}]{table, }
 \item[{unsigned int}]{size}
 \end{DoxyParamCaption}
 )}}
-\label{ht_8c_a4c967f60d2129911b4311d9f4c7f3424}
+\label{ht_8c_ad9cac6da8b459d5960079b0d95489960}
 
 
 Resizes the underlying table used for storing key/value pairs. 
@@ -206,5 +249,5 @@ A pointer to the resized table.
 \end{DoxyReturn}
 
 
-Definition at line 121 of file ht.c.
+Definition at line 130 of file ht.c.
 
