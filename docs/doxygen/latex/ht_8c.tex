@@ -19,13 +19,13 @@ Include dependency graph for ht.c:\nopagebreak
 unsigned int \hyperlink{ht_8c_a278174a0154a10b8b10b23937ca4c721}{ht\_\-hash\_\-string} (void $\ast$key)
 \begin{DoxyCompactList}\small\item\em Takes a string key value and returns it's hashed value. \item\end{DoxyCompactList}\item 
 \hyperlink{structht__table}{ht\_\-table} $\ast$ \hyperlink{ht_8c_a0a3e03a29413673acd8899d250cd0844}{ht\_\-new} (unsigned int size, \hyperlink{ht_8h_a91a8d03489ef281e6f26d389c44d42cf}{ht\_\-hash\_\-func} fn)
-\begin{DoxyCompactList}\small\item\em Creates a new hash table of the given size using the provided hash function or the built-\/in string hashing function otherwise. \item\end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Creates a new hash table. \item\end{DoxyCompactList}\item 
 void \hyperlink{ht_8c_a96de71bf3880ed0a879f60b6e5254803}{ht\_\-free} (\hyperlink{structht__table}{ht\_\-table} $\ast$table, int free\_\-key, int free\_\-value)
 \begin{DoxyCompactList}\small\item\em Frees all memory used by the provided hash table. \item\end{DoxyCompactList}\item 
 void \hyperlink{ht_8c_a8c17c7288d2f510dd5c091cccc6dd056}{ht\_\-put} (\hyperlink{structht__table}{ht\_\-table} $\ast$table, void $\ast$key, void $\ast$val)
-\begin{DoxyCompactList}\small\item\em Inserts a key/value pair into the provided table. \item\end{DoxyCompactList}\item 
+\item 
 void $\ast$ \hyperlink{ht_8c_a5bc0ba0d31b944797e17a96372bce33e}{ht\_\-get} (\hyperlink{structht__table}{ht\_\-table} $\ast$table, void $\ast$key)
-\begin{DoxyCompactList}\small\item\em Retrieves a value from the provided table. \item\end{DoxyCompactList}\item 
+\item 
 void \hyperlink{ht_8c_a81a813f472a9b689032704fca76b3ce8}{ht\_\-delete} (\hyperlink{structht__table}{ht\_\-table} $\ast$table, void $\ast$key, int free\_\-key, int free\_\-value)
 \begin{DoxyCompactList}\small\item\em Deletes a key/value pair from the provided hash table. \item\end{DoxyCompactList}\item 
 \hyperlink{structht__table}{ht\_\-table} $\ast$ \hyperlink{ht_8c_ad9cac6da8b459d5960079b0d95489960}{ht\_\-resize} (\hyperlink{structht__table}{ht\_\-table} $\ast$table, unsigned int size)
@@ -48,6 +48,8 @@ void \hyperlink{ht_8c_a81a813f472a9b689032704fca76b3ce8}{ht\_\-delete} (\hyperli
 
 
 Deletes a key/value pair from the provided hash table. 
+
+This function looks up an entry in the table by hashing the key with the table's hash function. If an entry is found then the memory allocated for the entry is freed. If free\_\-key or free\_\-value are non-\/zero values then the key or value pointers are freed respectively.
 
 
 \begin{DoxyParams}{Parameters}
@@ -79,6 +81,8 @@ Definition at line 125 of file ht.c.
 
 Frees all memory used by the provided hash table. 
 
+This function frees all memory allocated for the given table. If free\_\-key or free\_\-value are non-\/zero values then the key or value pointers are freed respectively.
+
 
 \begin{DoxyParams}{Parameters}
 {\em table} & The table to be freed. \\
@@ -104,20 +108,6 @@ Definition at line 55 of file ht.c.
 \label{ht_8c_a5bc0ba0d31b944797e17a96372bce33e}
 
 
-Retrieves a value from the provided table. 
-
-
-\begin{DoxyParams}{Parameters}
-{\em table} & The table in which to find the associated value. \\
-\hline
-{\em key} & The key to lookup.\\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-A pointer to the value associated with the provided key. 
-\end{DoxyReturn}
-
-
 Definition at line 108 of file ht.c.
 
 \hypertarget{ht_8c_a278174a0154a10b8b10b23937ca4c721}{
@@ -133,6 +123,8 @@ Definition at line 108 of file ht.c.
 
 Takes a string key value and returns it's hashed value. 
 
+This function takes a pointer to a string and returns a hash value based on the contents of the string.
+
 
 \begin{DoxyParams}{Parameters}
 {\em key} & Pointer to the string to hash.\\
@@ -147,7 +139,8 @@ Definition at line 32 of file ht.c.
 
 
 
-Here is the caller graph for this function:\nopagebreak
+Here is the caller graph for this function:
+\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -168,7 +161,9 @@ Here is the caller graph for this function:\nopagebreak
 \label{ht_8c_a0a3e03a29413673acd8899d250cd0844}
 
 
-Creates a new hash table of the given size using the provided hash function or the built-\/in string hashing function otherwise. 
+Creates a new hash table. 
+
+This fucntion creates a new empty hash table with an internal lookup table of the given size and the desired hash function. The hash function will be used for insertion, deletion, and lookup of elements within the table. If the hash function pointer is null then ht\_\-hash\_\-string is used.
 
 
 \begin{DoxyParams}{Parameters}
@@ -208,19 +203,6 @@ Here is the call graph for this function:\nopagebreak
 \label{ht_8c_a8c17c7288d2f510dd5c091cccc6dd056}
 
 
-Inserts a key/value pair into the provided table. 
-
-
-\begin{DoxyParams}{Parameters}
-{\em table} & The table to be freed. \\
-\hline
-{\em key} & The key for the associated value. \\
-\hline
-{\em val} & The value to be associated with the key. \\
-\hline
-\end{DoxyParams}
-
-
 Definition at line 73 of file ht.c.
 
 \hypertarget{ht_8c_ad9cac6da8b459d5960079b0d95489960}{
@@ -236,6 +218,8 @@ Definition at line 73 of file ht.c.
 
 
 Resizes the underlying table used for storing key/value pairs. 
+
+This function allocates a new internal lookup table of the given size to replace the internal table for the provided hash table. After the new talbe is created, all entries from the old table are rehahsed and inserted into the new lookup table. The new lookup table then replaces the old lookup table and the old lookup table is freed.
 
 
 \begin{DoxyParams}{Parameters}

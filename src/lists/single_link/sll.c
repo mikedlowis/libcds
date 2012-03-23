@@ -27,9 +27,6 @@
 #include "sll.h"
 #include <stdlib.h>
 
-/******************************************************************************
- * Public Functions
- ******************************************************************************/
 sll_node* sll_new( void* contents )
 {
     sll_node* list = (sll_node*)malloc( sizeof(sll_node) );
@@ -38,7 +35,11 @@ sll_node* sll_new( void* contents )
     return list;
 }
 
-sll_node* sll_last( sll_node* list )
+sll_node* sll_front( sll_node* list )
+{
+}
+
+sll_node* sll_back( sll_node* list )
 {
     sll_node* node = list;
     while((node != NULL) && (node->next != NULL))
@@ -48,7 +49,7 @@ sll_node* sll_last( sll_node* list )
     return node;
 }
 
-sll_node* sll_get( sll_node* list, int index )
+sll_node* sll_index( sll_node* list, int index )
 {
     int current = 0;
     sll_node* node = list;
@@ -66,16 +67,28 @@ sll_node* sll_get( sll_node* list, int index )
     return indexed_node;
 }
 
-sll_node* sll_add( sll_node* list, void* contents )
+sll_node* sll_push_back( sll_node* list, void* contents )
 {
-    sll_node* node = sll_last( list );
+    sll_node* node = sll_back( list );
     node->next = sll_new( contents );
+}
+
+sll_node* sll_push_front( sll_node* list, void* contents )
+{
+}
+
+sll_node* sll_pop_back( sll_node* list )
+{
+}
+
+sll_node* sll_pop_front( sll_node* list )
+{
 }
 
 sll_node* sll_insert( sll_node* list, int index, void* contents )
 {
     int req_index = ((index-1) < 0) ? 0 : index-1;
-    sll_node* node = sll_get( list, req_index );
+    sll_node* node = sll_index( list, req_index );
     if(node != NULL)
     {
         sll_node* next_next = node->next;
@@ -88,7 +101,7 @@ sll_node* sll_insert( sll_node* list, int index, void* contents )
 
 sll_node* sll_delete( sll_node* list, int index, int free_contents)
 {
-    sll_node* node = sll_get( list, (index-1));
+    sll_node* node = sll_index( list, (index-1));
     if((node != NULL) && (node->next != NULL))
     {
         sll_node* node_to_delete = node->next;

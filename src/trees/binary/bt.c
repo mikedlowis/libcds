@@ -24,4 +24,35 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
+#include "bt.h"
+
+bt_tree* bt_new(bt_compare_func compare)
+{
+
+}
+
+void bt_free(bt_tree* tree, int free_contents)
+{
+
+}
+
+int bt_compare_ptr(void* obj1, void* obj2)
+{
+
+}
+
+void bt_insert(bt_tree* tree, void* data)
+{
+
+}
+
+void bt_delete(bt_tree* tree, void* data)
+{
+
+}
+
+void* bt_find(bt_tree* tree, void* data)
+{
+
+}
 

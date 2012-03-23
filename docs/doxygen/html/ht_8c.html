@@ -102,13 +102,11 @@ Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ht_8c.html#a278174a0154a10b8b10b23937ca4c721">ht_hash_string</a> (void *key)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Takes a string key value and returns it's hashed value.  <a href="#a278174a0154a10b8b10b23937ca4c721"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="structht__table.html">ht_table</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ht_8c.html#a0a3e03a29413673acd8899d250cd0844">ht_new</a> (unsigned int size, <a class="el" href="ht_8h.html#a91a8d03489ef281e6f26d389c44d42cf">ht_hash_func</a> fn)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new hash table of the given size using the provided hash function or the built-in string hashing function otherwise.  <a href="#a0a3e03a29413673acd8899d250cd0844"></a><br/></td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new hash table.  <a href="#a0a3e03a29413673acd8899d250cd0844"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ht_8c.html#a96de71bf3880ed0a879f60b6e5254803">ht_free</a> (<a class="el" href="structht__table.html">ht_table</a> *table, int free_key, int free_value)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees all memory used by the provided hash table.  <a href="#a96de71bf3880ed0a879f60b6e5254803"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ht_8c.html#a8c17c7288d2f510dd5c091cccc6dd056">ht_put</a> (<a class="el" href="structht__table.html">ht_table</a> *table, void *key, void *val)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Inserts a key/value pair into the provided table.  <a href="#a8c17c7288d2f510dd5c091cccc6dd056"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ht_8c.html#a5bc0ba0d31b944797e17a96372bce33e">ht_get</a> (<a class="el" href="structht__table.html">ht_table</a> *table, void *key)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves a value from the provided table.  <a href="#a5bc0ba0d31b944797e17a96372bce33e"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ht_8c.html#a81a813f472a9b689032704fca76b3ce8">ht_delete</a> (<a class="el" href="structht__table.html">ht_table</a> *table, void *key, int free_key, int free_value)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Deletes a key/value pair from the provided hash table.  <a href="#a81a813f472a9b689032704fca76b3ce8"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="structht__table.html">ht_table</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ht_8c.html#ad9cac6da8b459d5960079b0d95489960">ht_resize</a> (<a class="el" href="structht__table.html">ht_table</a> *table, unsigned int size)</td></tr>
@@ -153,6 +151,7 @@ Functions</h2></td></tr>
 <div class="memdoc">
 
 <p>Deletes a key/value pair from the provided hash table. </p>
+<p>This function looks up an entry in the table by hashing the key with the table's hash function. If an entry is found then the memory allocated for the entry is freed. If free_key or free_value are non-zero values then the key or value pointers are freed respectively.</p>
 <dl><dt><b>Parameters:</b></dt><dd>
   <table class="params">
     <tr><td class="paramname">table</td><td>The table from which the key/value pait will be deleted. </td></tr>
@@ -199,6 +198,7 @@ Functions</h2></td></tr>
 <div class="memdoc">
 
 <p>Frees all memory used by the provided hash table. </p>
+<p>This function frees all memory allocated for the given table. If free_key or free_value are non-zero values then the key or value pointers are freed respectively.</p>
 <dl><dt><b>Parameters:</b></dt><dd>
   <table class="params">
     <tr><td class="paramname">table</td><td>The table to be freed. </td></tr>
@@ -237,16 +237,6 @@ Functions</h2></td></tr>
 </div>
 <div class="memdoc">
 
-<p>Retrieves a value from the provided table. </p>
-<dl><dt><b>Parameters:</b></dt><dd>
-  <table class="params">
-    <tr><td class="paramname">table</td><td>The table in which to find the associated value. </td></tr>
-    <tr><td class="paramname">key</td><td>The key to lookup.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="return"><dt><b>Returns:</b></dt><dd>A pointer to the value associated with the provided key. </dd></dl>
-
 <p>Definition at line <a class="el" href="ht_8c_source.html#l00108">108</a> of file <a class="el" href="ht_8c_source.html">ht.c</a>.</p>
 
 </div>
@@ -267,6 +257,7 @@ Functions</h2></td></tr>
 <div class="memdoc">
 
 <p>Takes a string key value and returns it's hashed value. </p>
+<p>This function takes a pointer to a string and returns a hash value based on the contents of the string.</p>
 <dl><dt><b>Parameters:</b></dt><dd>
   <table class="params">
     <tr><td class="paramname">key</td><td>Pointer to the string to hash.</td></tr>
@@ -282,7 +273,7 @@ Here is the caller graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><img src="ht_8c_a278174a0154a10b8b10b23937ca4c721_icgraph.png" border="0" usemap="#ht_8c_a278174a0154a10b8b10b23937ca4c721_icgraph" alt=""/></div>
 <map name="ht_8c_a278174a0154a10b8b10b23937ca4c721_icgraph" id="ht_8c_a278174a0154a10b8b10b23937ca4c721_icgraph">
-<area shape="rect" id="node3" href="ht_8h.html#a0a3e03a29413673acd8899d250cd0844" title="Creates a new hash table of the given size using the provided hash function or the built&#45;in string ha..." alt="" coords="161,5,223,35"/></map>
+<area shape="rect" id="node3" href="ht_8h.html#a0a3e03a29413673acd8899d250cd0844" title="Creates a new hash table." alt="" coords="161,5,223,35"/></map>
 </div>
 </p>
 
@@ -313,7 +304,8 @@ Here is the caller graph for this function:</div>
 </div>
 <div class="memdoc">
 
-<p>Creates a new hash table of the given size using the provided hash function or the built-in string hashing function otherwise. </p>
+<p>Creates a new hash table. </p>
+<p>This fucntion creates a new empty hash table with an internal lookup table of the given size and the desired hash function. The hash function will be used for insertion, deletion, and lookup of elements within the table. If the hash function pointer is null then ht_hash_string is used.</p>
 <dl><dt><b>Parameters:</b></dt><dd>
   <table class="params">
     <tr><td class="paramname">size</td><td>The size of the table to use for storing data. </td></tr>
@@ -367,16 +359,6 @@ Here is the call graph for this function:</div>
 </div>
 <div class="memdoc">
 
-<p>Inserts a key/value pair into the provided table. </p>
-<dl><dt><b>Parameters:</b></dt><dd>
-  <table class="params">
-    <tr><td class="paramname">table</td><td>The table to be freed. </td></tr>
-    <tr><td class="paramname">key</td><td>The key for the associated value. </td></tr>
-    <tr><td class="paramname">val</td><td>The value to be associated with the key. </td></tr>
-  </table>
-  </dd>
-</dl>
-
 <p>Definition at line <a class="el" href="ht_8c_source.html#l00073">73</a> of file <a class="el" href="ht_8c_source.html">ht.c</a>.</p>
 
 </div>
@@ -407,6 +389,7 @@ Here is the call graph for this function:</div>
 <div class="memdoc">
 
 <p>Resizes the underlying table used for storing key/value pairs. </p>
+<p>This function allocates a new internal lookup table of the given size to replace the internal table for the provided hash table. After the new talbe is created, all entries from the old table are rehahsed and inserted into the new lookup table. The new lookup table then replaces the old lookup table and the old lookup table is freed.</p>
 <dl><dt><b>Parameters:</b></dt><dd>
   <table class="params">
     <tr><td class="paramname">table</td><td>The table to be resized. </td></tr>
@@ -425,7 +408,7 @@ Here is the call graph for this function:</div>
   <div id="nav-path" class="navpath">
     <ul>
       <li class="navelem"><a class="el" href="ht_8c.html">ht.c</a>      </li>
-      <li class="footer">Generated on Fri Mar 23 2012 11:12:04 for Data Structures by&#160;
+      <li class="footer">Generated on Fri Mar 23 2012 12:45:04 for Data Structures by&#160;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.3 </li>
     </ul>

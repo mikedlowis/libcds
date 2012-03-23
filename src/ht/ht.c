@@ -52,7 +52,7 @@ ht_table* ht_new(unsigned int size, ht_hash_func fn)
     return table;
 }
 
-void ht_free(ht_table* table)
+void ht_free(ht_table* table, int free_key, int free_value)
 {
     int i = 0;
     for (i = 0; i < table->size; i++)
@@ -70,7 +70,7 @@ void ht_free(ht_table* table)
     }
 }
 
-int ht_put(ht_table* table, void* key, void* val)
+void ht_put(ht_table* table, void* key, void* val)
 {
     unsigned int index = table->hash_func( key ) % table->size;
     ht_node* cur = table->table[index];
@@ -103,10 +103,9 @@ int ht_put(ht_table* table, void* key, void* val)
             table->table[ index ] = node;
         }
     }
-    return 1;
 }
 
-void* ht_get(ht_table* table, char* key)
+void* ht_get(ht_table* table, void* key)
 {
     void* ret = NULL;
     unsigned int index= table->hash_func( key ) % table->size;
@@ -123,12 +122,12 @@ void* ht_get(ht_table* table, char* key)
     return ret;
 }
 
-unsigned int ht_delete(ht_table* table, char* key)
+void ht_delete(ht_table* table, void* key, int free_key, int free_value)
 {
     return 0;
 }
 
-unsigned int ht_resize(ht_table* table, unsigned int size)
+ht_table* ht_resize(ht_table* table, unsigned int size)
 {
     return 0;
 }

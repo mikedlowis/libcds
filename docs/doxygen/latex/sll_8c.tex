@@ -27,9 +27,9 @@ Include dependency graph for sll.c:\nopagebreak
 \hyperlink{structsll__node}{sll\_\-node} $\ast$ \hyperlink{sll_8c_acfe3ebc296fe75f1d0ee21195dd7b9bf}{sll\_\-push\_\-front} (\hyperlink{structsll__node}{sll\_\-node} $\ast$list, void $\ast$contents)
 \begin{DoxyCompactList}\small\item\em Adds a new node to the front of an existing linked list. \item\end{DoxyCompactList}\item 
 \hyperlink{structsll__node}{sll\_\-node} $\ast$ \hyperlink{sll_8c_af72e93329186ac936d2bf6f544aa1f6b}{sll\_\-pop\_\-back} (\hyperlink{structsll__node}{sll\_\-node} $\ast$list)
-\begin{DoxyCompactList}\small\item\em Removes and returns a pointer to the last element of the list. \item\end{DoxyCompactList}\item 
+\item 
 \hyperlink{structsll__node}{sll\_\-node} $\ast$ \hyperlink{sll_8c_a1588e5a1f90852ee48403d5313d64269}{sll\_\-pop\_\-front} (\hyperlink{structsll__node}{sll\_\-node} $\ast$list)
-\begin{DoxyCompactList}\small\item\em Removes and returns a pointer to the first element of the list. \item\end{DoxyCompactList}\item 
+\item 
 \hyperlink{structsll__node}{sll\_\-node} $\ast$ \hyperlink{sll_8c_a66769edc21579f71972ac90de6da4a9f}{sll\_\-insert} (\hyperlink{structsll__node}{sll\_\-node} $\ast$list, int index, void $\ast$contents)
 \begin{DoxyCompactList}\small\item\em Inserts a new node in a linked list at the specified index. \item\end{DoxyCompactList}\item 
 \hyperlink{structsll__node}{sll\_\-node} $\ast$ \hyperlink{sll_8c_afd494f171c24981f0d7a007841f21cfe}{sll\_\-delete} (\hyperlink{structsll__node}{sll\_\-node} $\ast$list, int index, int free\_\-contents)
@@ -53,6 +53,8 @@ unsigned int \hyperlink{sll_8c_af5f6589df6d0ef48ed6f57ac5527ddfe}{sll\_\-length}
 
 
 Finds and returns the last node in the supplied linked list. 
+
+This function returns a pointer to the last node in the given linked list.
 
 
 \begin{DoxyParams}{Parameters}
@@ -92,13 +94,13 @@ Here is the caller graph for this function:\nopagebreak
 
 Deletes a node from the supplied list. 
 
-Deletes the node found at the supplied index from the supplied list and frees the memory used by the node and its contents.
+This function traverses the list to the desired index and frees the memory allocated for that node. If the deleted node has a child then the child is reattached to the deleted node's parent. If free\_\-contents is passed a non-\/zero value then the node's contents pointer is also freed.
 
 
 \begin{DoxyParams}{Parameters}
-{\em list} & \\
+{\em list} & The list to operate on. \\
 \hline
-{\em index} & \\
+{\em index} & The index of the node to delete. \\
 \hline
 {\em free\_\-contents} & Whether or not to also free the contents of the node.\\
 \hline
@@ -135,7 +137,7 @@ Here is the call graph for this function:\nopagebreak
 
 Frees all memory used by a linked list. 
 
-Loops through the supplied list and frees all nodes. Also frees contents if free\_\-contents is passed TRUE. This is to avoid trying to free memory allocated on the stack.
+This function loops through the supplied list and frees all nodes. Also frees contents if free\_\-contents is passed a non-\/zero value.
 
 
 \begin{DoxyParams}{Parameters}
@@ -160,6 +162,8 @@ Definition at line 119 of file sll.c.
 
 
 Finds and returns the first node in the supplied linked list. 
+
+This function returns a pointer to the first node in the given linked list.
 
 
 \begin{DoxyParams}{Parameters}
@@ -187,7 +191,7 @@ Definition at line 38 of file sll.c.
 
 Return the node at the specified index in a linked list. 
 
-Loops through the linked list and returns the node in the list at the specified index. Returns NULL if the index is out of range.
+This function loops through the linked list and returns the node in the list at the specified index. Returns NULL if the index is out of range.
 
 
 \begin{DoxyParams}{Parameters}
@@ -229,13 +233,15 @@ Here is the caller graph for this function:\nopagebreak
 
 Inserts a new node in a linked list at the specified index. 
 
+This function traverses the list to the desired index and inserts a new node with the given contents at that position. The node previously at the desired index becomes the child of the new node.
+
 
 \begin{DoxyParams}{Parameters}
-{\em list} & \\
+{\em list} & The list to operate on. \\
 \hline
-{\em index} & \\
+{\em index} & The index where the new node will be inserted. \\
 \hline
-{\em contents} & \\
+{\em contents} & The contents of the new node.\\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
@@ -269,7 +275,7 @@ Here is the call graph for this function:\nopagebreak
 
 Returns the number of elements in the list. 
 
-Loops through the supplied list and returns a count of the number of elements contained in the list.
+This function loops through the supplied list and returns a count of the number of elements contained in the list.
 
 
 \begin{DoxyParams}{Parameters}
@@ -296,7 +302,7 @@ Definition at line 134 of file sll.c.
 
 Creates a new linked list node with the supplied value. 
 
-This function allocates a new node on the heap and populates the node contents with the supplied contents pointer.
+This function allocates a new node and populates the node contents with the supplied contents pointer.
 
 
 \begin{DoxyParams}{Parameters}
@@ -332,20 +338,6 @@ Here is the caller graph for this function:\nopagebreak
 \label{sll_8c_af72e93329186ac936d2bf6f544aa1f6b}
 
 
-Removes and returns a pointer to the last element of the list. 
-
-
-\begin{DoxyParams}{Parameters}
-{\em list} & \\
-\hline
-{\em contents} & \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-Pointer to the newly added node. 
-\end{DoxyReturn}
-
-
 Definition at line 80 of file sll.c.
 
 \hypertarget{sll_8c_a1588e5a1f90852ee48403d5313d64269}{
@@ -357,20 +349,6 @@ Definition at line 80 of file sll.c.
 \end{DoxyParamCaption}
 )}}
 \label{sll_8c_a1588e5a1f90852ee48403d5313d64269}
-
-
-Removes and returns a pointer to the first element of the list. 
-
-
-\begin{DoxyParams}{Parameters}
-{\em list} & \\
-\hline
-{\em contents} & \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-Pointer to the newly added node. 
-\end{DoxyReturn}
 
 
 Definition at line 84 of file sll.c.
@@ -389,11 +367,13 @@ Definition at line 84 of file sll.c.
 
 Adds a new node to the end of an existing linked list. 
 
+This function creates a new node and pushes it to the end of the given list. The newly created node becomes the new tail of the list.
+
 
 \begin{DoxyParams}{Parameters}
-{\em list} & \\
+{\em list} & The list to operate on. \\
 \hline
-{\em contents} & \\
+{\em contents} & The contents of the new node.\\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
@@ -428,11 +408,13 @@ Here is the call graph for this function:\nopagebreak
 
 Adds a new node to the front of an existing linked list. 
 
+This function creates a new node and pushes it to the beginning of the given list. The newly created node becomes the new head of the list.
+
 
 \begin{DoxyParams}{Parameters}
-{\em list} & \\
+{\em list} & The list to operate on. \\
 \hline
-{\em contents} & \\
+{\em contents} & The contents of the new node.\\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
