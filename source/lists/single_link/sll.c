@@ -1,144 +1,112 @@
-/******************************************************************************
- * Copyright (c) 2012, Michael D. Lowis
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * * Redistributions of source code must retain the above copyright notice,
- *   this list of conditions and the following disclaimer.
- *
- * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *****************************************************************************/
 #include "sll.h"
 #include <stdlib.h>
 
-sll_node* sll_new( void* contents )
+sll_t* sll_new(void)
 {
-    sll_node* list = (sll_node*)malloc( sizeof(sll_node) );
-    list->contents = contents;
-    list->next = NULL;
+    sll_t* list = (sll_t*)malloc( sizeof( sll_t ) );
+    list->head = NULL;
+    list->tail = NULL;
     return list;
 }
 
-sll_node* sll_front( sll_node* list )
+sll_node_t* sll_new_node(void* contents)
 {
-}
-
-sll_node* sll_back( sll_node* list )
-{
-    sll_node* node = list;
-    while((node != NULL) && (node->next != NULL))
-    {
-        node = node->next;
-    }
+    sll_node_t* node = (sll_node_t*)malloc( sizeof( sll_node_t ) );
+    node->contents = contents;
+    node->next = NULL;
     return node;
 }
 
-sll_node* sll_index( sll_node* list, int index )
+void sll_free(sll_t* list, int free_contents)
 {
-    int current = 0;
-    sll_node* node = list;
-    sll_node* indexed_node = NULL;
-    while ((node != NULL))
+    if( NULL != list )
     {
-        if ( current == index )
+        sll_node_t* node = list->head;
+        while( NULL != node )
         {
-            indexed_node = node;
-            break;
+            sll_node_t* next = node->next;
+            sll_free_node( node, free_contents );
+            node = next;
         }
-        node = node->next;
-        current++;
+        free( list );
     }
-    return indexed_node;
 }
 
-sll_node* sll_push_back( sll_node* list, void* contents )
+void sll_free_node(sll_node_t* node, int free_contents)
 {
-    sll_node* node = sll_back( list );
-    node->next = sll_new( contents );
-}
-
-sll_node* sll_push_front( sll_node* list, void* contents )
-{
-}
-
-sll_node* sll_pop_back( sll_node* list )
-{
-}
-
-sll_node* sll_pop_front( sll_node* list )
-{
-}
-
-sll_node* sll_insert( sll_node* list, int index, void* contents )
-{
-    int req_index = ((index-1) < 0) ? 0 : index-1;
-    sll_node* node = sll_index( list, req_index );
-    if(node != NULL)
+    if( NULL != node )
     {
-        sll_node* next_next = node->next;
-        node->next = sll_new( contents );
-        node->next->next = next_next;
-        node = node->next;
-    }
-    return node;
-}
-
-sll_node* sll_delete( sll_node* list, int index, int free_contents)
-{
-    sll_node* node = sll_index( list, (index-1));
-    if((node != NULL) && (node->next != NULL))
-    {
-        sll_node* node_to_delete = node->next;
-        node->next = node_to_delete->next;
-        if (free_contents)
+        if( 1 == free_contents )
         {
-            free(node_to_delete->contents);
+            free( node->contents );
         }
-        free(node_to_delete);
-        node = node->next;
-    }
-    return node;
-}
-
-void sll_free( sll_node* list, int free_contents)
-{
-    sll_node* node = list;
-    while( node != NULL )
-    {
-        sll_node* next = node->next;
-        if (free_contents)
-            {
-            free(node->contents);
-            }
-        free(node);
-        node = next;
+        free( node );
     }
 }
 
-unsigned int sll_length(sll_node* list)
+unsigned int sll_length(sll_t* list)
 {
     unsigned int length = 0;
-    sll_node* item = list;
-    for ( item = list; item != NULL; item = item->next )
+    if( NULL != list)
     {
-        length++;
+        sll_node_t* node = list->head;
+        while( NULL != node )
+        {
+            node = node->next;
+            length++;
+        }
     }
     return length;
+}
+
+sll_node_t* sll_index(sll_t* list, unsigned int index)
+{
+    sll_node_t* node = NULL;
+    if( NULL != list )
+    {
+        unsigned int cur_index = 0;
+        sll_node_t* cur_node = list->head;
+        while( NULL != cur_node )
+        {
+            if( cur_index == index )
+            {
+                node = cur_node;
+                break;
+            }
+            cur_node = cur_node->next;
+            cur_index++;
+        }
+    }
+    return node;
+}
+
+sll_node_t* sll_push_front( sll_t* list, void* contents )
+{
+    return 0;
+}
+
+sll_node_t* sll_push_back( sll_t* list, void* contents )
+{
+    return 0;
+}
+
+sll_node_t* sll_pop_front( sll_t* list, int free_contents )
+{
+    return 0;
+}
+
+sll_node_t* sll_pop_back( sll_t* list, int free_contents )
+{
+    return 0;
+}
+
+sll_node_t* sll_insert( sll_t* list, unsigned int index, void* contents)
+{
+    return 0;
+}
+
+sll_node_t* sll_delete( sll_t* list, unsigned int index, int free_contents)
+{
+    return 0;
 }
 
