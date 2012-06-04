@@ -173,9 +173,65 @@ namespace {
     //-------------------------------------------------------------------------
     // Test sll_push_front function
     //-------------------------------------------------------------------------
+    TEST(Verify_sll_push_front_returns_null_if_list_is_null)
+    {
+        CHECK( NULL == sll_push_front( NULL, NULL ) );
+    }
+
+    TEST(Verify_sll_push_front_pushes_to_empty_list)
+    {
+        sll_t list = { NULL, NULL };
+        sll_node_t* node = sll_push_front( &list, (void*)0x1234 );
+        CHECK( NULL != node );
+        CHECK( (void*)0x1234 == node->contents );
+        CHECK( NULL == node->next );
+        CHECK( node == list.head );
+        CHECK( node == list.tail );
+    }
+
+    TEST(Verify_sll_push_front_pushes_to_front_of_list_of_length_1)
+    {
+        sll_node_t node1 = { NULL, NULL };
+        sll_t list = { &node1, &node1 };
+        sll_node_t* node = sll_push_front( &list, (void*)0x1234 );
+        CHECK( NULL != node );
+        CHECK( (void*)0x1234 == node->contents );
+        CHECK( NULL != node->next );
+        CHECK( node == list.head );
+        CHECK( node == list.tail );
+    }
+
     //-------------------------------------------------------------------------
     // Test sll_push_back function
     //-------------------------------------------------------------------------
+    TEST(Verify_sll_push_back_returns_null_if_list_is_null)
+    {
+        CHECK( NULL == sll_push_back( NULL, NULL ) );
+    }
+
+    TEST(Verify_sll_push_back_pushes_to_empty_list)
+    {
+        sll_t list = { NULL, NULL };
+        sll_node_t* node = sll_push_back( &list, (void*)0x1234 );
+        CHECK( NULL != node );
+        CHECK( (void*)0x1234 == node->contents );
+        CHECK( NULL == node->next );
+        CHECK( node == list.head );
+        CHECK( node == list.tail );
+    }
+
+    TEST(Verify_sll_push_back_pushes_to_back_of_list_of_length_1)
+    {
+        sll_node_t node1 = { NULL, NULL };
+        sll_t list = { &node1, &node1 };
+        sll_node_t* node = sll_push_front( &list, (void*)0x1234 );
+        CHECK( NULL != node );
+        CHECK( (void*)0x1234 == node->contents );
+        CHECK( NULL != node->next );
+        CHECK( node == list.head );
+        CHECK( node == list.tail );
+    }
+
     //-------------------------------------------------------------------------
     // Test sll_pop_front function
     //-------------------------------------------------------------------------

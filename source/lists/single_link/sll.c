@@ -82,12 +82,37 @@ sll_node_t* sll_index(sll_t* list, unsigned int index)
 
 sll_node_t* sll_push_front( sll_t* list, void* contents )
 {
-    return 0;
+    sll_node_t* node = NULL;
+    if( NULL != list )
+    {
+        node = sll_new_node( contents );
+        node->next = list->head;
+        if( NULL == list->tail )
+        {
+            list->tail = node;
+        }
+    }
+    return node;
 }
 
 sll_node_t* sll_push_back( sll_t* list, void* contents )
 {
-    return 0;
+    sll_node_t* node = NULL;
+    if( NULL != list )
+    {
+        node = sll_new_node( contents );
+        node->next = NULL;
+        if( NULL == list->tail )
+        {
+            list->head = node;
+            list->tail = node;
+        }
+        else
+        {
+            list->tail->next = node;
+        }
+    }
+    return node;
 }
 
 sll_node_t* sll_pop_front( sll_t* list, int free_contents )
