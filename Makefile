@@ -27,7 +27,7 @@ endef
 
 # Project and Artifact Names
 #---------------------------
-PROJ_NAME   = opts
+PROJ_NAME   = data-structures
 TEST_RUNNER = test_runner
 SHARED_NAME = lib$(PROJ_NAME).lib
 STATIC_NAME = lib$(PROJ_NAME).a
@@ -114,4 +114,7 @@ clean:
 	@$(RM) $(SHARED_NAME)
 	@$(RM) $(STATIC_NAME)
 	@$(RM) $(TEST_RUNNER)*
+
+-include $(SRC_DEPS)
+-include $(TEST_DEPS)
 
