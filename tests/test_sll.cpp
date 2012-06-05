@@ -367,7 +367,16 @@ namespace {
     //-------------------------------------------------------------------------
     // Test sll_insert function
     //-------------------------------------------------------------------------
+    TEST(Verify_insert_does_nothing_if_list_is_null)
+    {
+        CHECK( NULL == sll_insert( NULL, 0, (void*)0x1234 ) );
+    }
+
     //-------------------------------------------------------------------------
     // Test sll_delete function
     //-------------------------------------------------------------------------
+    TEST(Verify_delete_does_nothing_if_list_is_null)
+    {
+        CHECK( NULL == sll_insert( NULL, 0, 0 ) );
+    }
 }
