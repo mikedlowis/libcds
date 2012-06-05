@@ -65,7 +65,7 @@ INC_DIRS = $(call incdirs, $(SRC_ROOT)) \
 
 # Compiler and Linker Options
 #----------------------------
-CXXFLAGS      = $(INC_DIRS) -Wall -fPIC
+CXXFLAGS      = $(INC_DIRS) -Wall -Wextra -fPIC
 TEST_CXXFLAGS = $(INC_DIRS)
 ARFLAGS       = rcs
 
@@ -76,33 +76,39 @@ all: release test
 release: $(SHARED_NAME) $(STATIC_NAME)
 
 test: $(TEST_RUNNER)
-	./$(TEST_RUNNER)
+	@echo Running unit tests...
+	@./$(TEST_RUNNER)
 
 foo:
 	echo $(SRC_DEPS)
 
 # Binaries
 $(SHARED_NAME): $(SRC_OBJS)
-	$(CXX) $(CXXFLAGS) -shared -o $@ $(SRC_OBJS) $(LIBS)
+	@echo Linking $@...
+	@$(CXX) $(CXXFLAGS) -shared -o $@ $(SRC_OBJS) $(LIBS)
 
 $(STATIC_NAME): $(SRC_OBJS)
-	$(AR) $(ARFLAGS) -o $@ $(SRC_OBJS) $(LIBS)
+	@echo Linking $@...
+	@$(AR) $(ARFLAGS) -o $@ $(SRC_OBJS) $(LIBS)
 
 $(TEST_RUNNER): unit_test_pp $(SRC_OBJS) $(TEST_OBJS)
-	$(CXX) $(TEST_CXXFLAGS) -o $@ $(SRC_OBJS) $(TEST_OBJS) $(TEST_LIBS)
+	@echo Linking $@...
+	@$(CXX) $(TEST_CXXFLAGS) -o $@ $(SRC_OBJS) $(TEST_OBJS) $(TEST_LIBS)
 
 # Libraries
 unit_test_pp:
-	$(MAKE) -C tools/UnitTest++
+	@$(MAKE) -C tools/UnitTest++
 
 # Object Files
 $(SRC_OBJS): %.o : %.$(SRC_EXT)
+	@echo $<
 	@$(call make-depend,$<,$@)
-	$(CXX) -c $(CXXFLAGS) -o $@ $<
+	@$(CXX) -c $(CXXFLAGS) -o $@ $<
 
 $(TEST_OBJS): %.o : %.$(TEST_EXT)
+	@echo $<
 	@$(call make-depend,$<,$@)
-	$(CXX) -c $(TEST_CXXFLAGS) -o $@ $<
+	@$(CXX) -c $(TEST_CXXFLAGS) -o $@ $<
 
 # Cleanup
 clean:
