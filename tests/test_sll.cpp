@@ -89,6 +89,50 @@ namespace {
     }
 
     //-------------------------------------------------------------------------
+    // Test sll_front function
+    //-------------------------------------------------------------------------
+    TEST(Verify_sll_front_returns_NULL_if_list_is_NULL)
+    {
+        CHECK( NULL == sll_front( NULL ) );
+    }
+
+    TEST(Verify_sll_front_returns_NULL_if_list_is_empty)
+    {
+        sll_t list = { NULL, NULL };
+        CHECK( NULL == sll_front( &list ) );
+    }
+
+    TEST(Verify_sll_front_returns_the_head_of_the_list)
+    {
+        sll_node_t node2 = { NULL, NULL };
+        sll_node_t node1 = { NULL, &node2 };
+        sll_t list = { &node1, &node2 };
+        CHECK( &node1 == sll_front( &list ) );
+    }
+
+    //-------------------------------------------------------------------------
+    // Test sll_back function
+    //-------------------------------------------------------------------------
+    TEST(Verify_sll_back_returns_NULL_if_list_is_NULL)
+    {
+        CHECK( NULL == sll_back( NULL ) );
+    }
+
+    TEST(Verify_sll_back_returns_NULL_if_list_is_empty)
+    {
+        sll_t list = { NULL, NULL };
+        CHECK( NULL == sll_back( &list ) );
+    }
+
+    TEST(Verify_sll_back_returns_the_tail_of_the_list)
+    {
+        sll_node_t node2 = { NULL, NULL };
+        sll_node_t node1 = { NULL, &node2 };
+        sll_t list = { &node1, &node2 };
+        CHECK( &node2 == sll_back( &list ) );
+    }
+
+    //-------------------------------------------------------------------------
     // Test sll_length function
     //-------------------------------------------------------------------------
     TEST(Verify_sll_length_returns_0_when_passed_null_pointer)
@@ -265,6 +309,17 @@ namespace {
         CHECK( &node2 == list.tail );
     }
 
+    TEST(Verify_pop_front_removes_a_node_from_the_front_of_a_list_of_length_3)
+    {
+        sll_node_t node3 = { NULL, NULL };
+        sll_node_t node2 = { NULL, &node3 };
+        sll_node_t node1 = { NULL, &node2 };
+        sll_t list = { &node1, &node3 };
+        CHECK( &node1 == sll_pop_front( &list ) );
+        CHECK( &node2 == list.head );
+        CHECK( &node3 == list.tail );
+    }
+
     //-------------------------------------------------------------------------
     // Test sll_pop_back function
     //-------------------------------------------------------------------------
@@ -281,12 +336,32 @@ namespace {
 
     TEST(Verify_pop_back_removes_a_node_from_the_back_of_a_list_of_length_1)
     {
-        CHECK(false);
+        sll_node_t node1 = { NULL, NULL };
+        sll_t list = { &node1, &node1 };
+        CHECK( &node1 == sll_pop_back( &list ) );
+        CHECK( NULL == list.head );
+        CHECK( NULL == list.tail );
     }
 
     TEST(Verify_pop_back_removes_a_node_from_the_back_of_a_list_of_length_2)
     {
-        CHECK(false);
+        sll_node_t node2 = { NULL, NULL };
+        sll_node_t node1 = { NULL, &node2 };
+        sll_t list = { &node1, &node2 };
+        CHECK( &node2 == sll_pop_back( &list ) );
+        CHECK( &node1 == list.head );
+        CHECK( &node1 == list.tail );
+    }
+
+    TEST(Verify_pop_back_removes_a_node_from_the_back_of_a_list_of_length_3)
+    {
+        sll_node_t node3 = { NULL, NULL };
+        sll_node_t node2 = { NULL, &node3 };
+        sll_node_t node1 = { NULL, &node2 };
+        sll_t list = { &node1, &node3 };
+        CHECK( &node3 == sll_pop_back( &list ) );
+        CHECK( &node1 == list.head );
+        CHECK( &node2 == list.tail );
     }
 
     //-------------------------------------------------------------------------

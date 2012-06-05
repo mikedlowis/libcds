@@ -44,6 +44,26 @@ void sll_free_node(sll_node_t* node, int free_contents)
     }
 }
 
+sll_node_t* sll_front( sll_t* list )
+{
+    sll_node_t* node = NULL;
+    if( NULL != list )
+    {
+        node = list->head;
+    }
+    return node;
+}
+
+sll_node_t* sll_back( sll_t* list )
+{
+    sll_node_t* node = NULL;
+    if( NULL != list )
+    {
+        node = list->tail;
+    }
+    return node;
+}
+
 unsigned int sll_length(sll_t* list)
 {
     unsigned int length = 0;
@@ -135,19 +155,61 @@ sll_node_t* sll_pop_front( sll_t* list )
 sll_node_t* sll_pop_back( sll_t* list )
 {
     sll_node_t* node = NULL;
-    if( (NULL != list) && (NULL != list->tail) )
+    if( NULL != list )
     {
+        if ( list->head == list->tail )
+        {
+            node = list->head;
+            list->head = NULL;
+            list->tail = NULL;
+        }
+        else
+        {
+            sll_node_t* next_tail = list->head;
+            while( next_tail->next != list->tail )
+            {
+                next_tail = next_tail->next;
+            }
+            node = next_tail->next;
+            next_tail->next = NULL;
+            list->tail = next_tail;
+        }
     }
     return node;
 }
 
 sll_node_t* sll_insert( sll_t* list, unsigned int index, void* contents)
 {
-    return 0;
+    sll_node_t* new_node = NULL;
+    if( NULL == list )
+    {
+        if( 0 == index )
+        {
+            new_node = sll_push_front( list, contents );
+        }
+        else
+        {
+            sll_node_t* prev_node = sll_index( list, index - 1 );
+            if( NULL == prev_node )
+            {
+                sll_node_t* next_node = prev_node->next;
+                new_node = sll_new_node( contents );
+                new_node = next_node;
+                prev_node->next = new_node;
+                if( NULL == next_node )
+                {
+                    list->tail = new_node;
+                }
+            }
+        }
+    }
+    return new_node;
 }
 
 sll_node_t* sll_delete( sll_t* list, unsigned int index, int free_contents)
 {
-    return 0;
+    sll_node_t* new_node = NULL;
+
+    return new_node;
 }
 

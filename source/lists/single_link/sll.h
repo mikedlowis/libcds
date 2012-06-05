@@ -57,6 +57,9 @@ void sll_free(sll_t* list, int free_contents);
  */
 void sll_free_node(sll_node_t* node, int free_contents);
 
+sll_node_t* sll_front( sll_t* list );
+sll_node_t* sll_back( sll_t* list );
+
 /**
  * @brief Returns the number of elements in the list.
  *
