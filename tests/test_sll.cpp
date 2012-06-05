@@ -198,7 +198,7 @@ namespace {
         CHECK( (void*)0x1234 == node->contents );
         CHECK( NULL != node->next );
         CHECK( node == list.head );
-        CHECK( node == list.tail );
+        CHECK( node != list.tail );
     }
 
     //-------------------------------------------------------------------------
@@ -224,20 +224,71 @@ namespace {
     {
         sll_node_t node1 = { NULL, NULL };
         sll_t list = { &node1, &node1 };
-        sll_node_t* node = sll_push_front( &list, (void*)0x1234 );
+        sll_node_t* node = sll_push_back( &list, (void*)0x1234 );
         CHECK( NULL != node );
         CHECK( (void*)0x1234 == node->contents );
-        CHECK( NULL != node->next );
-        CHECK( node == list.head );
+        CHECK( &node1 != node->next );
+        CHECK( node != list.head );
         CHECK( node == list.tail );
     }
 
     //-------------------------------------------------------------------------
     // Test sll_pop_front function
     //-------------------------------------------------------------------------
+    TEST(Verify_pop_front_returns_null_if_list_is_null)
+    {
+        CHECK( NULL == sll_pop_front( NULL ) );
+    }
+
+    TEST(Verify_pop_front_returns_null_if_list_is_empty)
+    {
+        sll_t list = { NULL, NULL };
+        CHECK( NULL == sll_pop_front( &list ) );
+    }
+
+    TEST(Verify_pop_front_removes_a_node_from_the_front_of_a_list_of_length_1)
+    {
+        sll_node_t node1 = { NULL, NULL };
+        sll_t list = { &node1, &node1 };
+        CHECK( &node1 == sll_pop_front( &list ) );
+        CHECK( NULL == list.head );
+        CHECK( NULL == list.tail );
+    }
+
+    TEST(Verify_pop_front_removes_a_node_from_the_front_of_a_list_of_length_2)
+    {
+        sll_node_t node2 = { NULL, NULL };
+        sll_node_t node1 = { NULL, &node2 };
+        sll_t list = { &node1, &node2 };
+        CHECK( &node1 == sll_pop_front( &list ) );
+        CHECK( &node2 == list.head );
+        CHECK( &node2 == list.tail );
+    }
+
     //-------------------------------------------------------------------------
     // Test sll_pop_back function
     //-------------------------------------------------------------------------
+    TEST(Verify_pop_back_does_nothing_if_list_is_null)
+    {
+        CHECK( NULL == sll_pop_back( NULL ) );
+    }
+
+    TEST(Verify_pop_back_does_nothing_if_list_is_empty)
+    {
+        sll_t list = { NULL, NULL };
+        CHECK( NULL == sll_pop_back( &list ) );
+    }
+
+    TEST(Verify_pop_back_removes_a_node_from_the_back_of_a_list_of_length_1)
+    {
+        CHECK(false);
+    }
+
+    TEST(Verify_pop_back_removes_a_node_from_the_back_of_a_list_of_length_2)
+    {
+        CHECK(false);
+    }
+
     //-------------------------------------------------------------------------
     // Test sll_insert function
     //-------------------------------------------------------------------------

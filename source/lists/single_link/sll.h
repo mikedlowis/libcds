@@ -112,31 +112,25 @@ sll_node_t* sll_push_back( sll_t* list, void* contents );
  * @brief Removes and returns a pointer to the first element of the list.
  *
  * This function removes the first node from the list and frees it's associated
- * memory. If free_contents is passed a non-zero value then it's contents
- * pointer is also freed. The second node in the list becomes the new head of
- * the list.
+ * memory.
  *
  * @param list          The lsit to operate on.
- * @param free_contents Determines whether to free the contents pointer.
  *
  * @return Pointer to the newly added node.
  **/
-sll_node_t* sll_pop_front( sll_t* list, int free_contents );
+sll_node_t* sll_pop_front( sll_t* list );
 
 /**
  * @brief Removes and returns a pointer to the last element of the list.
  *
  * This function removes the last node from the list and frees it's associated
- * memory. If free_contents is passed a non-zero value then it's contents
- * pointer is also freed. The second to last node in the list becomes the new
- * tail of the list.
+ * memory.
  *
  * @param list          The list to operate on.
- * @param free_contents Determines whether to free the contents pointer.
  *
  * @return Pointer to the newly added node.
  **/
-sll_node_t* sll_pop_back( sll_t* list, int free_contents );
+sll_node_t* sll_pop_back( sll_t* list );
 
 /**
  * @brief Inserts a new node in a linked list at the specified index.
