@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Jersey Build Configuration
+-- CDS Build Configuration
 -------------------------------------------------------------------------------
 solution "C Data Structures"
 configurations { "Release" }
@@ -14,13 +14,14 @@ project "cds"
     location "build"
     files { "source/**.*" }
 
-project "test"
+project "tests"
     kind "ConsoleApp"
     language "C++"
     location "build"
+    links { "UnitTest++", "cds" }
     includedirs { "source/**", "tools/UnitTest++/**" }
-    links { "cds", "UnitTest++" }
-    files { "tests/**.*" }
+    files { "tests/**.c*" }
+    postbuildcommands { "./tests.exe" }
 
 -------------------------------------------------------------------------------
 -- UnitTest++ - A C++ unit testing library

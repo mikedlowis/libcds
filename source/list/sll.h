@@ -1,21 +1,25 @@
 #ifndef SLL_H
 #define SLL_H
 
-//! A linked list node.
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/** A linked list node. */
 typedef struct sll_node_t
 {
-    //! Pointer to the contents the node
+    /* Pointer to the contents the node */
     void* contents;
-    //! Pointer to next node in the list.
+    /* Pointer to next node in the list. */
     struct sll_node_t* next;
 } sll_node_t;
 
-//! A singly linked list
+/* A singly linked list */
 typedef struct sll_t
 {
-    //! Pointer to the first element in the list
+    /* Pointer to the first element in the list */
     sll_node_t* head;
-    //! Pointer to the last element in the list
+    /* Pointer to the last element in the list */
     sll_node_t* tail;
 } sll_t;
 
@@ -24,7 +28,7 @@ typedef struct sll_t
  *
  * @return A pointer to the newly created list.
  **/
-sll_t* sll_new(void);
+extern sll_t* sll_new(void);
 
 /**
  * @brief Creates a new node with given contents.
@@ -57,7 +61,22 @@ void sll_free(sll_t* list, int free_contents);
  */
 void sll_free_node(sll_node_t* node, int free_contents);
 
+/**
+ * @brief
+ *
+ * @param list
+ *
+ * @return
+ */
 sll_node_t* sll_front( sll_t* list );
+
+/**
+ * @brief
+ *
+ * @param list
+ *
+ * @return
+ */
 sll_node_t* sll_back( sll_t* list );
 
 /**
@@ -165,5 +184,9 @@ sll_node_t* sll_insert( sll_t* list, unsigned int index, void* contents);
  * @return Pointer to the node that is now at the supplied index.
  **/
 sll_node_t* sll_delete( sll_t* list, unsigned int index, int free_contents);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
