@@ -23,6 +23,9 @@ project "tests"
     files { "tests/**.c*" }
     postbuildcommands { "./tests.exe" }
 
+project "doxygen"
+    postbuildcommands { "doxygen" }
+
 -------------------------------------------------------------------------------
 -- UnitTest++ - A C++ unit testing library
 -------------------------------------------------------------------------------
