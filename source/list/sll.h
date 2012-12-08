@@ -8,18 +8,18 @@ extern "C" {
 /** A linked list node. */
 typedef struct sll_node_t
 {
-    /* Pointer to the contents the node */
+    /** Pointer to the contents the node */
     void* contents;
-    /* Pointer to next node in the list. */
+    /** Pointer to next node in the list. */
     struct sll_node_t* next;
 } sll_node_t;
 
-/* A singly linked list */
+/** A singly linked list */
 typedef struct sll_t
 {
-    /* Pointer to the first element in the list */
+    /** Pointer to the first element in the list */
     sll_node_t* head;
-    /* Pointer to the last element in the list */
+    /** Pointer to the last element in the list */
     sll_node_t* tail;
 } sll_t;
 
@@ -62,20 +62,20 @@ void sll_free(sll_t* list, int free_contents);
 void sll_free_node(sll_node_t* node, int free_contents);
 
 /**
- * @brief
+ * @brief Returns pointer to first node in the list
  *
- * @param list
+ * @param list The list from which to retrieve elements.
  *
- * @return
+ * @return Pointer to the first element in the list.
  */
 sll_node_t* sll_front( sll_t* list );
 
 /**
- * @brief
+ * @brief Returns pointer to the last element in the list.
  *
- * @param list
+ * @param The list from which to retrieve elements.
  *
- * @return
+ * @return Pointer to the last element in the list.
  */
 sll_node_t* sll_back( sll_t* list );
 
