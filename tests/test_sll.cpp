@@ -372,11 +372,123 @@ namespace {
         CHECK( NULL == sll_insert( NULL, 0, (void*)0x1234 ) );
     }
 
+    TEST(Verify_insert_should_insert_into_empty_list)
+    {
+        sll_t list = { NULL, NULL };
+        sll_node_t* node = sll_insert( &list, 0, (void*)0x1234 );
+        CHECK( node != NULL );
+        CHECK( node->next == NULL );
+        CHECK( node->contents == (void*)0x1234 );
+        CHECK( list.head == node );
+        CHECK( list.tail == node );
+    }
+
+    TEST(Verify_insert_should_push_to_the_front_of_the_list_if_index_is_0)
+    {
+        sll_node_t node1 = { NULL, NULL };
+        sll_t list = { &node1, &node1 };
+        sll_node_t* node = sll_insert( &list, 0, (void*)0x1234 );
+        CHECK( NULL != node );
+        CHECK( (void*)0x1234 == node->contents );
+        CHECK( NULL != node->next );
+        CHECK( node == list.head );
+        CHECK( node != list.tail );
+    }
+
+    TEST(Verify_insert_should_insert_at_the_given_index_if_index_is_non_zero)
+    {
+        sll_node_t node3 = { NULL, NULL };
+        sll_node_t node2 = { NULL, &node3 };
+        sll_node_t node1 = { NULL, &node2 };
+        sll_t list = { &node1, &node3 };
+        sll_node_t* node = sll_insert( &list, 1, (void*)0x1234 );
+        CHECK( NULL != node );
+        CHECK( (void*)0x1234 == node->contents );
+        CHECK( node1.next == node );
+        CHECK( &node2 == node->next );
+    }
+
+    TEST(Verify_insert_should_set_the_tail_of_the_list_if_index_is_the_last_item)
+    {
+        sll_node_t node2 = { NULL, NULL };
+        sll_node_t node1 = { NULL, &node2 };
+        sll_t list = { &node1, &node2 };
+        sll_node_t* node = sll_insert( &list, 2, (void*)0x1234 );
+        CHECK( NULL != node );
+        CHECK( (void*)0x1234 == node->contents );
+        CHECK( NULL == node->next );
+        CHECK( node2.next == node );
+        CHECK( list.tail == node );
+    }
+
+    TEST(Verify_insert_should_return_null_if_index_out_of_range)
+    {
+        sll_node_t node2 = { NULL, NULL };
+        sll_node_t node1 = { NULL, &node2 };
+        sll_t list = { &node1, &node2 };
+        sll_node_t* node = sll_insert( &list, 3, (void*)0x1234 );
+        CHECK( NULL == node );
+    }
+
     //-------------------------------------------------------------------------
     // Test sll_delete function
     //-------------------------------------------------------------------------
     TEST(Verify_delete_does_nothing_if_list_is_null)
     {
-        CHECK( NULL == sll_insert( NULL, 0, 0 ) );
+        CHECK( NULL == sll_delete( NULL, 0, 0 ) );
+    }
+
+    TEST(Verify_delete_does_nothing_if_list_is_empty)
+    {
+        sll_t list = { NULL, NULL };
+        CHECK( NULL == sll_delete( &list, 0, 0 ) );
+    }
+
+    TEST(Verify_delete_deletes_the_first_element_of_a_list_of_length_1)
+    {
+        sll_node_t* node = sll_new_node((void*)0x1234);
+        sll_t list = { node, node };
+        CHECK( NULL == sll_delete( &list, 0, 0 ) );
+        CHECK( list.head == NULL );
+        CHECK( list.tail == NULL );
+    }
+
+    TEST(Verify_delete_deletes_the_first_element_of_a_list_of_length_2)
+    {
+        sll_node_t* node1 = sll_new_node((void*)0x1234);
+        sll_node_t  node2 = { (void*)0x1234, NULL };
+        node1->next = &node2;
+        sll_t list = { node1, &node2 };
+        sll_node_t* node = sll_delete( &list, 0, 0 );
+        CHECK( node == &node2 );
+        CHECK( list.head == &node2 );
+        CHECK( list.tail == &node2 );
+    }
+
+    TEST(Verify_delete_deletes_element_1_of_a_list_of_length_3)
+    {
+        sll_node_t  node1 = { (void*)0x1234, NULL };
+        sll_node_t* node2 = sll_new_node((void*)0x1234);
+        sll_node_t  node3 = { (void*)0x1234, NULL };
+        node1.next = node2;
+        node2->next = &node3;
+        sll_t list = { &node1, &node3 };
+        sll_node_t* node = sll_delete( &list, 1, 0 );
+        CHECK( node == &node3 );
+        CHECK( node1.next == &node3 );
+        CHECK( list.head == &node1 );
+        CHECK( list.tail == &node3 );
+    }
+
+    TEST(Verify_delete_deletes_element_1_of_a_list_of_length_2)
+    {
+        sll_node_t  node1 = { (void*)0x1234, NULL };
+        sll_node_t* node2 = sll_new_node((void*)0x1234);
+        node1.next = node2;
+        sll_t list = { &node1, node2 };
+        sll_node_t* node = sll_delete( &list, 1, 0 );
+        CHECK( node == NULL );
+        CHECK( list.head == &node1 );
+        CHECK( list.tail == &node1 );
     }
 }
