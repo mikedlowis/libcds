@@ -27,8 +27,8 @@ Build Instructions
 This project uses Premake 4 in order to generate cross-platform build scripts.
 The first step in building the library is to generate the build scripts for
 your system. Premake supports a variety of different build environments and you
-will need to select the target that you wish to use. To list the available
-targets simply run the following command:
+will need to select the one that you wish to use. To list the available targets
+simply run the following command:
 
     premake4 --help
 
@@ -49,7 +49,7 @@ at the end that looks like this:
      xcode3            Generate Apple Xcode 3 project files (experimental)
 
 This is the list of build script targets that are supported. To generate build
-scripts to use with GNU Make for instantce, you could choose the gmake target
+scripts to use with GNU Make for instance, you could choose the gmake target
 by using the following command:
 
     premake4 gmake
@@ -59,7 +59,7 @@ tests with the following command:
 
     make
 
-You can build just the with the following command:
+You can build just the library with the following command:
 
     make cds
 
