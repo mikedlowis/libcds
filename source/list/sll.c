@@ -64,7 +64,7 @@ sll_node_t* sll_back( sll_t* list )
     return node;
 }
 
-unsigned int sll_length(sll_t* list)
+unsigned int sll_size(sll_t* list)
 {
     unsigned int length = 0;
     if( NULL != list)
@@ -79,7 +79,13 @@ unsigned int sll_length(sll_t* list)
     return length;
 }
 
-sll_node_t* sll_index(sll_t* list, unsigned int index)
+int sll_empty(sll_t* list)
+{
+    return ((NULL == list) || ((NULL == list->head) && (NULL == list->tail)));
+}
+
+
+sll_node_t* sll_at(sll_t* list, unsigned int index)
 {
     sll_node_t* node = NULL;
     if( NULL != list )
@@ -187,7 +193,7 @@ sll_node_t* sll_insert( sll_t* list, unsigned int index, void* contents)
     }
     else
     {
-        sll_node_t* prev_node = sll_index( list, index - 1 );
+        sll_node_t* prev_node = sll_at( list, index - 1 );
         if( NULL != prev_node )
         {
             sll_node_t* next_node = prev_node->next;
@@ -218,7 +224,7 @@ sll_node_t* sll_delete( sll_t* list, unsigned int index, int free_contents)
     }
     else
     {
-        sll_node_t* prev = sll_index(list,index-1);
+        sll_node_t* prev = sll_at(list,index-1);
         node = (NULL == prev) ? NULL : prev->next;
         if (NULL != node)
         {
@@ -234,4 +240,22 @@ sll_node_t* sll_delete( sll_t* list, unsigned int index, int free_contents)
 
     return node;
 }
+
+sll_t* sll_clear(sll_t* list, int free_contents)
+{
+    if(NULL != list)
+    {
+        sll_node_t* node = list->head;
+        while(NULL != node)
+        {
+            sll_node_t* next = node->next;
+            sll_free_node(node,free_contents);
+            node = next;
+        }
+        list->head = NULL;
+        list->tail = NULL;
+    }
+    return list;
+}
+
 

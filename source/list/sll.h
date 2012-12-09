@@ -89,7 +89,16 @@ sll_node_t* sll_back( sll_t* list );
  *
  * @return The number of elements in the list.
  **/
-unsigned int sll_length(sll_t* list);
+unsigned int sll_size(sll_t* list);
+
+/**
+ * @brief Returns whether the list is empty or not.
+ *
+ * @param list The list to operate on.
+ *
+ * @return Whether the list is empty, 1 for true and 0 for false.
+ */
+int sll_empty(sll_t* list);
 
 /**
  * @brief   Return the node at the specified index in a linked list.
@@ -102,7 +111,7 @@ unsigned int sll_length(sll_t* list);
  *
  * @return A pointer to the node at the supplied index, NULL if out of range.
  **/
-sll_node_t* sll_index(sll_t* list, unsigned int index);
+sll_node_t* sll_at(sll_t* list, unsigned int index);
 
 /**
  * @brief Adds a new node to the front of an existing linked list.
@@ -184,6 +193,16 @@ sll_node_t* sll_insert( sll_t* list, unsigned int index, void* contents);
  * @return Pointer to the node that is now at the supplied index.
  **/
 sll_node_t* sll_delete( sll_t* list, unsigned int index, int free_contents);
+
+/**
+ * @brief Deletes all elements in the provided list
+ *
+ * @param list          The list to be cleared
+ * @param free_contents Whether or not to also free the contents of every node.
+ *
+ * @return A pointer to the cleared list.
+ */
+sll_t* sll_clear(sll_t* list, int free_contents);
 
 #ifdef __cplusplus
 }
