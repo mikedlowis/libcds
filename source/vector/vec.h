@@ -9,14 +9,25 @@
 
 #include <stdarg.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 /** A vector implementation */
 typedef struct {
-    bool own_contents;
-    size_t capacity;
-    size_t size;
-    void** p_buffer;
+    bool own_contents; /*< Whether the vector is responsible for freeing it's contents */
+    size_t size;       /*< The number of elements currently in the array */
+    size_t capacity;   /*< The size of the internal array */
+    void** p_buffer;   /*< Pointer to the array */
 } vec_t;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/** The default capacity of the vector if no initializing elements have been
+ *  provided. */
+#ifndef DEFAULT_VEC_CAPACITY
+#define DEFAULT_VEC_CAPACITY (size_t)8
+#endif
 
 /**
  * @brief Creates a new vector initialized with the given elements.
@@ -36,6 +47,15 @@ vec_t* vec_new(bool own_contents, size_t num_elements, ...);
  * @param free_contents Whether the contents of the vector should also be freed.
  */
 void vec_free(vec_t* p_vec);
+
+/**
+ * @brief Calls free on a range of pointers in an array.
+ *
+ * @param p_buffer Pointer to the array.
+ * @param start_idx The index at which the process will start.
+ * @param end_idx The index at which the process will end.
+ */
+void vec_free_range(void** p_buffer, size_t start_idx, size_t end_idx);
 
 /**
  * @brief Returns the number of items in the vector.
@@ -112,7 +132,7 @@ void* vec_at(vec_t* p_vec, size_t index);
  * @param index The index of the element to set.
  * @param data The new data for the indexed element.
  */
-void vec_set(vec_t* p_vec, size_t index, void* data);
+bool vec_set(vec_t* p_vec, size_t index, void* data);
 
 /**
  * @brief Inserts the provided elements at the given index.
@@ -122,7 +142,7 @@ void vec_set(vec_t* p_vec, size_t index, void* data);
  * @param num_elements The number of elements to insert.
  * @param ... The elements to insert.
  */
-void vec_insert(vec_t* p_vec, size_t index, size_t num_elements, ...);
+bool vec_insert(vec_t* p_vec, size_t index, size_t num_elements, ...);
 
 /**
  * @brief Erases elements from the vector that fall into the given range.
@@ -130,8 +150,10 @@ void vec_insert(vec_t* p_vec, size_t index, size_t num_elements, ...);
  * @param p_vec Pointer to the vector.
  * @param start_idx The start of the range.
  * @param end_idx The end of the range.
+ *
+ * @return Whether the operation was successful.
  */
-void vec_erase(vec_t* p_vec, size_t start_idx, size_t end_idx);
+bool vec_erase(vec_t* p_vec, size_t start_idx, size_t end_idx);
 
 /**
  * @brief Pushes the provided element on to the back of the vector.
@@ -156,5 +178,9 @@ void* vec_pop_back(vec_t* p_vec);
  * @param p_vec Pointer to the vector.
  */
 void vec_clear(vec_t* p_vec);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* VEC_H */
