@@ -35,11 +35,6 @@ namespace {
     //-------------------------------------------------------------------------
     // Test buf_free function
     //-------------------------------------------------------------------------
-    TEST(Verify_buf_free_does_nothing_when_pointer_is_NULL)
-    {
-        buf_free( NULL, 0 );
-    }
-
     TEST(Verify_buf_free_frees_the_buffer)
     {
         buf_free( buf_new(5), 0 );
@@ -48,11 +43,6 @@ namespace {
     //-------------------------------------------------------------------------
     // Test buf_size function
     //-------------------------------------------------------------------------
-    TEST(Verify_buf_size_should_return_0_when_passed_NULL)
-    {
-        CHECK( 0 == buf_size(NULL) );
-    }
-
     TEST(Verify_buf_size_should_return_the_size_of_the_buffer)
     {
         buf_t* buf = buf_new(5);
@@ -63,11 +53,6 @@ namespace {
     //-------------------------------------------------------------------------
     // Test buf_empty function
     //-------------------------------------------------------------------------
-    TEST(Verify_buf_empty_returns_1_when_passed_NULL)
-    {
-        CHECK( 1 == buf_empty( NULL ) );
-    }
-
     TEST(Verify_buf_empty_returns_1_when_buffer_is_empty)
     {
         buf_t buf = { NULL, 5, 1, 1 };
@@ -83,11 +68,6 @@ namespace {
     //-------------------------------------------------------------------------
     // Test buf_full function
     //-------------------------------------------------------------------------
-    TEST(Verify_buf_full_returns_1_if_passed_null)
-    {
-        CHECK( 1 == buf_full(NULL) );
-    }
-
     TEST(Verify_buf_full_returns_1_if_buffer_is_full)
     {
         buf_t buf = { NULL, 5, 1, 6 };
@@ -109,11 +89,6 @@ namespace {
     //-------------------------------------------------------------------------
     // Test buf_clear function
     //-------------------------------------------------------------------------
-    TEST(Verify_buf_clear_does_nothing_when_passed_null)
-    {
-        buf_clear(NULL,0);
-    }
-
     TEST(Verify_buf_clears_the_buffer)
     {
         buf_t buf = { NULL, 5, 1, 5 };
@@ -136,11 +111,6 @@ namespace {
     //-------------------------------------------------------------------------
     // Test buf_read function
     //-------------------------------------------------------------------------
-    TEST(Verify_buf_read_should_return_NULL_if_passed_NULL)
-    {
-        CHECK( NULL == buf_read(NULL) );
-    }
-
     TEST(Verify_buf_read_should_return_NULL_if_buffer_is_empty)
     {
         buf_t* buf = buf_new(3);
@@ -161,11 +131,6 @@ namespace {
     //-------------------------------------------------------------------------
     // Test buf_write function
     //-------------------------------------------------------------------------
-    TEST(Verify_buf_write_should_return_0_if_passed_NULL)
-    {
-        CHECK( 0 == buf_write(NULL,(void*)0x1234) );
-    }
-
     TEST(Verify_buf_write_should_return_0_if_buffer_is_full)
     {
         buf_t buf = { NULL, 3, 0, 3 };

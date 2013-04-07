@@ -13,7 +13,6 @@ project "cds"
     language "C"
     location "build"
     files { "source/**.*" }
-    buildflags { "extra-warnings", "fatal-warnings", "no-symbols", "optimize" }
 
 project "tests"
     kind "ConsoleApp"
