@@ -19,126 +19,96 @@ sll_node_t* sll_new_node(void* contents)
 
 void sll_free(sll_t* list, int free_contents)
 {
-    if( NULL != list )
+    sll_node_t* node = list->head;
+    while( NULL != node )
     {
-        sll_node_t* node = list->head;
-        while( NULL != node )
-        {
-            sll_node_t* next = node->next;
-            sll_free_node( node, free_contents );
-            node = next;
-        }
-        free( list );
+        sll_node_t* next = node->next;
+        sll_free_node( node, free_contents );
+        node = next;
     }
+    free( list );
 }
 
 void sll_free_node(sll_node_t* node, int free_contents)
 {
-    if( NULL != node )
+    if( free_contents )
     {
-        if( 1 == free_contents )
-        {
-            free( node->contents );
-        }
-        free( node );
+        free( node->contents );
     }
+    free( node );
 }
 
 sll_node_t* sll_front( sll_t* list )
 {
-    sll_node_t* node = NULL;
-    if( NULL != list )
-    {
-        node = list->head;
-    }
-    return node;
+    return list->head;
 }
 
 sll_node_t* sll_back( sll_t* list )
 {
-    sll_node_t* node = NULL;
-    if( NULL != list )
-    {
-        node = list->tail;
-    }
-    return node;
+    return list->tail;
 }
 
 unsigned int sll_size(sll_t* list)
 {
     unsigned int length = 0;
-    if( NULL != list)
+    sll_node_t* node = list->head;
+    while( NULL != node )
     {
-        sll_node_t* node = list->head;
-        while( NULL != node )
-        {
-            node = node->next;
-            length++;
-        }
+        node = node->next;
+        length++;
     }
     return length;
 }
 
 int sll_empty(sll_t* list)
 {
-    return ((NULL == list) || ((NULL == list->head) && (NULL == list->tail)));
+    return ((NULL == list->head) && (NULL == list->tail));
 }
 
 
 sll_node_t* sll_at(sll_t* list, unsigned int index)
 {
     sll_node_t* node = NULL;
-    if( NULL != list )
+    unsigned int cur_index = 0;
+    sll_node_t* cur_node = list->head;
+    while( NULL != cur_node )
     {
-        unsigned int cur_index = 0;
-        sll_node_t* cur_node = list->head;
-        while( NULL != cur_node )
+        if( cur_index == index )
         {
-            if( cur_index == index )
-            {
-                node = cur_node;
-                break;
-            }
-            cur_node = cur_node->next;
-            cur_index++;
+            node = cur_node;
+            break;
         }
+        cur_node = cur_node->next;
+        cur_index++;
     }
     return node;
 }
 
 sll_node_t* sll_push_front( sll_t* list, void* contents )
 {
-    sll_node_t* node = NULL;
-    if( NULL != list )
+    sll_node_t* node = sll_new_node( contents );
+    node->next = list->head;
+    list->head = node;
+    if( NULL == list->tail )
     {
-        node = sll_new_node( contents );
-        node->next = list->head;
-        list->head = node;
-        if( NULL == list->tail )
-        {
-            list->tail = node;
-        }
+        list->tail = node;
     }
     return node;
 }
 
 sll_node_t* sll_push_back( sll_t* list, void* contents )
 {
-    sll_node_t* node = NULL;
-    if( NULL != list )
+    sll_node_t* node = sll_new_node( contents );
+    node->next = NULL;
+    if( NULL == list->tail )
     {
-        node = sll_new_node( contents );
-        node->next = NULL;
-        if( NULL == list->tail )
-        {
-            list->head = node;
-            list->tail = node;
-        }
-        else
-        {
-            list->tail->next = node;
-            list->tail = node;
-        }
+        list->head = node;
+        list->tail = node;
+    }
+    else
+    {
+        list->tail->next = node;
+        list->tail = node;
     }
     return node;
 }
@@ -146,7 +116,7 @@ sll_node_t* sll_push_back( sll_t* list, void* contents )
 sll_node_t* sll_pop_front( sll_t* list )
 {
     sll_node_t* node = NULL;
-    if( (NULL != list) && (NULL != list->head) )
+    if( NULL != list->head )
     {
         node = list->head;
         list->head = node->next;
@@ -161,25 +131,22 @@ sll_node_t* sll_pop_front( sll_t* list )
 sll_node_t* sll_pop_back( sll_t* list )
 {
     sll_node_t* node = NULL;
-    if( NULL != list )
+    if ( list->head == list->tail )
     {
-        if ( list->head == list->tail )
+        node = list->head;
+        list->head = NULL;
+        list->tail = NULL;
+    }
+    else
+    {
+        sll_node_t* next_tail = list->head;
+        while( next_tail->next != list->tail )
         {
-            node = list->head;
-            list->head = NULL;
-            list->tail = NULL;
+            next_tail = next_tail->next;
         }
-        else
-        {
-            sll_node_t* next_tail = list->head;
-            while( next_tail->next != list->tail )
-            {
-                next_tail = next_tail->next;
-            }
-            node = next_tail->next;
-            next_tail->next = NULL;
-            list->tail = next_tail;
-        }
+        node = next_tail->next;
+        next_tail->next = NULL;
+        list->tail = next_tail;
     }
     return node;
 }
@@ -243,19 +210,15 @@ sll_node_t* sll_delete( sll_t* list, unsigned int index, int free_contents)
 
 sll_t* sll_clear(sll_t* list, int free_contents)
 {
-    if(NULL != list)
+    sll_node_t* node = list->head;
+    while(NULL != node)
     {
-        sll_node_t* node = list->head;
-        while(NULL != node)
-        {
-            sll_node_t* next = node->next;
-            sll_free_node(node,free_contents);
-            node = next;
-        }
-        list->head = NULL;
-        list->tail = NULL;
+        sll_node_t* next = node->next;
+        sll_free_node(node,free_contents);
+        node = next;
     }
+    list->head = NULL;
+    list->tail = NULL;
     return list;
 }
-
 

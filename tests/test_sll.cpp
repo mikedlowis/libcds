@@ -39,11 +39,6 @@ namespace {
     //-------------------------------------------------------------------------
     // Test sll_free function
     //-------------------------------------------------------------------------
-    TEST(Verify_sll_free_does_nothing_on_null_pointer)
-    {
-        sll_free( NULL, 0 );
-    }
-
     TEST(Verify_sll_free_frees_the_given_empty_list)
     {
         sll_t* list = sll_new();
@@ -70,11 +65,6 @@ namespace {
     //-------------------------------------------------------------------------
     // Test sll_free_node function
     //-------------------------------------------------------------------------
-    TEST(Verify_sll_free_node_does_nothing_on_null_pointer)
-    {
-        sll_free_node( NULL, 0 );
-    }
-
     TEST(Verify_sll_free_node_frees_the_given_node)
     {
         sll_node_t* node = sll_new_node( NULL );
@@ -91,11 +81,6 @@ namespace {
     //-------------------------------------------------------------------------
     // Test sll_front function
     //-------------------------------------------------------------------------
-    TEST(Verify_sll_front_returns_NULL_if_list_is_NULL)
-    {
-        CHECK( NULL == sll_front( NULL ) );
-    }
-
     TEST(Verify_sll_front_returns_NULL_if_list_is_empty)
     {
         sll_t list = { NULL, NULL };
@@ -113,11 +98,6 @@ namespace {
     //-------------------------------------------------------------------------
     // Test sll_back function
     //-------------------------------------------------------------------------
-    TEST(Verify_sll_back_returns_NULL_if_list_is_NULL)
-    {
-        CHECK( NULL == sll_back( NULL ) );
-    }
-
     TEST(Verify_sll_back_returns_NULL_if_list_is_empty)
     {
         sll_t list = { NULL, NULL };
@@ -135,11 +115,6 @@ namespace {
     //-------------------------------------------------------------------------
     // Test sll_size function
     //-------------------------------------------------------------------------
-    TEST(Verify_sll_size_returns_0_when_passed_null_pointer)
-    {
-        CHECK( 0 == sll_size(NULL) );
-    }
-
     TEST(Verify_sll_size_returns_0_when_list_is_empty)
     {
         sll_t* list = sll_new();
@@ -167,11 +142,6 @@ namespace {
     //-------------------------------------------------------------------------
     // Test sll_empty function
     //-------------------------------------------------------------------------
-    TEST(Verify_sll_empty_returns_true_when_passed_null_pointer)
-    {
-        CHECK( 1 == sll_empty( NULL ) );
-    }
-
     TEST(Verify_sll_empty_returns_true_when_head_and_tail_are_null)
     {
         sll_t list = { NULL, NULL };
@@ -193,11 +163,6 @@ namespace {
     //-------------------------------------------------------------------------
     // Test sll_at function
     //-------------------------------------------------------------------------
-    TEST(Verify_sll_at_returns_NULL_on_null_pointer)
-    {
-        CHECK( NULL == sll_at( NULL, 0 ) );
-    }
-
     TEST(Verify_sll_at_returns_NULL_when_list_is_empty)
     {
         sll_t list = { NULL, NULL };
@@ -243,11 +208,6 @@ namespace {
     //-------------------------------------------------------------------------
     // Test sll_push_front function
     //-------------------------------------------------------------------------
-    TEST(Verify_sll_push_front_returns_null_if_list_is_null)
-    {
-        CHECK( NULL == sll_push_front( NULL, NULL ) );
-    }
-
     TEST(Verify_sll_push_front_pushes_to_empty_list)
     {
         sll_t list = { NULL, NULL };
@@ -274,11 +234,6 @@ namespace {
     //-------------------------------------------------------------------------
     // Test sll_push_back function
     //-------------------------------------------------------------------------
-    TEST(Verify_sll_push_back_returns_null_if_list_is_null)
-    {
-        CHECK( NULL == sll_push_back( NULL, NULL ) );
-    }
-
     TEST(Verify_sll_push_back_pushes_to_empty_list)
     {
         sll_t list = { NULL, NULL };
@@ -305,11 +260,6 @@ namespace {
     //-------------------------------------------------------------------------
     // Test sll_pop_front function
     //-------------------------------------------------------------------------
-    TEST(Verify_pop_front_returns_null_if_list_is_null)
-    {
-        CHECK( NULL == sll_pop_front( NULL ) );
-    }
-
     TEST(Verify_pop_front_returns_null_if_list_is_empty)
     {
         sll_t list = { NULL, NULL };
@@ -349,11 +299,6 @@ namespace {
     //-------------------------------------------------------------------------
     // Test sll_pop_back function
     //-------------------------------------------------------------------------
-    TEST(Verify_pop_back_does_nothing_if_list_is_null)
-    {
-        CHECK( NULL == sll_pop_back( NULL ) );
-    }
-
     TEST(Verify_pop_back_does_nothing_if_list_is_empty)
     {
         sll_t list = { NULL, NULL };
@@ -393,11 +338,6 @@ namespace {
     //-------------------------------------------------------------------------
     // Test sll_insert function
     //-------------------------------------------------------------------------
-    TEST(Verify_insert_does_nothing_if_list_is_null)
-    {
-        CHECK( NULL == sll_insert( NULL, 0, (void*)0x1234 ) );
-    }
-
     TEST(Verify_insert_should_insert_into_empty_list)
     {
         sll_t list = { NULL, NULL };
@@ -459,11 +399,6 @@ namespace {
     //-------------------------------------------------------------------------
     // Test sll_delete function
     //-------------------------------------------------------------------------
-    TEST(Verify_delete_does_nothing_if_list_is_null)
-    {
-        CHECK( NULL == sll_delete( NULL, 0, 0 ) );
-    }
-
     TEST(Verify_delete_does_nothing_if_list_is_empty)
     {
         sll_t list = { NULL, NULL };
@@ -521,11 +456,6 @@ namespace {
     //-------------------------------------------------------------------------
     // Test sll_clear function
     //-------------------------------------------------------------------------
-    TEST(Verify_sll_clear_does_nothing_if_passed_a_NULL_pointer)
-    {
-        CHECK( NULL == sll_clear(NULL,0) );
-    }
-
     TEST(Verify_sll_clear_does_nothing_for_an_empty_list)
     {
         sll_t* list = sll_new();
