@@ -125,6 +125,26 @@ bool vec_set(vec_t* p_vec, size_t index, void* data)
 bool vec_insert(vec_t* p_vec, size_t index, size_t num_elements, ...)
 {
     bool ret = false;
+    va_list elements;
+    size_t new_size;
+    if ((index < p_vec->size) && (num_elements > 0))
+    {
+        /* Resize the vector to fit the new contents */
+        vec_resize( p_vec, p_vec->size + num_elements, NULL );
+        /* Move the displaced items to the end */
+        memcpy( &(p_vec->p_buffer[index + num_elements]),
+                &(p_vec->p_buffer[index]),
+                sizeof(void*) * (p_vec->size - index));
+        /* insert the new items */
+        va_start(elements, num_elements);
+        new_size = index + num_elements;
+        for (index; index < new_size; index++)
+        {
+            p_vec->p_buffer[index] = va_arg(elements,void*);
+        }
+        va_end(elements);
+        ret = true;
+    }
     return ret;
 }
 

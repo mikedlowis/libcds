@@ -225,6 +225,44 @@ namespace {
     //-------------------------------------------------------------------------
     // Test vec_insert function
     //-------------------------------------------------------------------------
+    TEST(Verify_vec_insert_should_do_nothing_if_index_out_of_range)
+    {
+        vec_t vector = { false, 2, 3, NULL };
+        CHECK(false == vec_insert(&vector,2,0));
+    }
+
+    TEST(Verify_vec_insert_should_do_nothing_if_num_elements_is_0)
+    {
+        vec_t vector = { false, 2, 3, NULL };
+        CHECK(false == vec_insert(&vector,0,0));
+    }
+
+    TEST(Verify_vec_insert_should_insert_items_at_the_given_index)
+    {
+        vec_t* p_vec = vec_new(false,2,0,1);
+        CHECK(true == vec_insert(p_vec,1,2,2,3));
+        CHECK(4 == p_vec->size);
+        CHECK(4 == p_vec->capacity);
+        CHECK((void*)0 == p_vec->p_buffer[0]);
+        CHECK((void*)2 == p_vec->p_buffer[1]);
+        CHECK((void*)3 == p_vec->p_buffer[2]);
+        CHECK((void*)1 == p_vec->p_buffer[3]);
+        vec_free( p_vec );
+    }
+
+    TEST(Verify_vec_insert_should_insert_items_at_the_beginning)
+    {
+        vec_t* p_vec = vec_new(false,2,0,1);
+        CHECK(true == vec_insert(p_vec,0,2,2,3));
+        CHECK(4 == p_vec->size);
+        CHECK(4 == p_vec->capacity);
+        CHECK((void*)2 == p_vec->p_buffer[0]);
+        CHECK((void*)3 == p_vec->p_buffer[1]);
+        CHECK((void*)0 == p_vec->p_buffer[2]);
+        CHECK((void*)1 == p_vec->p_buffer[3]);
+        vec_free( p_vec );
+    }
+
     //-------------------------------------------------------------------------
     // Test vec_erase function
     //-------------------------------------------------------------------------
