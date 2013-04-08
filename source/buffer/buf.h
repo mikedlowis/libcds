@@ -11,6 +11,8 @@
 extern "C" {
 #endif
 
+#include <stdbool.h>
+
 /** A structure defining a circular buffer */
 typedef struct {
     void** buffer; /**< Pointer to the buffer */
@@ -34,7 +36,7 @@ buf_t* buf_new(size_t size);
  * @param buf           The buffer to free.
  * @param free_contents Whether unread contents should also be freed.
  */
-void buf_free(buf_t* buf, int free_contents);
+void buf_free(buf_t* buf, bool free_contents);
 
 /**
  * @brief Returns the size of the provided buffer.
@@ -52,7 +54,7 @@ size_t buf_size(buf_t* buf);
  *
  * @return 1 if the buffer is empty 0 otherwise.
  */
-int buf_empty(buf_t* buf);
+bool buf_empty(buf_t* buf);
 
 /**
  * @brief Returns whether the buffer is full.
@@ -61,7 +63,7 @@ int buf_empty(buf_t* buf);
  *
  * @return 1 if the buffer is full 0 otherwise.
  */
-int buf_full(buf_t* buf);
+bool buf_full(buf_t* buf);
 
 /**
  * @brief Clears all unread data from the provided buffer.
@@ -69,7 +71,7 @@ int buf_full(buf_t* buf);
  * @param buf           The buffer to clear.
  * @param free_contents Whether the unread contents should also be freed.
  */
-void buf_clear(buf_t* buf, int free_contents);
+void buf_clear(buf_t* buf, bool free_contents);
 
 /**
  * @brief Reads an item from the provided buffer.
@@ -88,7 +90,7 @@ void* buf_read(buf_t* buf);
  *
  * @return 1 on successful write 0 otherwise.
  */
-int buf_write(buf_t* buf, void* data);
+bool buf_write(buf_t* buf, void* data);
 
 #ifdef __cplusplus
 }

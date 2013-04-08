@@ -21,7 +21,7 @@ buf_t* buf_new(size_t size)
     return buf;
 }
 
-void buf_free(buf_t* buf, int free_contents)
+void buf_free(buf_t* buf, bool free_contents)
 {
     buf_clear(buf,free_contents);
     free( buf->buffer );
@@ -33,19 +33,19 @@ size_t buf_size(buf_t* buf)
     return (size_t)buf->size;
 }
 
-int buf_empty(buf_t* buf)
+bool buf_empty(buf_t* buf)
 {
     return (buf->reads == buf->writes);
 }
 
-int buf_full(buf_t* buf)
+bool buf_full(buf_t* buf)
 {
     int full = !buf_empty(buf);
     full &= ((buf->reads % buf->size) == (buf->writes % buf->size));
     return full;
 }
 
-void buf_clear(buf_t* buf, int free_contents)
+void buf_clear(buf_t* buf, bool free_contents)
 {
     if (free_contents)
     {
@@ -69,14 +69,14 @@ void* buf_read(buf_t* buf)
     return data;
 }
 
-int buf_write(buf_t* buf, void* data)
+bool buf_write(buf_t* buf, void* data)
 {
-    int success = 0;
+    bool success = false;
     if (!buf_full(buf))
     {
         buf->buffer[ buf->writes % buf->size ] = data;
         buf->writes++;
-        success = 1;
+        success = true;
     }
     return success;
 }

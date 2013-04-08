@@ -17,7 +17,7 @@ sll_node_t* sll_new_node(void* contents)
     return node;
 }
 
-void sll_free(sll_t* list, int free_contents)
+void sll_free(sll_t* list, bool free_contents)
 {
     sll_node_t* node = list->head;
     while( NULL != node )
@@ -29,7 +29,7 @@ void sll_free(sll_t* list, int free_contents)
     free( list );
 }
 
-void sll_free_node(sll_node_t* node, int free_contents)
+void sll_free_node(sll_node_t* node, bool free_contents)
 {
     if( free_contents )
     {
@@ -48,9 +48,9 @@ sll_node_t* sll_back( sll_t* list )
     return list->tail;
 }
 
-unsigned int sll_size(sll_t* list)
+size_t sll_size(sll_t* list)
 {
-    unsigned int length = 0;
+    size_t length = 0;
     sll_node_t* node = list->head;
     while( NULL != node )
     {
@@ -60,16 +60,16 @@ unsigned int sll_size(sll_t* list)
     return length;
 }
 
-int sll_empty(sll_t* list)
+bool sll_empty(sll_t* list)
 {
     return ((NULL == list->head) && (NULL == list->tail));
 }
 
 
-sll_node_t* sll_at(sll_t* list, unsigned int index)
+sll_node_t* sll_at(sll_t* list, size_t index)
 {
     sll_node_t* node = NULL;
-    unsigned int cur_index = 0;
+    size_t cur_index = 0;
     sll_node_t* cur_node = list->head;
     while( NULL != cur_node )
     {
@@ -151,7 +151,7 @@ sll_node_t* sll_pop_back( sll_t* list )
     return node;
 }
 
-sll_node_t* sll_insert( sll_t* list, unsigned int index, void* contents)
+sll_node_t* sll_insert( sll_t* list, size_t index, void* contents)
 {
     sll_node_t* new_node = NULL;
     if( 0 == index )
@@ -176,7 +176,7 @@ sll_node_t* sll_insert( sll_t* list, unsigned int index, void* contents)
     return new_node;
 }
 
-sll_node_t* sll_delete( sll_t* list, unsigned int index, int free_contents)
+sll_node_t* sll_delete( sll_t* list, size_t index, bool free_contents)
 {
     sll_node_t* node = NULL;
 
@@ -208,7 +208,7 @@ sll_node_t* sll_delete( sll_t* list, unsigned int index, int free_contents)
     return node;
 }
 
-sll_t* sll_clear(sll_t* list, int free_contents)
+sll_t* sll_clear(sll_t* list, bool free_contents)
 {
     sll_node_t* node = list->head;
     while(NULL != node)

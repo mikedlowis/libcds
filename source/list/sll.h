@@ -5,6 +5,8 @@
 extern "C" {
 #endif
 
+#include <stdbool.h>
+
 /** A linked list node. */
 typedef struct sll_node_t
 {
@@ -48,7 +50,7 @@ sll_node_t* sll_new_node(void* contents);
  * @param list          The list to be freed.
  * @param free_contents Whether or not to also free the contents of each node.
  **/
-void sll_free(sll_t* list, int free_contents);
+void sll_free(sll_t* list, bool free_contents);
 
 /**
  * @brief Frees all memory used by a node.
@@ -59,7 +61,7 @@ void sll_free(sll_t* list, int free_contents);
  * @param node
  * @param free_contents
  */
-void sll_free_node(sll_node_t* node, int free_contents);
+void sll_free_node(sll_node_t* node, bool free_contents);
 
 /**
  * @brief Returns pointer to first node in the list
@@ -89,7 +91,7 @@ sll_node_t* sll_back( sll_t* list );
  *
  * @return The number of elements in the list.
  **/
-unsigned int sll_size(sll_t* list);
+size_t sll_size(sll_t* list);
 
 /**
  * @brief Returns whether the list is empty or not.
@@ -98,7 +100,7 @@ unsigned int sll_size(sll_t* list);
  *
  * @return Whether the list is empty, 1 for true and 0 for false.
  */
-int sll_empty(sll_t* list);
+bool sll_empty(sll_t* list);
 
 /**
  * @brief   Return the node at the specified index in a linked list.
@@ -111,7 +113,7 @@ int sll_empty(sll_t* list);
  *
  * @return A pointer to the node at the supplied index, NULL if out of range.
  **/
-sll_node_t* sll_at(sll_t* list, unsigned int index);
+sll_node_t* sll_at(sll_t* list, size_t index);
 
 /**
  * @brief Adds a new node to the front of an existing linked list.
@@ -176,7 +178,7 @@ sll_node_t* sll_pop_back( sll_t* list );
  *
  * @return Pointer to the newly inserted node, NULL if index is out of range.
  **/
-sll_node_t* sll_insert( sll_t* list, unsigned int index, void* contents);
+sll_node_t* sll_insert( sll_t* list, size_t index, void* contents);
 
 /**
  * @brief Deletes a node from the supplied list.
@@ -192,7 +194,7 @@ sll_node_t* sll_insert( sll_t* list, unsigned int index, void* contents);
  *
  * @return Pointer to the node that is now at the supplied index.
  **/
-sll_node_t* sll_delete( sll_t* list, unsigned int index, int free_contents);
+sll_node_t* sll_delete( sll_t* list, size_t index, bool free_contents);
 
 /**
  * @brief Deletes all elements in the provided list
@@ -202,7 +204,7 @@ sll_node_t* sll_delete( sll_t* list, unsigned int index, int free_contents);
  *
  * @return A pointer to the cleared list.
  */
-sll_t* sll_clear(sll_t* list, int free_contents);
+sll_t* sll_clear(sll_t* list, bool free_contents);
 
 #ifdef __cplusplus
 }
