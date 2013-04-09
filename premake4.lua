@@ -19,7 +19,7 @@ project "tests"
     language "C++"
     location "build"
     links { "UnitTest++", "cds" }
-    includedirs { "source/**", "tools/UnitTest++/**" }
+    includedirs { "source/*", "tools/UnitTest++/**" }
     files { "tests/**.c*" }
     postbuildcommands { "./tests.exe" }
 
