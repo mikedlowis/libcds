@@ -92,6 +92,15 @@ bool vec_empty(vec_t* p_vec);
 void vec_resize(vec_t* p_vec, size_t size, void* data);
 
 /**
+ * @brief Returns the next power of two that is not less than the desired size.
+ *
+ * @param req_size The desired size of the vector.
+ *
+ * @return The necessary capacity.
+ */
+size_t vec_next_capacity(size_t req_size);
+
+/**
  * @brief Shrinks the vector's capacity to equal it's size.
  *
  * @param p_vec Pointer to the vector.
