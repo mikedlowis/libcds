@@ -1,4 +1,5 @@
-build/*/
 cscope.out
 tags
 project.vim
+Makefile
+build/

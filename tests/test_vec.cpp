@@ -145,7 +145,7 @@ namespace {
 
         CHECK( false == p_vec->own_contents );
         CHECK( 5 == p_vec->size );
-        CHECK( 5 == p_vec->capacity );
+        CHECK( 8 == p_vec->capacity );
         CHECK( (void*)0x2A == p_vec->p_buffer[3] );
         CHECK( (void*)0x2A == p_vec->p_buffer[4] );
 
@@ -378,4 +378,26 @@ namespace {
         vec_clear( &vector );
         CHECK(0 == vector.size);
     }
+
+    //TEST(foo)
+    //{
+    //    size_t next_power = 9;
+    //    size_t num_bits = sizeof(size_t) * 8;
+    //    size_t bit_n;
+
+    //    next_power--;
+    //    for (bit_n = 1; bit_n < num_bits; bit_n = bit_n << 1)
+    //    {
+    //        next_power = next_power | (next_power >> bit_n);
+    //    }
+    //    next_power++;
+
+    //    std::cout << next_power << std::endl;
+
+    //    //int n = 7;
+    //    //int exp = 0;
+    //    //while(n>1) { n = n>>1; exp++; }
+    //    //while(exp>=0) { n = n<<1; exp--; }
+    //    //std::cout << n << " " << exp << std::endl;
+    //}
 }
