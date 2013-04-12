@@ -1,35 +1,35 @@
 #include <stdlib.h>
-#include "sll.h"
+#include "list.h"
 
-sll_t* sll_new(void)
+list_t* list_new(void)
 {
-    sll_t* list = (sll_t*)malloc( sizeof( sll_t ) );
+    list_t* list = (list_t*)malloc( sizeof( list_t ) );
     list->head = NULL;
     list->tail = NULL;
     return list;
 }
 
-sll_node_t* sll_new_node(void* contents)
+list_node_t* list_new_node(void* contents)
 {
-    sll_node_t* node = (sll_node_t*)malloc( sizeof( sll_node_t ) );
+    list_node_t* node = (list_node_t*)malloc( sizeof( list_node_t ) );
     node->contents = contents;
     node->next = NULL;
     return node;
 }
 
-void sll_free(sll_t* list, bool free_contents)
+void list_free(list_t* list, bool free_contents)
 {
-    sll_node_t* node = list->head;
+    list_node_t* node = list->head;
     while( NULL != node )
     {
-        sll_node_t* next = node->next;
-        sll_free_node( node, free_contents );
+        list_node_t* next = node->next;
+        list_free_node( node, free_contents );
         node = next;
     }
     free( list );
 }
 
-void sll_free_node(sll_node_t* node, bool free_contents)
+void list_free_node(list_node_t* node, bool free_contents)
 {
     if( free_contents )
     {
@@ -38,20 +38,20 @@ void sll_free_node(sll_node_t* node, bool free_contents)
     free( node );
 }
 
-sll_node_t* sll_front( sll_t* list )
+list_node_t* list_front( list_t* list )
 {
     return list->head;
 }
 
-sll_node_t* sll_back( sll_t* list )
+list_node_t* list_back( list_t* list )
 {
     return list->tail;
 }
 
-size_t sll_size(sll_t* list)
+size_t list_size(list_t* list)
 {
     size_t length = 0;
-    sll_node_t* node = list->head;
+    list_node_t* node = list->head;
     while( NULL != node )
     {
         node = node->next;
@@ -60,17 +60,17 @@ size_t sll_size(sll_t* list)
     return length;
 }
 
-bool sll_empty(sll_t* list)
+bool list_empty(list_t* list)
 {
     return ((NULL == list->head) && (NULL == list->tail));
 }
 
 
-sll_node_t* sll_at(sll_t* list, size_t index)
+list_node_t* list_at(list_t* list, size_t index)
 {
-    sll_node_t* node = NULL;
+    list_node_t* node = NULL;
     size_t cur_index = 0;
-    sll_node_t* cur_node = list->head;
+    list_node_t* cur_node = list->head;
     while( NULL != cur_node )
     {
         if( cur_index == index )
@@ -84,9 +84,9 @@ sll_node_t* sll_at(sll_t* list, size_t index)
     return node;
 }
 
-sll_node_t* sll_push_front( sll_t* list, void* contents )
+list_node_t* list_push_front( list_t* list, void* contents )
 {
-    sll_node_t* node = sll_new_node( contents );
+    list_node_t* node = list_new_node( contents );
     node->next = list->head;
     list->head = node;
     if( NULL == list->tail )
@@ -96,9 +96,9 @@ sll_node_t* sll_push_front( sll_t* list, void* contents )
     return node;
 }
 
-sll_node_t* sll_push_back( sll_t* list, void* contents )
+list_node_t* list_push_back( list_t* list, void* contents )
 {
-    sll_node_t* node = sll_new_node( contents );
+    list_node_t* node = list_new_node( contents );
     node->next = NULL;
     if( NULL == list->tail )
     {
@@ -113,9 +113,9 @@ sll_node_t* sll_push_back( sll_t* list, void* contents )
     return node;
 }
 
-sll_node_t* sll_pop_front( sll_t* list )
+list_node_t* list_pop_front( list_t* list )
 {
-    sll_node_t* node = NULL;
+    list_node_t* node = NULL;
     if( NULL != list->head )
     {
         node = list->head;
@@ -128,9 +128,9 @@ sll_node_t* sll_pop_front( sll_t* list )
     return node;
 }
 
-sll_node_t* sll_pop_back( sll_t* list )
+list_node_t* list_pop_back( list_t* list )
 {
-    sll_node_t* node = NULL;
+    list_node_t* node = NULL;
     if ( list->head == list->tail )
     {
         node = list->head;
@@ -139,7 +139,7 @@ sll_node_t* sll_pop_back( sll_t* list )
     }
     else
     {
-        sll_node_t* next_tail = list->head;
+        list_node_t* next_tail = list->head;
         while( next_tail->next != list->tail )
         {
             next_tail = next_tail->next;
@@ -151,20 +151,20 @@ sll_node_t* sll_pop_back( sll_t* list )
     return node;
 }
 
-sll_node_t* sll_insert( sll_t* list, size_t index, void* contents)
+list_node_t* list_insert( list_t* list, size_t index, void* contents)
 {
-    sll_node_t* new_node = NULL;
+    list_node_t* new_node = NULL;
     if( 0 == index )
     {
-        new_node = sll_push_front( list, contents );
+        new_node = list_push_front( list, contents );
     }
     else
     {
-        sll_node_t* prev_node = sll_at( list, index - 1 );
+        list_node_t* prev_node = list_at( list, index - 1 );
         if( NULL != prev_node )
         {
-            sll_node_t* next_node = prev_node->next;
-            new_node = sll_new_node( contents );
+            list_node_t* next_node = prev_node->next;
+            new_node = list_new_node( contents );
             new_node->next = next_node;
             prev_node->next = new_node;
             if( NULL == next_node )
@@ -176,22 +176,22 @@ sll_node_t* sll_insert( sll_t* list, size_t index, void* contents)
     return new_node;
 }
 
-sll_node_t* sll_delete( sll_t* list, size_t index, bool free_contents)
+list_node_t* list_delete( list_t* list, size_t index, bool free_contents)
 {
-    sll_node_t* node = NULL;
+    list_node_t* node = NULL;
 
     if (0 == index)
     {
-        node = sll_pop_front(list);
+        node = list_pop_front(list);
         if (NULL != node)
         {
-            sll_free_node(node,free_contents);
-            node = sll_front(list);
+            list_free_node(node,free_contents);
+            node = list_front(list);
         }
     }
     else
     {
-        sll_node_t* prev = sll_at(list,index-1);
+        list_node_t* prev = list_at(list,index-1);
         node = (NULL == prev) ? NULL : prev->next;
         if (NULL != node)
         {
@@ -200,7 +200,7 @@ sll_node_t* sll_delete( sll_t* list, size_t index, bool free_contents)
             {
                 list->tail = prev;
             }
-            sll_free_node(node,free_contents);
+            list_free_node(node,free_contents);
             node = prev->next;
         }
     }
@@ -208,13 +208,13 @@ sll_node_t* sll_delete( sll_t* list, size_t index, bool free_contents)
     return node;
 }
 
-sll_t* sll_clear(sll_t* list, bool free_contents)
+list_t* list_clear(list_t* list, bool free_contents)
 {
-    sll_node_t* node = list->head;
+    list_node_t* node = list->head;
     while(NULL != node)
     {
-        sll_node_t* next = node->next;
-        sll_free_node(node,free_contents);
+        list_node_t* next = node->next;
+        list_free_node(node,free_contents);
         node = next;
     }
     list->head = NULL;

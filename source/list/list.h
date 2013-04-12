@@ -1,5 +1,5 @@
-#ifndef SLL_H
-#define SLL_H
+#ifndef LIST_H
+#define LIST_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -8,29 +8,29 @@ extern "C" {
 #include <stdbool.h>
 
 /** A linked list node. */
-typedef struct sll_node_t
+typedef struct list_node_t
 {
     /** Pointer to the contents the node */
     void* contents;
     /** Pointer to next node in the list. */
-    struct sll_node_t* next;
-} sll_node_t;
+    struct list_node_t* next;
+} list_node_t;
 
 /** A singly linked list */
-typedef struct sll_t
+typedef struct list_t
 {
     /** Pointer to the first element in the list */
-    sll_node_t* head;
+    list_node_t* head;
     /** Pointer to the last element in the list */
-    sll_node_t* tail;
-} sll_t;
+    list_node_t* tail;
+} list_t;
 
 /**
  * @brief Creates a new empty linked list.
  *
  * @return A pointer to the newly created list.
  **/
-extern sll_t* sll_new(void);
+extern list_t* list_new(void);
 
 /**
  * @brief Creates a new node with given contents.
@@ -39,7 +39,7 @@ extern sll_t* sll_new(void);
  *
  * @return Pointer to newly created node.
  */
-sll_node_t* sll_new_node(void* contents);
+list_node_t* list_new_node(void* contents);
 
 /**
  * @brief Frees all memory used by a linked list.
@@ -50,7 +50,7 @@ sll_node_t* sll_new_node(void* contents);
  * @param list          The list to be freed.
  * @param free_contents Whether or not to also free the contents of each node.
  **/
-void sll_free(sll_t* list, bool free_contents);
+void list_free(list_t* list, bool free_contents);
 
 /**
  * @brief Frees all memory used by a node.
@@ -61,7 +61,7 @@ void sll_free(sll_t* list, bool free_contents);
  * @param node
  * @param free_contents
  */
-void sll_free_node(sll_node_t* node, bool free_contents);
+void list_free_node(list_node_t* node, bool free_contents);
 
 /**
  * @brief Returns pointer to first node in the list
@@ -70,7 +70,7 @@ void sll_free_node(sll_node_t* node, bool free_contents);
  *
  * @return Pointer to the first element in the list.
  */
-sll_node_t* sll_front( sll_t* list );
+list_node_t* list_front( list_t* list );
 
 /**
  * @brief Returns pointer to the last element in the list.
@@ -79,7 +79,7 @@ sll_node_t* sll_front( sll_t* list );
  *
  * @return Pointer to the last element in the list.
  */
-sll_node_t* sll_back( sll_t* list );
+list_node_t* list_back( list_t* list );
 
 /**
  * @brief Returns the number of elements in the list.
@@ -91,7 +91,7 @@ sll_node_t* sll_back( sll_t* list );
  *
  * @return The number of elements in the list.
  **/
-size_t sll_size(sll_t* list);
+size_t list_size(list_t* list);
 
 /**
  * @brief Returns whether the list is empty or not.
@@ -100,7 +100,7 @@ size_t sll_size(sll_t* list);
  *
  * @return Whether the list is empty, 1 for true and 0 for false.
  */
-bool sll_empty(sll_t* list);
+bool list_empty(list_t* list);
 
 /**
  * @brief   Return the node at the specified index in a linked list.
@@ -113,7 +113,7 @@ bool sll_empty(sll_t* list);
  *
  * @return A pointer to the node at the supplied index, NULL if out of range.
  **/
-sll_node_t* sll_at(sll_t* list, size_t index);
+list_node_t* list_at(list_t* list, size_t index);
 
 /**
  * @brief Adds a new node to the front of an existing linked list.
@@ -126,7 +126,7 @@ sll_node_t* sll_at(sll_t* list, size_t index);
  *
  * @return Pointer to the newly added node.
  **/
-sll_node_t* sll_push_front( sll_t* list, void* contents );
+list_node_t* list_push_front( list_t* list, void* contents );
 
 /**
  * @brief Adds a new node to the end of an existing linked list.
@@ -139,7 +139,7 @@ sll_node_t* sll_push_front( sll_t* list, void* contents );
  *
  * @return Pointer to the newly added node.
  **/
-sll_node_t* sll_push_back( sll_t* list, void* contents );
+list_node_t* list_push_back( list_t* list, void* contents );
 
 /**
  * @brief Removes and returns a pointer to the first element of the list.
@@ -151,7 +151,7 @@ sll_node_t* sll_push_back( sll_t* list, void* contents );
  *
  * @return Pointer to the newly added node.
  **/
-sll_node_t* sll_pop_front( sll_t* list );
+list_node_t* list_pop_front( list_t* list );
 
 /**
  * @brief Removes and returns a pointer to the last element of the list.
@@ -163,7 +163,7 @@ sll_node_t* sll_pop_front( sll_t* list );
  *
  * @return Pointer to the newly added node.
  **/
-sll_node_t* sll_pop_back( sll_t* list );
+list_node_t* list_pop_back( list_t* list );
 
 /**
  * @brief Inserts a new node in a linked list at the specified index.
@@ -178,7 +178,7 @@ sll_node_t* sll_pop_back( sll_t* list );
  *
  * @return Pointer to the newly inserted node, NULL if index is out of range.
  **/
-sll_node_t* sll_insert( sll_t* list, size_t index, void* contents);
+list_node_t* list_insert( list_t* list, size_t index, void* contents);
 
 /**
  * @brief Deletes a node from the supplied list.
@@ -194,7 +194,7 @@ sll_node_t* sll_insert( sll_t* list, size_t index, void* contents);
  *
  * @return Pointer to the node that is now at the supplied index.
  **/
-sll_node_t* sll_delete( sll_t* list, size_t index, bool free_contents);
+list_node_t* list_delete( list_t* list, size_t index, bool free_contents);
 
 /**
  * @brief Deletes all elements in the provided list
@@ -204,10 +204,10 @@ sll_node_t* sll_delete( sll_t* list, size_t index, bool free_contents);
  *
  * @return A pointer to the cleared list.
  */
-sll_t* sll_clear(sll_t* list, bool free_contents);
+list_t* list_clear(list_t* list, bool free_contents);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif
+#endif /* LIST_H */
