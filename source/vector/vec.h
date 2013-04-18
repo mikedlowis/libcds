@@ -7,6 +7,7 @@
 #ifndef VEC_H
 #define VEC_H
 
+#include <string.h>
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stddef.h>

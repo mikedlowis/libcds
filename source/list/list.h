@@ -5,6 +5,7 @@
 extern "C" {
 #endif
 
+#include <string.h>
 #include <stdbool.h>
 
 /** A linked list node. */
@@ -30,7 +31,7 @@ typedef struct list_t
  *
  * @return A pointer to the newly created list.
  **/
-extern list_t* list_new(void);
+list_t* list_new(void);
 
 /**
  * @brief Creates a new node with given contents.

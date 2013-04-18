@@ -11,6 +11,7 @@
 extern "C" {
 #endif
 
+#include <string.h>
 #include <stdbool.h>
 
 /** A structure defining a circular buffer */
