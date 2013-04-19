@@ -1,6 +1,6 @@
 /**
     @file tree.h
-    @brief An implementation of a binary tree.
+    @brief An implementation of a binary search tree.
     $Revision$
     $HeadURL$
 */
@@ -139,7 +139,7 @@ void* tree_at(tree_t* tree, void* value);
  * @param tree The tree from which the value will be removed.
  * @param value Pointer to the value to erase.
  */
-void tree_erase(tree_t* tree, void* value);
+void tree_erase(tree_t* tree, void* value, bool free_value);
 
 /**
  * @brief Erase all values in the tree.
