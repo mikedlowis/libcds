@@ -42,28 +42,6 @@ extern list_t* list_new(void);
 list_node_t* list_new_node(void* contents);
 
 /**
- * @brief Frees all memory used by a linked list.
- *
- * This function loops through the supplied list and frees all nodes.
- * Also frees contents if free_contents is passed a non-zero value.
- *
- * @param list          The list to be freed.
- * @param free_contents Whether or not to also free the contents of each node.
- **/
-void list_free(list_t* list, bool free_contents);
-
-/**
- * @brief Frees all memory used by a node.
- *
- * This function frees all memory allocated to a node. Also frees contents if
- * the free_contents is 1.
- *
- * @param node
- * @param free_contents
- */
-void list_free_node(list_node_t* node, bool free_contents);
-
-/**
  * @brief Returns pointer to first node in the list
  *
  * @param list The list from which to retrieve elements.
@@ -147,7 +125,7 @@ list_node_t* list_push_back( list_t* list, void* contents );
  * This function removes the first node from the list and frees it's associated
  * memory.
  *
- * @param list          The lsit to operate on.
+ * @param list The lsit to operate on.
  *
  * @return Pointer to the newly added node.
  **/
@@ -159,7 +137,7 @@ list_node_t* list_pop_front( list_t* list );
  * This function removes the last node from the list and frees it's associated
  * memory.
  *
- * @param list          The list to operate on.
+ * @param list The list to operate on.
  *
  * @return Pointer to the newly added node.
  **/
@@ -185,26 +163,21 @@ list_node_t* list_insert( list_t* list, size_t index, void* contents);
  *
  * This function traverses the list to the desired index and frees the memory
  * allocated for that node. If the deleted node has a child then the child is
- * reattached to the deleted node's parent. If free_contents is passed a
- * non-zero value then the node's contents pointer is also freed.
+ * reattached to the deleted node's parent.
  *
  * @param list          The list to operate on.
  * @param index         The index of the node to delete.
- * @param free_contents Whether or not to also free the contents of the node.
  *
  * @return Pointer to the node that is now at the supplied index.
  **/
-list_node_t* list_delete( list_t* list, size_t index, bool free_contents);
+list_node_t* list_delete(list_t* list, size_t index);
 
 /**
  * @brief Deletes all elements in the provided list
  *
  * @param list          The list to be cleared
- * @param free_contents Whether or not to also free the contents of every node.
- *
- * @return A pointer to the cleared list.
  */
-list_t* list_clear(list_t* list, bool free_contents);
+void list_clear(list_t* list);
 
 #ifdef __cplusplus
 }

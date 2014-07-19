@@ -71,7 +71,7 @@ void vec_resize(vec_t* p_vec, size_t size, void* data)
     if (size > p_vec->size)
     {
         vec_reserve(p_vec,vec_next_capacity(size));
-        for (p_vec->size; p_vec->size < size; p_vec->size++)
+        for (; p_vec->size < size; p_vec->size++)
         {
             p_vec->p_buffer[ p_vec->size ] = data;
         }
@@ -155,7 +155,7 @@ bool vec_insert(vec_t* p_vec, size_t index, size_t num_elements, ...)
         /* insert the new items */
         va_start(elements, num_elements);
         new_size = index + num_elements;
-        for (index; index < new_size; index++)
+        for (; index < new_size; index++)
         {
             p_vec->p_buffer[index] = va_arg(elements,void*);
         }
