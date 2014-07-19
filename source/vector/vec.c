@@ -191,7 +191,6 @@ void vec_clear(vec_t* p_vec)
     p_vec->size = 0;
 }
 
-
 static void vec_free(void* p_vec)
 {
     vec_clear((vec_t*)p_vec);

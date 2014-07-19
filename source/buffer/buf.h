@@ -31,14 +31,6 @@ typedef struct {
 buf_t* buf_new(size_t size);
 
 /**
- * @brief Frees the provided buffer and optionally any unread contents.
- *
- * @param buf           The buffer to free.
- * @param free_contents Whether unread contents should also be freed.
- */
-void buf_free(buf_t* buf, bool free_contents);
-
-/**
  * @brief Returns the size of the provided buffer.
  *
  * @param buf The buffer on which to operate.
@@ -69,9 +61,8 @@ bool buf_full(buf_t* buf);
  * @brief Clears all unread data from the provided buffer.
  *
  * @param buf           The buffer to clear.
- * @param free_contents Whether the unread contents should also be freed.
  */
-void buf_clear(buf_t* buf, bool free_contents);
+void buf_clear(buf_t* buf);
 
 /**
  * @brief Reads an item from the provided buffer.
