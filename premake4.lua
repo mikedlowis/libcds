@@ -15,28 +15,28 @@ project "cds"
     files { "source/**.*" }
     includedirs { "source/**" }
 
---project "tests"
---    kind "ConsoleApp"
---    language "C++"
---    location "build"
---    links { "UnitTest++", "cds" }
---    includedirs { "source/*", "tools/UnitTest++/**" }
---    files { "tests/**.c*" }
---    postbuildcommands { "./tests.exe" }
+project "tests"
+    kind "ConsoleApp"
+    language "C++"
+    location "build"
+    links { "UnitTest++", "cds" }
+    includedirs { "source/**", "tools/UnitTest++/**" }
+    files { "tests/**.c*" }
+    postbuildcommands { "./tests.exe" }
 
 -------------------------------------------------------------------------------
 -- UnitTest++ - A C++ unit testing library
 -------------------------------------------------------------------------------
---project "UnitTest++"
---    kind "SharedLib"
---    language "C++"
---    location "build"
---    files {
---        "tools/UnitTest++/src/*.*",
---    }
---    if os.is "windows" then
---        files { "tools/UnitTest++/src/Win32/**.*" }
---    else
---        files { "tools/UnitTest++/src/Posix/**.*" }
---    end
+project "UnitTest++"
+    kind "SharedLib"
+    language "C++"
+    location "build"
+    files {
+        "tools/UnitTest++/src/*.*",
+    }
+    --if os.is "windows" then
+    --    files { "tools/UnitTest++/src/Win32/**.*" }
+    --else
+        files { "tools/UnitTest++/src/Posix/**.*" }
+    --end
 

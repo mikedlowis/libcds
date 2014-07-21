@@ -10,6 +10,10 @@
 #include <stdint.h>
 #include <string.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** A function pointer for object destructors */
 typedef void (*destructor_t)(void* p_val);
 
@@ -67,5 +71,9 @@ void* mem_box(intptr_t val);
  * @return The boxed value.
  */
 intptr_t mem_unbox(void* p_box);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* MEM_H */
