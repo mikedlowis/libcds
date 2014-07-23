@@ -3,3 +3,5 @@ tags
 project.vim
 Makefile
 build/
+*.o
+.rsconscache

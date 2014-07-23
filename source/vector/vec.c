@@ -133,9 +133,9 @@ bool vec_insert(vec_t* p_vec, size_t index, size_t num_elements, ...)
         /* Resize the vector to fit the new contents */
         vec_resize( p_vec, p_vec->size + num_elements, NULL );
         /* Move the displaced items to the end */
-        memcpy( &(p_vec->p_buffer[index + num_elements]),
-            &(p_vec->p_buffer[index]),
-            sizeof(void*) * (p_vec->size - index));
+        memmove(&(p_vec->p_buffer[index + num_elements]),
+                &(p_vec->p_buffer[index]),
+                sizeof(void*) * (p_vec->size - index));
         /* insert the new items */
         va_start(elements, num_elements);
         new_size = index + num_elements;
@@ -158,7 +158,7 @@ bool vec_erase(vec_t* p_vec, size_t start_idx, size_t end_idx)
         /* Free the range of data */
         vec_free_range(p_vec->p_buffer, start_idx, end_idx + 1);
         /* Compact the remaining data */
-        memcpy( &(p_vec->p_buffer[start_idx]), /* Destination is beginning of erased range */
+        memmove(&(p_vec->p_buffer[start_idx]), /* Destination is beginning of erased range */
                 &(p_vec->p_buffer[end_idx+1]), /* Source is end of erased range */
                 sizeof(void*) * (p_vec->size - end_idx - 1));
         /* Shrink the size */
