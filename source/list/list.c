@@ -8,7 +8,7 @@ static void list_node_free(void* p_node);
 
 list_t* list_new(void)
 {
-    list_t* list = (list_t*)mem_allocate(sizeof(list_t), NULL);
+    list_t* list = (list_t*)mem_allocate(sizeof(list_t), &list_free);
     list->head = NULL;
     list->tail = NULL;
     return list;
@@ -16,7 +16,7 @@ list_t* list_new(void)
 
 list_node_t* list_new_node(void* contents)
 {
-    list_node_t* node = (list_node_t*)mem_allocate(sizeof(list_node_t), NULL);
+    list_node_t* node = (list_node_t*)mem_allocate(sizeof(list_node_t), &list_node_free);
     node->contents = contents;
     node->next = NULL;
     return node;

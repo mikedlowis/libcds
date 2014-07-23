@@ -1,27 +1,27 @@
 // Unit Test Framework Includes
-#include "UnitTest++.h"
-#include <cstdlib>
+#include "test.h"
 
 // File To Test
 #include "list.h"
+#include "mem.h"
 
-using namespace UnitTest;
+static void test_setup(void) { }
 
 //-----------------------------------------------------------------------------
 // Begin Unit Tests
 //-----------------------------------------------------------------------------
-namespace {
-//    //-------------------------------------------------------------------------
-//    // Test list_new function
-//    //-------------------------------------------------------------------------
-//    TEST(Verify_list_new_returns_newly_allocated_empty_list)
-//    {
-//        list_t* list = list_new();
-//        CHECK( NULL != list );
-//        CHECK( NULL == list->head );
-//        CHECK( NULL == list->tail );
-//        free( list );
-//    }
+TEST_SUITE(List) {
+    //-------------------------------------------------------------------------
+    // Test list_new function
+    //-------------------------------------------------------------------------
+    TEST(Verify_list_new_returns_newly_allocated_empty_list)
+    {
+        list_t* list = list_new();
+        CHECK( NULL != list );
+        CHECK( NULL == list->head );
+        CHECK( NULL == list->tail );
+        mem_release( list );
+    }
 //
 //    //-------------------------------------------------------------------------
 //    // Test list_new_node function
@@ -34,48 +34,6 @@ namespace {
 //        CHECK( &stuff == node->contents );
 //        CHECK( NULL == node->next );
 //        free( node );
-//    }
-//
-//    //-------------------------------------------------------------------------
-//    // Test list_free function
-//    //-------------------------------------------------------------------------
-//    TEST(Verify_list_free_frees_the_given_empty_list)
-//    {
-//        list_t* list = list_new();
-//        list_free( list, 0 );
-//    }
-//
-//    TEST(Verify_list_free_frees_the_given_list_including_nodes)
-//    {
-//        list_t* list = list_new();
-//        list->head = list_new_node(NULL);
-//        list->tail = list->head;
-//        list_free( list, 0 );
-//    }
-//
-//    TEST(Verify_list_free_frees_the_given_list_including_nodes_and_node_contents)
-//    {
-//        list_t* list = list_new();
-//        int* foo = (int*)malloc( sizeof(int) );
-//        list->head = list_new_node( foo );
-//        list->tail = list->head;
-//        list_free( list, 1 );
-//    }
-//
-//    //-------------------------------------------------------------------------
-//    // Test list_free_node function
-//    //-------------------------------------------------------------------------
-//    TEST(Verify_list_free_node_frees_the_given_node)
-//    {
-//        list_node_t* node = list_new_node( NULL );
-//        list_free_node( node, 0 );
-//    }
-//
-//    TEST(Verify_list_free_node_frees_the_given_node_and_contents)
-//    {
-//        int* foo = (int*)malloc( sizeof(int) );
-//        list_node_t* node = list_new_node( foo );
-//        list_free_node( node, 1 );
 //    }
 //
 //    //-------------------------------------------------------------------------

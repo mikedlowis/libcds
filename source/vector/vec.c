@@ -152,7 +152,6 @@ bool vec_insert(vec_t* p_vec, size_t index, size_t num_elements, ...)
 bool vec_erase(vec_t* p_vec, size_t start_idx, size_t end_idx)
 {
     bool ret = false;
-    size_t index;
     /* if the range is valid */
     if ((start_idx < p_vec->size) && (end_idx < p_vec->size) && (start_idx <= end_idx))
     {
@@ -160,8 +159,8 @@ bool vec_erase(vec_t* p_vec, size_t start_idx, size_t end_idx)
         vec_free_range(p_vec->p_buffer, start_idx, end_idx + 1);
         /* Compact the remaining data */
         memcpy( &(p_vec->p_buffer[start_idx]), /* Destination is beginning of erased range */
-            &(p_vec->p_buffer[end_idx+1]), /* Source is end of erased range */
-            sizeof(void*) * (p_vec->size - end_idx));
+                &(p_vec->p_buffer[end_idx+1]), /* Source is end of erased range */
+                sizeof(void*) * (p_vec->size - end_idx - 1));
         /* Shrink the size */
         p_vec->size = p_vec->size - ((end_idx - start_idx) + 1);
         ret = true;

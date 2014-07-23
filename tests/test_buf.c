@@ -1,17 +1,15 @@
 // Unit Test Framework Includes
-#include "UnitTest++.h"
-#include <cstdlib>
-#include <iostream>
+#include "test.h"
 
 // File To Test
 #include "buf.h"
 
-using namespace UnitTest;
+static void test_setup(void) { }
 
 //-----------------------------------------------------------------------------
 // Begin Unit Tests
 //-----------------------------------------------------------------------------
-namespace {
+TEST_SUITE(Buffer) {
 //    //-------------------------------------------------------------------------
 //    // Test buf_new function
 //    //-------------------------------------------------------------------------
@@ -27,10 +25,10 @@ namespace {
 //        free( buf );
 //    }
 //
-//    TEST(Verify_buf_new_returns_null_if_passed_a_size_of_0)
-//    {
-//        CHECK( NULL == buf_new(0) );
-//    }
+    TEST(Verify_buf_new_returns_null_if_passed_a_size_of_0)
+    {
+        CHECK( NULL == buf_new(0) );
+    }
 //
 //    //-------------------------------------------------------------------------
 //    // Test buf_free function
