@@ -8,6 +8,7 @@
 #include "mem.h"
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 static void vec_free(void* p_vec);
 
@@ -21,9 +22,11 @@ vec_t* vec_new(size_t num_elements, ...)
 
     /* Allocate and construct the vector object */
     p_vec = (vec_t*)mem_allocate(sizeof(vec_t), vec_free);
+    assert(p_vec != NULL);
     p_vec->size = num_elements;
     p_vec->capacity = (0 == num_elements) ? DEFAULT_VEC_CAPACITY : num_elements;
-    p_vec->p_buffer = (void**)malloc( sizeof(void*) * p_vec->capacity );
+    p_vec->p_buffer = (void**)calloc( sizeof(void*), p_vec->capacity );
+    assert(p_vec->p_buffer != NULL);
 
     /* Populate the array with the elements list */
     va_start(elements, num_elements);
@@ -59,7 +62,8 @@ void vec_resize(vec_t* p_vec, size_t size, void* data)
         for (; p_vec->size < size; p_vec->size++)
         {
             p_vec->p_buffer[ p_vec->size ] = data;
-            if((size-p_vec->size) > 1) mem_retain(data);
+            if((NULL != data) && ((size - p_vec->size) > 1))
+                mem_retain(data);
         }
     }
     else if (size < p_vec->size)
@@ -88,7 +92,9 @@ size_t vec_next_capacity(size_t req_size)
 
 void vec_shrink_to_fit(vec_t* p_vec)
 {
+    assert(p_vec != NULL);
     p_vec->p_buffer = realloc( p_vec->p_buffer, sizeof(void*) * p_vec->size );
+    assert(p_vec->p_buffer != NULL);
     p_vec->capacity = p_vec->size;
 }
 
@@ -99,7 +105,9 @@ size_t vec_capacity(vec_t* p_vec)
 
 void vec_reserve(vec_t* p_vec, size_t size)
 {
+    assert(p_vec != NULL);
     p_vec->p_buffer = realloc( p_vec->p_buffer, sizeof(void*) * size );
+    assert(p_vec->p_buffer != NULL);
     p_vec->capacity = size;
 }
 
@@ -194,7 +202,8 @@ void vec_clear(vec_t* p_vec)
 static void vec_free(void* p_vec)
 {
     vec_clear((vec_t*)p_vec);
-    free(((vec_t*)p_vec)->p_buffer);
+    if (NULL != ((vec_t*)p_vec)->p_buffer)
+        free(((vec_t*)p_vec)->p_buffer);
 }
 
 static void vec_free_range(void** p_buffer, size_t start_idx, size_t end_idx)
@@ -202,7 +211,8 @@ static void vec_free_range(void** p_buffer, size_t start_idx, size_t end_idx)
     size_t i;
     for(i = start_idx; i < end_idx; i++)
     {
-        mem_release(p_buffer[i]);
+        if (NULL != p_buffer[i])
+            mem_release(p_buffer[i]);
     }
 }
 

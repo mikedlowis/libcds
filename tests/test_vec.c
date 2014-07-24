@@ -158,7 +158,6 @@ TEST_SUITE(Vector) {
         vec_t vector = { 0, 0, NULL };
         vec_reserve(&vector,5);
         CHECK( 5 == vector.capacity );
-        free( vector.p_buffer );
     }
 
     //-------------------------------------------------------------------------
@@ -169,7 +168,6 @@ TEST_SUITE(Vector) {
         void* array[2] = { (void*)0x1234, (void*)0x4321 };
         vec_t vector = { 2, 2, array };
         CHECK((void*)0x4321 == vec_at(&vector,1));
-
     }
 
     TEST(Verify_vec_at_returns_null_if_index_out_of_range)
@@ -217,30 +215,28 @@ TEST_SUITE(Vector) {
 
     TEST(Verify_vec_insert_should_insert_items_at_the_given_index)
     {
-    //// TODO: release fails for some reason. Investigate
-    //    vec_t* p_vec = vec_new(2,mem_box(0),mem_box(1));
-    //    CHECK(true == vec_insert(p_vec,1,2,mem_box(2),mem_box(3)));
-    //    CHECK(4 == p_vec->size);
-    //    CHECK(4 == p_vec->capacity);
-    //    CHECK(0 == mem_unbox(p_vec->p_buffer[0]));
-    //    CHECK(2 == mem_unbox(p_vec->p_buffer[1]));
-    //    CHECK(3 == mem_unbox(p_vec->p_buffer[2]));
-    //    CHECK(1 == mem_unbox(p_vec->p_buffer[3]));
-    //    //mem_release(p_vec);
+        vec_t* p_vec = vec_new(2,mem_box(0),mem_box(1));
+        CHECK(true == vec_insert(p_vec,1,2,mem_box(2),mem_box(3)));
+        CHECK(4 == p_vec->size);
+        CHECK(4 == p_vec->capacity);
+        CHECK(0 == mem_unbox(p_vec->p_buffer[0]));
+        CHECK(2 == mem_unbox(p_vec->p_buffer[1]));
+        CHECK(3 == mem_unbox(p_vec->p_buffer[2]));
+        CHECK(1 == mem_unbox(p_vec->p_buffer[3]));
+        mem_release(p_vec);
     }
 
     TEST(Verify_vec_insert_should_insert_items_at_the_beginning)
     {
-    //// TODO: release fails for some reason. Investigate
-    //    vec_t* p_vec = vec_new(2,mem_box(0),mem_box(1));
-    //    CHECK(true == vec_insert(p_vec,0,2,mem_box(2),mem_box(3)));
-    //    CHECK(4 == p_vec->size);
-    //    CHECK(4 == p_vec->capacity);
-    //    CHECK(2 == mem_unbox(p_vec->p_buffer[0]));
-    //    CHECK(3 == mem_unbox(p_vec->p_buffer[1]));
-    //    CHECK(0 == mem_unbox(p_vec->p_buffer[2]));
-    //    CHECK(1 == mem_unbox(p_vec->p_buffer[3]));
-    //    //mem_release(p_vec);
+        vec_t* p_vec = vec_new(2,mem_box(0),mem_box(1));
+        CHECK(true == vec_insert(p_vec,0,2,mem_box(2),mem_box(3)));
+        CHECK(4 == p_vec->size);
+        CHECK(4 == p_vec->capacity);
+        CHECK(2 == mem_unbox(p_vec->p_buffer[0]));
+        CHECK(3 == mem_unbox(p_vec->p_buffer[1]));
+        CHECK(0 == mem_unbox(p_vec->p_buffer[2]));
+        CHECK(1 == mem_unbox(p_vec->p_buffer[3]));
+        mem_release(p_vec);
     }
 
     //-------------------------------------------------------------------------

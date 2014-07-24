@@ -19,12 +19,15 @@ task(:posix){ is_windows = false }
 
 # Define the compiler environment
 Env = Rscons::Environment.new do |env|
+  env.build_dir('source/','build/obj/source')
   env["CFLAGS"] += ['-Wall', '-Werror']
   env['CPPPATH'] += Dir['source/**/']
 end
 
 # Define the test environment
 TestEnv = Env.clone  do |env|
+  env.build_dir('source','build/obj/test_source')
+  env.build_dir('tests','build/obj/tests/source')
   env['CPPPATH'] += Dir['tests/']
 end
 
@@ -39,6 +42,7 @@ task :default => [:test, :build]
 desc "Build the C Data Structures static library"
 task :build do
     Env.Library('build/libcds.a', Dir['source/**/*.c'])
+    Env.process
 end
 
 #------------------------------------------------------------------------------
