@@ -4,7 +4,7 @@
 // File To Test
 #include "buf.h"
 
-static void test_setup(void) { }
+//static void test_setup(void) { }
 
 //-----------------------------------------------------------------------------
 // Begin Unit Tests
@@ -25,10 +25,10 @@ TEST_SUITE(Buffer) {
 //        free( buf );
 //    }
 //
-    TEST(Verify_buf_new_returns_null_if_passed_a_size_of_0)
-    {
-        CHECK( NULL == buf_new(0) );
-    }
+//    TEST(Verify_buf_new_returns_null_if_passed_a_size_of_0)
+//    {
+//        CHECK( NULL == buf_new(0) );
+//    }
 //
 //    //-------------------------------------------------------------------------
 //    // Test buf_free function

@@ -5,23 +5,23 @@
 #include "list.h"
 #include "mem.h"
 
-static void test_setup(void) { }
+//static void test_setup(void) { }
 
 //-----------------------------------------------------------------------------
 // Begin Unit Tests
 //-----------------------------------------------------------------------------
 TEST_SUITE(List) {
-    //-------------------------------------------------------------------------
-    // Test list_new function
-    //-------------------------------------------------------------------------
-    TEST(Verify_list_new_returns_newly_allocated_empty_list)
-    {
-        list_t* list = list_new();
-        CHECK( NULL != list );
-        CHECK( NULL == list->head );
-        CHECK( NULL == list->tail );
-        mem_release( list );
-    }
+//    //-------------------------------------------------------------------------
+//    // Test list_new function
+//    //-------------------------------------------------------------------------
+//    TEST(Verify_list_new_returns_newly_allocated_empty_list)
+//    {
+//        list_t* list = list_new();
+//        CHECK( NULL != list );
+//        CHECK( NULL == list->head );
+//        CHECK( NULL == list->tail );
+//        mem_release( list );
+//    }
 //
 //    //-------------------------------------------------------------------------
 //    // Test list_new_node function

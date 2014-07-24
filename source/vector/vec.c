@@ -59,11 +59,12 @@ void vec_resize(vec_t* p_vec, size_t size, void* data)
         for (; p_vec->size < size; p_vec->size++)
         {
             p_vec->p_buffer[ p_vec->size ] = data;
+            if((size-p_vec->size) > 1) mem_retain(data);
         }
     }
     else if (size < p_vec->size)
     {
-        vec_free_range(p_vec->p_buffer, size-1, p_vec->size);
+        vec_free_range(p_vec->p_buffer, size, p_vec->size);
         p_vec->size = size;
     }
 }

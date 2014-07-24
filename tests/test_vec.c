@@ -107,29 +107,27 @@ TEST_SUITE(Vector) {
 
     TEST(Verify_vec_resize_should_add_a_new_element)
     {
-    //// TODO: This test is most certainly busted in the presence of refcounting.
-    //    vec_t* p_vec = vec_new(3, mem_box(0), mem_box(1), mem_box(2));
-    //    vec_resize( p_vec, 4, (void*)0x2A );
+        vec_t* p_vec = vec_new(3, mem_box(0), mem_box(1), mem_box(2));
+        vec_resize( p_vec, 4, mem_box(0x2A) );
 
-    //    CHECK( 4 == p_vec->size );
-    //    CHECK( 4 == p_vec->capacity );
-    //    CHECK( (void*)0x2A == p_vec->p_buffer[3] );
+        CHECK( 4 == p_vec->size );
+        CHECK( 4 == p_vec->capacity );
+        CHECK( 0x2A == mem_unbox(p_vec->p_buffer[3]) );
 
-    //    mem_release(p_vec);
+        mem_release(p_vec);
     }
 
     TEST(Verify_vec_resize_should_add_two_new_elements)
     {
-    //// TODO: This test is most certainly busted in the presence of refcounting.
-    //    vec_t* p_vec = vec_new(3, mem_box(0), mem_box(1), mem_box(2));
-    //    vec_resize( p_vec, 5, (void*)0x2A );
+        vec_t* p_vec = vec_new(3, mem_box(0), mem_box(1), mem_box(2));
+        vec_resize( p_vec, 5, mem_box(0x2A) );
 
-    //    CHECK( 5 == p_vec->size );
-    //    CHECK( 8 == p_vec->capacity );
-    //    CHECK( (void*)0x2A == p_vec->p_buffer[3] );
-    //    CHECK( (void*)0x2A == p_vec->p_buffer[4] );
-    //
-    //    mem_release(p_vec);
+        CHECK( 5 == p_vec->size );
+        CHECK( 8 == p_vec->capacity );
+        CHECK( 0x2A == mem_unbox(p_vec->p_buffer[3]) );
+        CHECK( 0x2A == mem_unbox(p_vec->p_buffer[4]) );
+
+        mem_release(p_vec);
     }
 
     //-------------------------------------------------------------------------
@@ -250,65 +248,65 @@ TEST_SUITE(Vector) {
     //-------------------------------------------------------------------------
     TEST(Verify_vec_erase_erases_the_first_item)
     {
-        void* data[3] = { mem_box(1), mem_box(2), mem_box(3) };
-        vec_t vector = { 3, 3, data };
-        CHECK(true == vec_erase( &vector, 0, 0 ));
-        CHECK(2 == vector.size);
-        CHECK(0x2 == mem_unbox(data[0]));
-        CHECK(0x3 == mem_unbox(data[1]));
+        vec_t* p_vec = vec_new(3, mem_box(1), mem_box(2), mem_box(3));
+        CHECK(true == vec_erase( p_vec, 0, 0 ));
+        CHECK(2 == p_vec->size);
+        CHECK(0x2 == mem_unbox(p_vec->p_buffer[0]));
+        CHECK(0x3 == mem_unbox(p_vec->p_buffer[1]));
+        mem_release(p_vec);
     }
 
     TEST(Verify_vec_erase_erases_a_single_item)
     {
-        void* data[3] = { mem_box(1), mem_box(2), mem_box(3) };
-        vec_t vector = { 3, 3, data };
-        CHECK(true == vec_erase( &vector, 1, 1 ));
-        CHECK(2 == vector.size);
-        CHECK(0x1 == mem_unbox(data[0]));
-        CHECK(0x3 == mem_unbox(data[1]));
+        vec_t* p_vec = vec_new(3, mem_box(1), mem_box(2), mem_box(3));
+        CHECK(true == vec_erase( p_vec, 1, 1 ));
+        CHECK(2 == p_vec->size);
+        CHECK(0x1 == mem_unbox(p_vec->p_buffer[0]));
+        CHECK(0x3 == mem_unbox(p_vec->p_buffer[1]));
+        mem_release(p_vec);
     }
 
     TEST(Verify_vec_erase_erases_multiple_items)
     {
-        void* data[4] = { mem_box(1), mem_box(2), mem_box(3), mem_box(4) };
-        vec_t vector = { 4, 4, data };
-        CHECK(true == vec_erase( &vector, 1, 2 ));
-        CHECK(2 == vector.size);
-        CHECK(0x1 == mem_unbox(data[0]));
-        CHECK(0x4 == mem_unbox(data[1]));
+        vec_t* p_vec = vec_new(4, mem_box(1), mem_box(2), mem_box(3), mem_box(4));
+        CHECK(true == vec_erase( p_vec, 1, 2 ));
+        CHECK(2 == p_vec->size);
+        CHECK(0x1 == mem_unbox(p_vec->p_buffer[0]));
+        CHECK(0x4 == mem_unbox(p_vec->p_buffer[1]));
+        mem_release(p_vec);
     }
 
     TEST(Verify_vec_erase_erases_everything)
     {
-        void* data[4] = { mem_box(1), mem_box(2), mem_box(3), mem_box(4) };
-        vec_t vector = { 4, 4, data };
-        CHECK(true == vec_erase( &vector, 0, 3 ));
-        CHECK(0 == vector.size);
+        vec_t* p_vec = vec_new(4, mem_box(1), mem_box(2), mem_box(3), mem_box(4));
+        CHECK(true == vec_erase( p_vec, 0, 3 ));
+        CHECK(0 == p_vec->size);
+        mem_release(p_vec);
     }
 
     TEST(Verify_vec_erase_should_fail_for_invalid_ranges)
     {
-        void* data[4] = { mem_box(1), mem_box(2), mem_box(3), mem_box(4) };
-        vec_t vector = { 4, 4, data };
-        CHECK(false == vec_erase( &vector, 0, 4 ));
+        vec_t* p_vec = vec_new(4, mem_box(1), mem_box(2), mem_box(3), mem_box(4));
+        CHECK(false == vec_erase( p_vec, 0, 4 ));
+        mem_release(p_vec);
     }
 
     TEST(Verify_vec_erase_everything_but_last)
     {
-        void* data[4] = { mem_box(1), mem_box(2), mem_box(3), mem_box(4) };
-        vec_t vector = { 4, 4, data };
-        CHECK(true == vec_erase( &vector, 0, 2 ));
-        CHECK(0x4 == mem_unbox(data[0]));
-        CHECK(1 == vector.size);
+        vec_t* p_vec = vec_new(4, mem_box(1), mem_box(2), mem_box(3), mem_box(4));
+        CHECK(true == vec_erase( p_vec, 0, 2 ));
+        CHECK(0x4 == mem_unbox(p_vec->p_buffer[0]));
+        CHECK(1 == p_vec->size);
+        mem_release(p_vec);
     }
 
     TEST(Verify_vec_erase_everything_but_first)
     {
-        void* data[4] = { mem_box(1), mem_box(2), mem_box(3), mem_box(4) };
-        vec_t vector = { 4, 4, data };
-        CHECK(true == vec_erase( &vector, 1, 3 ));
-        CHECK(0x1 == mem_unbox(data[0]));
-        CHECK(1 == vector.size);
+        vec_t* p_vec = vec_new(4, mem_box(1), mem_box(2), mem_box(3), mem_box(4));
+        CHECK(true == vec_erase( p_vec, 1, 3 ));
+        CHECK(0x1 == mem_unbox(p_vec->p_buffer[0]));
+        CHECK(1 == p_vec->size);
+        mem_release(p_vec);
     }
 
     //-------------------------------------------------------------------------
@@ -339,20 +337,21 @@ TEST_SUITE(Vector) {
     //-------------------------------------------------------------------------
     TEST(Verify_vec_pop_back_returns_last_element)
     {
-        void* data[4] = { mem_box(1), mem_box(2), mem_box(3), mem_box(4) };
-        vec_t vector = { 4, 4, data };
-        void* p_box = vec_pop_back( &vector );
+        vec_t* p_vec = vec_new(4, mem_box(1), mem_box(2), mem_box(3), mem_box(4));
+        void* p_box = vec_pop_back( p_vec );
         CHECK( 0x4 == mem_unbox(p_box) );
-        CHECK( 4 == vector.capacity );
-        CHECK( 3 == vector.size );
+        CHECK( 4 == p_vec->capacity );
+        CHECK( 3 == p_vec->size );
+        mem_release(p_vec);
     }
 
     TEST(Verify_vec_pop_back_does_nothing_if_no_elements)
     {
-        vec_t vector = { 0, 0, NULL };
-        CHECK( NULL == vec_pop_back( &vector ) );
-        CHECK( 0 == vector.capacity );
-        CHECK( 0 == vector.size );
+        vec_t* p_vec = vec_new(0);
+        CHECK(NULL == vec_pop_back( p_vec ));
+        CHECK(8 == p_vec->capacity);
+        CHECK(0 == p_vec->size);
+        mem_release(p_vec);
     }
 
     //-------------------------------------------------------------------------
@@ -360,9 +359,9 @@ TEST_SUITE(Vector) {
     //-------------------------------------------------------------------------
     TEST(Verify_vec_clear_clears_the_vector)
     {
-        void* data[4] = { mem_box(1), mem_box(2), mem_box(3), mem_box(4) };
-        vec_t vector = { 4, 4, data };
-        vec_clear( &vector );
-        CHECK(0 == vector.size);
+        vec_t* p_vec = vec_new(4, mem_box(1), mem_box(2), mem_box(3), mem_box(4));
+        vec_clear(p_vec);
+        CHECK( 0 == p_vec->size );
+        mem_release(p_vec);
     }
 }
