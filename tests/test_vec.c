@@ -343,6 +343,7 @@ TEST_SUITE(Vector) {
         CHECK( 4 == p_vec->capacity );
         CHECK( 3 == p_vec->size );
         mem_release(p_vec);
+        mem_release(p_box);
     }
 
     TEST(Verify_vec_pop_back_does_nothing_if_no_elements)
