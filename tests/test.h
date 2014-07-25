@@ -8,6 +8,7 @@
 #define TEST_H
 
 #include <stdio.h>
+#include <setjmp.h>
 
 #define CHECK(expr) \
     if (!(expr)) { \
@@ -19,7 +20,8 @@
     Curr_Test = #desc;    \
     Test_Results.total++; \
     test_setup();         \
-    for(Loop_Var = 0; Loop_Var < 1; Loop_Var++)
+    if(0 == test_start()) \
+        for(Loop_Var = 0; Loop_Var < 1; Loop_Var++)
 
 #define TEST_SUITE(name) void name(void)
 
@@ -35,12 +37,12 @@ typedef struct {
     unsigned int failed;
 } test_results_t;
 
+extern jmp_buf Landing_Pad;
 extern int Loop_Var;
-
 extern char* Curr_Test;
-
 extern test_results_t Test_Results;
 
+int test_start(void);
 int test_print_results(void);
 void test_fail(char* expr, char* file, int line);
 

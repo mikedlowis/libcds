@@ -41,6 +41,7 @@ vec_t* vec_new(size_t num_elements, ...)
 
 size_t vec_size(vec_t* p_vec)
 {
+    assert(NULL != p_vec);
     return p_vec->size;
 }
 
@@ -51,11 +52,13 @@ size_t vec_max_size(void)
 
 bool vec_empty(vec_t* p_vec)
 {
+    assert(NULL != p_vec);
     return (0 == vec_size(p_vec));
 }
 
 void vec_resize(vec_t* p_vec, size_t size, void* data)
 {
+    assert(NULL != p_vec);
     if (size > p_vec->size)
     {
         vec_reserve(p_vec,vec_next_capacity(size));
@@ -92,7 +95,7 @@ size_t vec_next_capacity(size_t req_size)
 
 void vec_shrink_to_fit(vec_t* p_vec)
 {
-    assert(p_vec != NULL);
+    assert(NULL != p_vec);
     p_vec->p_buffer = realloc( p_vec->p_buffer, sizeof(void*) * p_vec->size );
     assert(p_vec->p_buffer != NULL);
     p_vec->capacity = p_vec->size;
@@ -201,18 +204,25 @@ void vec_clear(vec_t* p_vec)
 
 static void vec_free(void* p_vec)
 {
-    vec_clear((vec_t*)p_vec);
-    if (NULL != ((vec_t*)p_vec)->p_buffer)
-        free(((vec_t*)p_vec)->p_buffer);
+    vec_t* p_vector = (vec_t*)p_vec;
+    assert(NULL != p_vector);
+    assert(NULL != p_vector->p_buffer);
+    vec_clear(p_vector);
+    free(p_vector->p_buffer);
+    p_vector->p_buffer = NULL;
 }
 
 static void vec_free_range(void** p_buffer, size_t start_idx, size_t end_idx)
 {
     size_t i;
+    assert(NULL != p_buffer);
     for(i = start_idx; i < end_idx; i++)
     {
         if (NULL != p_buffer[i])
+        {
             mem_release(p_buffer[i]);
+            p_buffer[i] = NULL;
+        }
     }
 }
 
