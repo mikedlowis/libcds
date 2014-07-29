@@ -367,53 +367,54 @@ TEST_SUITE(List) {
         CHECK( NULL == list_delete( &list, 0) );
     }
 
-#if 0
     TEST(Verify_delete_deletes_the_first_element_of_a_list_of_length_1)
     {
-        list_node_t* node = list_new_node((void*)0x1234);
-        list_t list = { node, node };
-        CHECK( NULL == list_delete( &list, 0) );
-        CHECK( list.head == NULL );
-        CHECK( list.tail == NULL );
+        list_t* list = list_new();
+        list_push_back(list,mem_box(0x1234));
+        CHECK( NULL == list_delete( list, 0) );
+        CHECK( list->head == NULL );
+        CHECK( list->tail == NULL );
+        mem_release(list);
     }
 
     TEST(Verify_delete_deletes_the_first_element_of_a_list_of_length_2)
     {
-        list_node_t* node1 = list_new_node((void*)0x1234);
-        list_node_t  node2 = { (void*)0x1234, NULL };
-        node1->next = &node2;
-        list_t list = { node1, &node2 };
-        list_node_t* node = list_delete( &list, 0);
-        CHECK( node == &node2 );
-        CHECK( list.head == &node2 );
-        CHECK( list.tail == &node2 );
+        list_t* list = list_new();
+        list_push_back(list,mem_box(0x1234));
+        list_push_back(list,mem_box(0x1235));
+        CHECK( NULL != list_delete( list, 0) );
+        CHECK( list->head != NULL );
+        CHECK( list->tail != NULL );
+        CHECK( list->head == list->tail );
+        CHECK( mem_unbox(list->head->contents) == 0x1235 );
+        mem_release(list);
     }
 
     TEST(Verify_delete_deletes_element_1_of_a_list_of_length_3)
     {
-        list_node_t  node1 = { (void*)0x1234, NULL };
-        list_node_t* node2 = list_new_node((void*)0x1234);
-        list_node_t  node3 = { (void*)0x1234, NULL };
-        node1.next = node2;
-        node2->next = &node3;
-        list_t list = { &node1, &node3 };
-        list_node_t* node = list_delete( &list, 1);
-        CHECK( node == &node3 );
-        CHECK( node1.next == &node3 );
-        CHECK( list.head == &node1 );
-        CHECK( list.tail == &node3 );
+        list_t* list = list_new();
+        list_push_back(list,mem_box(0x1234));
+        list_push_back(list,mem_box(0x1235));
+        list_push_back(list,mem_box(0x1236));
+        CHECK( NULL != list_delete( list, 1) );
+        CHECK( 2 == list_size( list ) );
+        CHECK( list->head != NULL );
+        CHECK( list->tail != NULL );
+        CHECK( list->head != list->tail );
+        mem_release(list);
     }
 
     TEST(Verify_delete_deletes_element_1_of_a_list_of_length_2)
     {
-        list_node_t  node1 = { (void*)0x1234, NULL };
-        list_node_t* node2 = list_new_node((void*)0x1234);
-        node1.next = node2;
-        list_t list = { &node1, node2 };
-        list_node_t* node = list_delete( &list, 1);
-        CHECK( node == NULL );
-        CHECK( list.head == &node1 );
-        CHECK( list.tail == &node1 );
+        list_t* list = list_new();
+        list_push_back(list,mem_box(0x1234));
+        list_push_back(list,mem_box(0x1235));
+        CHECK( NULL == list_delete( list, 1) );
+        CHECK( list->head != NULL );
+        CHECK( list->tail != NULL );
+        CHECK( list->head == list->tail );
+        CHECK( mem_unbox(list->head->contents) == 0x1234 );
+        mem_release(list);
     }
 
     //-------------------------------------------------------------------------
@@ -431,7 +432,7 @@ TEST_SUITE(List) {
     TEST(Verify_list_clear_clears_a_list_of_length_1)
     {
         list_t* list = list_new();
-        (void)list_push_front(list,(void*)0x1234);
+        list_push_front(list,mem_box(0x1234));
         list_clear(list);
         CHECK( NULL == list->head );
         CHECK( NULL == list->tail );
@@ -441,8 +442,8 @@ TEST_SUITE(List) {
     TEST(Verify_list_clear_clears_a_list_of_length_2)
     {
         list_t* list = list_new();
-        (void)list_push_front(list,(void*)0x1234);
-        (void)list_push_front(list,(void*)0x1234);
+        list_push_front(list,mem_box(0x1234));
+        list_push_front(list,mem_box(0x1234));
         list_clear(list);
         CHECK( NULL == list->head );
         CHECK( NULL == list->tail );
@@ -452,13 +453,12 @@ TEST_SUITE(List) {
     TEST(Verify_list_clear_clears_a_list_of_length_3)
     {
         list_t* list = list_new();
-        (void)list_push_front(list,(void*)0x1234);
-        (void)list_push_front(list,(void*)0x1234);
-        (void)list_push_front(list,(void*)0x1234);
+        list_push_front(list,mem_box(0x1234));
+        list_push_front(list,mem_box(0x1234));
+        list_push_front(list,mem_box(0x1234));
         list_clear(list);
         CHECK( NULL == list->head );
         CHECK( NULL == list->tail );
         mem_release(list);
     }
-#endif
 }

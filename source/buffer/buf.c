@@ -43,9 +43,12 @@ bool buf_full(buf_t* buf)
 
 void buf_clear(buf_t* buf)
 {
+    void* entry;
     while ( !buf_empty(buf) )
     {
-        mem_release( buf_read(buf) );
+        entry = buf_read(buf);
+        if (NULL != entry)
+            mem_release( entry );
     }
     buf->reads  = 0;
     buf->writes = 0;
@@ -79,3 +82,4 @@ static void buf_free(void* p_buf)
     buf_clear((buf_t*)p_buf);
     free( ((buf_t*)p_buf)->buffer );
 }
+

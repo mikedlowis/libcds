@@ -201,9 +201,12 @@ list_node_t* list_delete( list_t* list, size_t index)
 
 void list_clear(list_t* list)
 {
-    mem_release((void*)list->head);
-    list->head = NULL;
-    list->tail = NULL;
+    if (NULL != list->head)
+    {
+        mem_release((void*)list->head);
+        list->head = NULL;
+        list->tail = NULL;
+    }
 }
 
 static void list_free(void* p_list)
