@@ -61,7 +61,7 @@ void vec_resize(vec_t* p_vec, size_t size, void* data)
     assert(NULL != p_vec);
     if (size > p_vec->size)
     {
-        vec_reserve(p_vec,vec_next_capacity(size));
+        vec_reserve(p_vec,vec_next_capacity(size+1));
         for (; p_vec->size < size; p_vec->size++)
         {
             p_vec->p_buffer[ p_vec->size ] = data;

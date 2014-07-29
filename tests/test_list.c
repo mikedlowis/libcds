@@ -5,13 +5,12 @@
 #include "list.h"
 #include "mem.h"
 
-//static void test_setup(void) { }
+static void test_setup(void) { }
 
 //-----------------------------------------------------------------------------
 // Begin Unit Tests
 //-----------------------------------------------------------------------------
 TEST_SUITE(List) {
-#if 0
     //-------------------------------------------------------------------------
     // Test list_new function
     //-------------------------------------------------------------------------
@@ -195,25 +194,27 @@ TEST_SUITE(List) {
     //-------------------------------------------------------------------------
     TEST(Verify_list_push_back_pushes_to_empty_list)
     {
-        list_t list = { NULL, NULL };
-        list_node_t* node = list_push_back( &list, (void*)0x1234 );
+        list_t* list = list_new();
+        list_node_t* node = list_push_back( list, mem_box(0x1234) );
         CHECK( NULL != node );
-        CHECK( (void*)0x1234 == node->contents );
+        CHECK( 0x1234 == mem_unbox(node->contents) );
         CHECK( NULL == node->next );
-        CHECK( node == list.head );
-        CHECK( node == list.tail );
+        CHECK( node == list->head );
+        CHECK( node == list->tail );
+        mem_release(list);
     }
 
     TEST(Verify_list_push_back_pushes_to_back_of_list_of_length_1)
     {
-        list_node_t node1 = { NULL, NULL };
-        list_t list = { &node1, &node1 };
-        list_node_t* node = list_push_back( &list, (void*)0x1234 );
+        list_t* list = list_new();
+        list_push_back( list, mem_box(0x1234) );
+        list_node_t* node = list_push_back( list, mem_box(0x1235) );
         CHECK( NULL != node );
-        CHECK( (void*)0x1234 == node->contents );
-        CHECK( &node1 != node->next );
-        CHECK( node != list.head );
-        CHECK( node == list.tail );
+        CHECK( 0x1235 == mem_unbox(node->contents) );
+        CHECK( NULL == node->next );
+        CHECK( node != list->head );
+        CHECK( node == list->tail );
+        mem_release(list);
     }
 
     //-------------------------------------------------------------------------
@@ -299,60 +300,62 @@ TEST_SUITE(List) {
     //-------------------------------------------------------------------------
     TEST(Verify_insert_should_insert_into_empty_list)
     {
-        list_t list = { NULL, NULL };
-        list_node_t* node = list_insert( &list, 0, (void*)0x1234 );
+        list_t* list = list_new();
+        list_node_t* node = list_insert( list, 0, mem_box(0x1234) );
         CHECK( node != NULL );
         CHECK( node->next == NULL );
-        CHECK( node->contents == (void*)0x1234 );
-        CHECK( list.head == node );
-        CHECK( list.tail == node );
+        CHECK( mem_unbox(node->contents) == 0x1234 );
+        CHECK( list->head == node );
+        CHECK( list->tail == node );
+        mem_release(list);
     }
 
     TEST(Verify_insert_should_push_to_the_front_of_the_list_if_index_is_0)
     {
-        list_node_t node1 = { NULL, NULL };
-        list_t list = { &node1, &node1 };
-        list_node_t* node = list_insert( &list, 0, (void*)0x1234 );
-        CHECK( NULL != node );
-        CHECK( (void*)0x1234 == node->contents );
-        CHECK( NULL != node->next );
-        CHECK( node == list.head );
-        CHECK( node != list.tail );
+        list_t* list = list_new();
+        list_insert( list, 0, mem_box(0x1234) );
+        list_node_t* node = list_insert( list, 0, mem_box(0x1235) );
+        CHECK( node != NULL );
+        CHECK( node->next != NULL );
+        CHECK( mem_unbox(list->head->contents) == 0x1235 );
+        CHECK( list->head == node );
+        CHECK( list->tail != node );
+        mem_release(list);
     }
 
     TEST(Verify_insert_should_insert_at_the_given_index_if_index_is_non_zero)
     {
-        list_node_t node3 = { NULL, NULL };
-        list_node_t node2 = { NULL, &node3 };
-        list_node_t node1 = { NULL, &node2 };
-        list_t list = { &node1, &node3 };
-        list_node_t* node = list_insert( &list, 1, (void*)0x1234 );
-        CHECK( NULL != node );
-        CHECK( (void*)0x1234 == node->contents );
-        CHECK( node1.next == node );
-        CHECK( &node2 == node->next );
+        list_t* list = list_new();
+        list_insert( list, 0, mem_box(0x1236) );
+        list_insert( list, 0, mem_box(0x1235) );
+        list_insert( list, 0, mem_box(0x1234) );
+        list_node_t* node = list_insert( list, 1, mem_box(0x1237) );
+        CHECK( node != NULL );
+        CHECK( node->next != NULL );
+        CHECK( mem_unbox(list->head->next->contents) == 0x1237 );
+        mem_release(list);
     }
 
     TEST(Verify_insert_should_set_the_tail_of_the_list_if_index_is_the_last_item)
     {
-        list_node_t node2 = { NULL, NULL };
-        list_node_t node1 = { NULL, &node2 };
-        list_t list = { &node1, &node2 };
-        list_node_t* node = list_insert( &list, 2, (void*)0x1234 );
-        CHECK( NULL != node );
-        CHECK( (void*)0x1234 == node->contents );
-        CHECK( NULL == node->next );
-        CHECK( node2.next == node );
-        CHECK( list.tail == node );
+        list_t* list = list_new();
+        list_insert( list, 0, mem_box(0x1236) );
+        list_insert( list, 0, mem_box(0x1235) );
+        list_node_t* node = list_insert( list, 2, mem_box(0x1234) );
+        CHECK( node != NULL );
+        CHECK( node->next == NULL );
+        CHECK( mem_unbox(list->tail->contents) == 0x1234 );
+        mem_release(list);
     }
 
     TEST(Verify_insert_should_return_null_if_index_out_of_range)
     {
-        list_node_t node2 = { NULL, NULL };
-        list_node_t node1 = { NULL, &node2 };
-        list_t list = { &node1, &node2 };
-        list_node_t* node = list_insert( &list, 3, (void*)0x1234 );
-        CHECK( NULL == node );
+        list_t* list = list_new();
+        list_insert( list, 0, mem_box(0x1236) );
+        list_insert( list, 0, mem_box(0x1235) );
+        list_node_t* node = list_insert( list, 3, mem_box(0x1234) );
+        CHECK( node == NULL );
+        mem_release(list);
     }
 
     //-------------------------------------------------------------------------
@@ -364,6 +367,7 @@ TEST_SUITE(List) {
         CHECK( NULL == list_delete( &list, 0) );
     }
 
+#if 0
     TEST(Verify_delete_deletes_the_first_element_of_a_list_of_length_1)
     {
         list_node_t* node = list_new_node((void*)0x1234);

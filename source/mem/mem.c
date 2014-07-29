@@ -40,6 +40,7 @@ void mem_release(void* p_obj)
 
 void mem_autorelease(void* p_obj)
 {
+    (void)p_obj;
 }
 
 void mem_releaseall(void)

@@ -72,17 +72,12 @@ list_node_t* list_at(list_t* list, size_t index)
 list_node_t* list_push_front( list_t* list, void* contents )
 {
     list_node_t* node = list_new_node( contents );
-    puts("1");
     node->next = list->head;
-    puts("2");
     list->head = node;
-    puts("3");
     if( NULL == list->tail )
     {
-    puts("4");
         list->tail = node;
     }
-    puts("5");
     return node;
 }
 
@@ -161,6 +156,10 @@ list_node_t* list_insert( list_t* list, size_t index, void* contents)
             {
                 list->tail = new_node;
             }
+        }
+        else
+        {
+            mem_release(contents);
         }
     }
     return new_node;

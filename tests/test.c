@@ -7,11 +7,12 @@
 #include "test.h"
 #include <signal.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 jmp_buf Landing_Pad;
 int Loop_Var;
 char* Curr_Test;
-test_results_t Test_Results = {0};
+test_results_t Test_Results = {0,0,0};
 
 static const char* Results_String =
 "\nUnit Test Summary"
@@ -32,6 +33,7 @@ static void handle_signal(int sig) {
         case SIGSEGV:
         case SIGSYS:
             fprintf(stderr,"%s:%d:0:%s:CRASH (signal: %d)\n\t\n", __FILE__, __LINE__, Curr_Test, sig); \
+            exit(1);
             //longjmp(Landing_Pad,1);
             break;
 

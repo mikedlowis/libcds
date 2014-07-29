@@ -20,7 +20,7 @@ task(:posix){ is_windows = false }
 # Define the compiler environment
 Env = Rscons::Environment.new do |env|
   env.build_dir('source/','build/obj/source')
-  env["CFLAGS"] += ['-Wall', '-Werror']
+  env["CFLAGS"] += ['-Wall', '-Wextra', '-Werror']
   env['CPPPATH'] += Dir['source/**/']
 end
 
