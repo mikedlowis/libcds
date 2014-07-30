@@ -106,6 +106,21 @@ list_node_t* list_prev(list_t* list, list_node_t* node);
 list_node_t* list_at(list_t* list, size_t index);
 
 /**
+ * @brief   Return the index of the specified node in a linked list.
+ *
+ * This function loops through the linked list and returns the index in the list
+ * that matches the specified node. Returns -1 if the node is not found.
+ * Note: since NULL is implicitly at the end of every list, calling this
+ * with NULL for the node is essentially equivalent to list_size
+ *
+ * @param list  The list to search thru
+ * @param node  The node to look for
+ *
+ * @return The int index of the supplied node, -1 if not found.
+ **/
+int list_index_of(list_t* list, list_node_t* node);
+
+/**
  * @brief Adds a new node to the front of an existing linked list.
  *
  * This function creates a new node and pushes it to the beginning of the given

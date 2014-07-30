@@ -73,6 +73,18 @@ list_node_t* list_at(list_t* list, size_t index)
     return node;
 }
 
+int list_index_of(list_t* list, list_node_t* node)
+{
+    int i = 0;
+    list_node_t* edon = list->head;
+    while( NULL != edon && edon != node)
+    {
+        edon = edon->next;
+        i++;
+    }
+    return (node == edon) ? i : -1;
+}
+
 list_node_t* list_push_front( list_t* list, void* contents )
 {
     list_node_t* node = list_new_node( contents );
