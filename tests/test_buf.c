@@ -129,15 +129,17 @@ TEST_SUITE(Buffer) {
     TEST(Verify_buf_write_should_return_0_if_buffer_is_full)
     {
         buf_t* buf = buf_new(1);
+        void* box  = mem_box(0x1234);
         CHECK( true  == buf_write(buf, mem_box(0x1234)));
-        CHECK( false == buf_write(buf, mem_box(0x1234)));
+        CHECK( false == buf_write(buf, box));
+        mem_release(box);
         mem_release(buf);
     }
 
     TEST(Verify_buf_write_should_return_1_if_data_successfully_wrote)
     {
         buf_t* buf = buf_new(1);
-        CHECK( true  == buf_write(buf, mem_box(0x1234)));
+        CHECK( true == buf_write(buf, mem_box(0x1234)));
         mem_release(buf);
     }
 }
