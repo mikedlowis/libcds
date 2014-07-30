@@ -118,6 +118,57 @@ TEST_SUITE(List) {
     }
 
     //-------------------------------------------------------------------------
+    // Test list_prev function
+    //-------------------------------------------------------------------------
+    TEST(Verify_list_prev_returns_NULL_when_list_is_empty)
+    {
+        list_t list = { NULL, NULL };
+        list_node_t bogus = { NULL, NULL };
+        CHECK( NULL == list_prev(&list, NULL) );
+        CHECK( NULL == list_prev(&list, &bogus) );
+    }
+
+    TEST(Verify_list_prev_returns_NULL_when_given_NULL)
+    {
+        list_node_t node3 = { NULL, NULL };
+        list_node_t node2 = { NULL, &node3 };
+        list_node_t node1 = { NULL, &node2 };
+        list_t list = { &node1, &node3 };
+        CHECK( NULL == list_prev(&list, NULL) );
+    }
+
+    TEST(Verify_list_prev_returns_NULL_when_given_node_not_present)
+    {
+        list_node_t node3 = { NULL, NULL };
+        list_node_t node2 = { NULL, &node3 };
+        list_node_t node1 = { NULL, &node2 };
+        list_node_t bogus = { NULL, &node2 };
+        list_t list = { &node1, &node3 };
+        CHECK( NULL == list_prev(&list, &bogus) );
+    }
+
+    TEST(Verify_list_prev_returns_NULL_when_given_node_at_head)
+    {
+        list_node_t node3 = { NULL, NULL };
+        list_node_t node2 = { NULL, &node3 };
+        list_node_t node1 = { NULL, &node2 };
+        list_t list = { &node1, &node3 };
+        CHECK( NULL == list_prev(&list, &node1) );
+    }
+
+    TEST(Verify_list_prev_returns_previous_node)
+    {
+        list_node_t node4 = { NULL, NULL };
+        list_node_t node3 = { NULL, &node4 };
+        list_node_t node2 = { NULL, &node3 };
+        list_node_t node1 = { NULL, &node2 };
+        list_t list = { &node1, &node3 };
+        CHECK( &node1 == list_prev(&list, &node2) );
+        CHECK( &node2 == list_prev(&list, &node3) );
+        CHECK( &node3 == list_prev(&list, &node4) );
+    }
+
+    //-------------------------------------------------------------------------
     // Test list_at function
     //-------------------------------------------------------------------------
     TEST(Verify_list_at_returns_NULL_when_list_is_empty)
