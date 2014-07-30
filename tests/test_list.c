@@ -537,6 +537,113 @@ TEST_SUITE(List) {
     }
 
     //-------------------------------------------------------------------------
+    // Test list_delete_node function
+    //-------------------------------------------------------------------------
+    TEST(Verify_delete_node_does_nothing_if_list_is_empty)
+    {
+        list_t list = { NULL, NULL };
+        list_node_t bogus = { NULL, NULL };
+        list_delete_node(&list, NULL);
+        CHECK( NULL == list.head);
+        CHECK( NULL == list.tail);
+        list_delete_node(&list, &bogus);
+        CHECK( NULL == list.head);
+        CHECK( NULL == list.tail);
+    }
+
+    TEST(Verify_delete_node_does_nothing_if_given_node_not_in_list)
+    {
+        list_node_t node3 = { NULL, NULL };
+        list_node_t node2 = { NULL, &node3 };
+        list_node_t node1 = { NULL, &node2 };
+        list_t list = { &node1, &node3 };
+        list_node_t bogus = { NULL, &node2 };
+        list_delete_node(&list, &bogus);
+        CHECK( &node2 == bogus.next );
+        CHECK( &node1 == list.head );
+        CHECK( &node2 == node1.next );
+        CHECK( &node3 == node2.next );
+        CHECK( NULL == node3.next );
+        CHECK( &node3 == list.tail );
+    }
+
+    TEST(Verify_delete_node_deletes_the_head_node_of_a_list_of_length_1)
+    {
+        list_node_t node1 = { NULL, NULL };
+        list_t list = { &node1, &node1 };
+        list_delete_node(&list, &node1);
+        CHECK( NULL == node1.next );
+        CHECK( NULL == list.head );
+        CHECK( NULL == list.tail );
+    }
+
+    TEST(Verify_delete_node_deletes_the_first_element_of_a_list_of_length_2)
+    {
+        list_node_t node2 = { NULL, NULL };
+        list_node_t node1 = { NULL, &node2 };
+        list_t list = { &node1, &node2 };
+        list_delete_node(&list, &node1);
+        CHECK( NULL == node1.next );
+        CHECK( &node2 == list.head );
+        CHECK( NULL == node2.next );
+        CHECK( &node2 == list.tail );
+    }
+
+    TEST(Verify_delete_node_deletes_the_second_element_of_a_list_of_length_2)
+    {
+        list_node_t node2 = { NULL, NULL };
+        list_node_t node1 = { NULL, &node2 };
+        list_t list = { &node1, &node2 };
+        list_delete_node(&list, &node2);
+        CHECK( NULL == node2.next );
+        CHECK( &node1 == list.head );
+        CHECK( NULL == node1.next );
+        CHECK( &node1 == list.tail );
+    }
+
+    TEST(Verify_delete_node_deletes_the_first_element_of_a_list_of_length_3)
+    {
+        list_node_t node3 = { NULL, NULL };
+        list_node_t node2 = { NULL, &node3 };
+        list_node_t node1 = { NULL, &node2 };
+        list_t list = { &node1, &node3 };
+        list_delete_node(&list, &node1);
+        CHECK( NULL == node1.next );
+        CHECK( &node2 == list.head );
+        CHECK( &node3 == node2.next );
+        CHECK( NULL == node3.next );
+        CHECK( &node3 == list.tail );
+    }
+
+    TEST(Verify_delete_node_deletes_the_second_element_of_a_list_of_length_3)
+    {
+        list_node_t node3 = { NULL, NULL };
+        list_node_t node2 = { NULL, &node3 };
+        list_node_t node1 = { NULL, &node2 };
+        list_t list = { &node1, &node3 };
+        list_delete_node(&list, &node2);
+        CHECK( NULL == node2.next );
+        CHECK( &node1 == list.head );
+        CHECK( &node3 == node1.next );
+        CHECK( NULL == node3.next );
+        CHECK( &node3 == list.tail );
+    }
+
+    TEST(Verify_delete_node_deletes_the_third_element_of_a_list_of_length_3)
+    {
+        list_node_t node3 = { NULL, NULL };
+        list_node_t node2 = { NULL, &node3 };
+        list_node_t node1 = { NULL, &node2 };
+        list_t list = { &node1, &node3 };
+        list_delete_node(&list, &node3);
+        CHECK( NULL == node3.next );
+        CHECK( &node1 == list.head );
+        CHECK( &node2 == node1.next );
+        CHECK( NULL == node2.next );
+        CHECK( &node2 == list.tail );
+    }
+
+    //-------------------------------------------------------------------------
     // Test list_clear function
     //-------------------------------------------------------------------------
     TEST(Verify_list_clear_does_nothing_for_an_empty_list)
