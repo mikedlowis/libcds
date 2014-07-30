@@ -6,26 +6,22 @@
   */
 #include <stdlib.h>
 #include "buf.h"
+#include "mem.h"
+
+static void buf_free(void* p_buf);
 
 buf_t* buf_new(size_t size)
 {
     buf_t* buf = NULL;
     if (size > 0)
     {
-        buf         = (buf_t*) malloc( sizeof(buf_t) );
+        buf         = (buf_t*) mem_allocate(sizeof(buf_t), &buf_free);
         buf->buffer = (void**) malloc( sizeof(void*) * size );
         buf->size   = size;
         buf->reads  = 0;
         buf->writes = 0;
     }
     return buf;
-}
-
-void buf_free(buf_t* buf, bool free_contents)
-{
-    buf_clear(buf,free_contents);
-    free( buf->buffer );
-    free( buf );
 }
 
 size_t buf_size(buf_t* buf)
@@ -45,14 +41,14 @@ bool buf_full(buf_t* buf)
     return full;
 }
 
-void buf_clear(buf_t* buf, bool free_contents)
+void buf_clear(buf_t* buf)
 {
-    if (free_contents)
+    void* entry;
+    while ( !buf_empty(buf) )
     {
-        while ( !buf_empty(buf) )
-        {
-            free( buf_read(buf) );
-        }
+        entry = buf_read(buf);
+        if (NULL != entry)
+            mem_release( entry );
     }
     buf->reads  = 0;
     buf->writes = 0;
@@ -79,5 +75,11 @@ bool buf_write(buf_t* buf, void* data)
         success = true;
     }
     return success;
+}
+
+static void buf_free(void* p_buf)
+{
+    buf_clear((buf_t*)p_buf);
+    free( ((buf_t*)p_buf)->buffer );
 }
 

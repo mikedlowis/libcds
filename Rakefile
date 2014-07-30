@@ -19,13 +19,16 @@ task(:posix){ is_windows = false }
 
 # Define the compiler environment
 Env = Rscons::Environment.new do |env|
-  #env["CFLAGS"] += ['-Wall', '-Werror']
-  env['CXXSUFFIX'] = '.cpp'
+  env.build_dir('source/','build/obj/source')
+  env["CFLAGS"] += ['-Wall', '-Wextra', '-Werror']
+  env['CPPPATH'] += Dir['source/**/']
 end
 
 # Define the test environment
 TestEnv = Env.clone  do |env|
-  env['CPPPATH'] += Dir['tools/UnitTest++/src/', 'source/**/']
+  env.build_dir('source','build/obj/test_source')
+  env.build_dir('tests','build/obj/tests/source')
+  env['CPPPATH'] += Dir['tests/']
 end
 
 # Make sure the environment is processed before we quit
@@ -36,27 +39,20 @@ at_exit { Env.process; TestEnv.process}
 #------------------------------------------------------------------------------
 task :default => [:test, :build]
 
-desc "Build the OPTS static library"
+desc "Build the C Data Structures static library"
 task :build do
-    Env.Library('build/libcds.a', Dir['source/**.{c,cpp}'])
+    Env.Library('build/libcds.a', Dir['source/**/*.c'])
+    Env.process
 end
 
 #------------------------------------------------------------------------------
 # Unit Testing Targets
 #------------------------------------------------------------------------------
 desc "Run all unit tests"
-task :test => [:unittest_pp] do
-    TestEnv.Program('build/test_libcds',
-                    Dir[ 'source/**/*.{c,cpp}', 'tests/**/*.{c,cpp}', 'build/libUnitTest++.a' ])
+task :test do
+    TestEnv.Program('build/test_libcds', Dir['source/**/*.c', 'tests/**/*.c'])
     TestEnv.process
     sh "build/test_libcds"
-end
-
-task :unittest_pp do
-  TestEnv.Library('build/UnitTest++.a', Dir[
-    'tools/UnitTest++/src/*.{c,cpp}',
-    "tools/UnitTest++/src/#{(is_windows ? 'Win32' : 'Posix')}/*.{c,cpp}"
-  ])
 end
 
 #------------------------------------------------------------------------------

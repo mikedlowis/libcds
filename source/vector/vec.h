@@ -14,7 +14,6 @@
 
 /** A vector implementation */
 typedef struct {
-    bool own_contents; /*< Whether the vector is responsible for freeing it's contents */
     size_t size;       /*< The number of elements currently in the array */
     size_t capacity;   /*< The size of the internal array */
     void** p_buffer;   /*< Pointer to the array */
@@ -33,30 +32,12 @@ extern "C" {
 /**
  * @brief Creates a new vector initialized with the given elements.
  *
- * @param own_contents Whether the contents will be freed when the vector is freed.
  * @param num_elements The number of elements to be put into the vector.
  * @param ... The list of elements (length must be equal to num_elements).
  *
  * @return Pointer to newly created vector.
  */
-vec_t* vec_new(bool own_contents, size_t num_elements, ...);
-
-/**
- * @brief Reclaims the memory of the provided vector.
- *
- * @param p_vec The vector to free.
- * @param free_contents Whether the contents of the vector should also be freed.
- */
-void vec_free(vec_t* p_vec);
-
-/**
- * @brief Calls free on a range of pointers in an array.
- *
- * @param p_buffer Pointer to the array.
- * @param start_idx The index at which the process will start.
- * @param end_idx The index at which the process will end.
- */
-void vec_free_range(void** p_buffer, size_t start_idx, size_t end_idx);
+vec_t* vec_new(size_t num_elements, ...);
 
 /**
  * @brief Returns the number of items in the vector.

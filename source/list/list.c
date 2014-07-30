@@ -1,9 +1,14 @@
 #include <stdlib.h>
 #include "list.h"
+#include "mem.h"
+
+static void list_free(void* p_list);
+
+static void list_node_free(void* p_node);
 
 list_t* list_new(void)
 {
-    list_t* list = (list_t*)malloc( sizeof( list_t ) );
+    list_t* list = (list_t*)mem_allocate(sizeof(list_t), &list_free);
     list->head = NULL;
     list->tail = NULL;
     return list;
@@ -11,31 +16,10 @@ list_t* list_new(void)
 
 list_node_t* list_new_node(void* contents)
 {
-    list_node_t* node = (list_node_t*)malloc( sizeof( list_node_t ) );
+    list_node_t* node = (list_node_t*)mem_allocate(sizeof(list_node_t), &list_node_free);
     node->contents = contents;
     node->next = NULL;
     return node;
-}
-
-void list_free(list_t* list, bool free_contents)
-{
-    list_node_t* node = list->head;
-    while( NULL != node )
-    {
-        list_node_t* next = node->next;
-        list_free_node( node, free_contents );
-        node = next;
-    }
-    free( list );
-}
-
-void list_free_node(list_node_t* node, bool free_contents)
-{
-    if( free_contents )
-    {
-        free( node->contents );
-    }
-    free( node );
 }
 
 list_node_t* list_front( list_t* list )
@@ -65,7 +49,6 @@ bool list_empty(list_t* list)
     return ((NULL == list->head) && (NULL == list->tail));
 }
 
-
 list_node_t* list_at(list_t* list, size_t index)
 {
     list_node_t* node = NULL;
@@ -83,6 +66,8 @@ list_node_t* list_at(list_t* list, size_t index)
     }
     return node;
 }
+
+#include <stdio.h>
 
 list_node_t* list_push_front( list_t* list, void* contents )
 {
@@ -172,11 +157,15 @@ list_node_t* list_insert( list_t* list, size_t index, void* contents)
                 list->tail = new_node;
             }
         }
+        else
+        {
+            mem_release(contents);
+        }
     }
     return new_node;
 }
 
-list_node_t* list_delete( list_t* list, size_t index, bool free_contents)
+list_node_t* list_delete( list_t* list, size_t index)
 {
     list_node_t* node = NULL;
 
@@ -185,7 +174,8 @@ list_node_t* list_delete( list_t* list, size_t index, bool free_contents)
         node = list_pop_front(list);
         if (NULL != node)
         {
-            list_free_node(node,free_contents);
+            node->next = NULL;
+            mem_release(node);
             node = list_front(list);
         }
     }
@@ -200,7 +190,8 @@ list_node_t* list_delete( list_t* list, size_t index, bool free_contents)
             {
                 list->tail = prev;
             }
-            list_free_node(node,free_contents);
+            node->next = NULL;
+            mem_release(node);
             node = prev->next;
         }
     }
@@ -208,17 +199,26 @@ list_node_t* list_delete( list_t* list, size_t index, bool free_contents)
     return node;
 }
 
-list_t* list_clear(list_t* list, bool free_contents)
+void list_clear(list_t* list)
 {
-    list_node_t* node = list->head;
-    while(NULL != node)
+    if (NULL != list->head)
     {
-        list_node_t* next = node->next;
-        list_free_node(node,free_contents);
-        node = next;
+        mem_release((void*)list->head);
+        list->head = NULL;
+        list->tail = NULL;
     }
-    list->head = NULL;
-    list->tail = NULL;
-    return list;
 }
 
+static void list_free(void* p_list)
+{
+    if (NULL != ((list_t*)p_list)->head)
+        mem_release(((list_t*)p_list)->head);
+}
+
+static void list_node_free(void* p_node)
+{
+    if (NULL != ((list_node_t*)p_node)->contents)
+        mem_release(((list_node_t*)p_node)->contents);
+    if (NULL != ((list_node_t*)p_node)->next)
+        mem_release(((list_node_t*)p_node)->next);
+}

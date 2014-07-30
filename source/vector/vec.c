@@ -5,21 +5,28 @@
   $HeadURL$
 */
 #include "vec.h"
+#include "mem.h"
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
-vec_t* vec_new(bool own_contents, size_t num_elements, ...)
+static void vec_free(void* p_vec);
+
+static void vec_free_range(void** p_buffer, size_t start_idx, size_t end_idx);
+
+vec_t* vec_new(size_t num_elements, ...)
 {
     vec_t* p_vec;
     va_list elements;
     size_t index;
 
     /* Allocate and construct the vector object */
-    p_vec = (vec_t*)malloc( sizeof(vec_t) );
-    p_vec->own_contents = own_contents;
+    p_vec = (vec_t*)mem_allocate(sizeof(vec_t), vec_free);
+    assert(p_vec != NULL);
     p_vec->size = num_elements;
     p_vec->capacity = (0 == num_elements) ? DEFAULT_VEC_CAPACITY : num_elements;
-    p_vec->p_buffer = (void**)malloc( sizeof(void*) * p_vec->capacity );
+    p_vec->p_buffer = (void**)calloc( sizeof(void*), p_vec->capacity );
+    assert(p_vec->p_buffer != NULL);
 
     /* Populate the array with the elements list */
     va_start(elements, num_elements);
@@ -32,27 +39,9 @@ vec_t* vec_new(bool own_contents, size_t num_elements, ...)
     return p_vec;
 }
 
-void vec_free(vec_t* p_vec)
-{
-    if (p_vec->own_contents)
-    {
-        vec_clear(p_vec);
-    }
-    free(p_vec->p_buffer);
-    free(p_vec);
-}
-
-void vec_free_range(void** p_buffer, size_t start_idx, size_t end_idx)
-{
-    size_t i;
-    for(i = start_idx; i < end_idx; i++)
-    {
-        free(p_buffer[i]);
-    }
-}
-
 size_t vec_size(vec_t* p_vec)
 {
+    assert(NULL != p_vec);
     return p_vec->size;
 }
 
@@ -63,23 +52,26 @@ size_t vec_max_size(void)
 
 bool vec_empty(vec_t* p_vec)
 {
+    assert(NULL != p_vec);
     return (0 == vec_size(p_vec));
 }
 
 void vec_resize(vec_t* p_vec, size_t size, void* data)
 {
+    assert(NULL != p_vec);
     if (size > p_vec->size)
     {
-        vec_reserve(p_vec,vec_next_capacity(size));
-        for (p_vec->size; p_vec->size < size; p_vec->size++)
+        vec_reserve(p_vec,vec_next_capacity(size+1));
+        for (; p_vec->size < size; p_vec->size++)
         {
             p_vec->p_buffer[ p_vec->size ] = data;
+            if((NULL != data) && ((size - p_vec->size) > 1))
+                mem_retain(data);
         }
     }
     else if (size < p_vec->size)
     {
-        if (p_vec->own_contents)
-            vec_free_range(p_vec->p_buffer, size-1, p_vec->size);
+        vec_free_range(p_vec->p_buffer, size, p_vec->size);
         p_vec->size = size;
     }
 }
@@ -103,7 +95,9 @@ size_t vec_next_capacity(size_t req_size)
 
 void vec_shrink_to_fit(vec_t* p_vec)
 {
+    assert(NULL != p_vec);
     p_vec->p_buffer = realloc( p_vec->p_buffer, sizeof(void*) * p_vec->size );
+    assert(p_vec->p_buffer != NULL);
     p_vec->capacity = p_vec->size;
 }
 
@@ -114,7 +108,9 @@ size_t vec_capacity(vec_t* p_vec)
 
 void vec_reserve(vec_t* p_vec, size_t size)
 {
+    assert(p_vec != NULL);
     p_vec->p_buffer = realloc( p_vec->p_buffer, sizeof(void*) * size );
+    assert(p_vec->p_buffer != NULL);
     p_vec->capacity = size;
 }
 
@@ -149,13 +145,13 @@ bool vec_insert(vec_t* p_vec, size_t index, size_t num_elements, ...)
         /* Resize the vector to fit the new contents */
         vec_resize( p_vec, p_vec->size + num_elements, NULL );
         /* Move the displaced items to the end */
-        memcpy( &(p_vec->p_buffer[index + num_elements]),
-            &(p_vec->p_buffer[index]),
-            sizeof(void*) * (p_vec->size - index));
+        memmove(&(p_vec->p_buffer[index + num_elements]),
+                &(p_vec->p_buffer[index]),
+                sizeof(void*) * (p_vec->size - index));
         /* insert the new items */
         va_start(elements, num_elements);
         new_size = index + num_elements;
-        for (index; index < new_size; index++)
+        for (; index < new_size; index++)
         {
             p_vec->p_buffer[index] = va_arg(elements,void*);
         }
@@ -168,19 +164,15 @@ bool vec_insert(vec_t* p_vec, size_t index, size_t num_elements, ...)
 bool vec_erase(vec_t* p_vec, size_t start_idx, size_t end_idx)
 {
     bool ret = false;
-    size_t index;
     /* if the range is valid */
     if ((start_idx < p_vec->size) && (end_idx < p_vec->size) && (start_idx <= end_idx))
     {
         /* Free the range of data */
-        if (p_vec->own_contents)
-        {
-            vec_free_range(p_vec->p_buffer, start_idx, end_idx + 1);
-        }
+        vec_free_range(p_vec->p_buffer, start_idx, end_idx + 1);
         /* Compact the remaining data */
-        memcpy( &(p_vec->p_buffer[start_idx]), /* Destination is beginning of erased range */
-            &(p_vec->p_buffer[end_idx+1]), /* Source is end of erased range */
-            sizeof(void*) * (p_vec->size - end_idx));
+        memmove(&(p_vec->p_buffer[start_idx]), /* Destination is beginning of erased range */
+                &(p_vec->p_buffer[end_idx+1]), /* Source is end of erased range */
+                sizeof(void*) * (p_vec->size - end_idx - 1));
         /* Shrink the size */
         p_vec->size = p_vec->size - ((end_idx - start_idx) + 1);
         ret = true;
@@ -208,5 +200,29 @@ void vec_clear(vec_t* p_vec)
 {
     vec_free_range(p_vec->p_buffer, 0, p_vec->size);
     p_vec->size = 0;
+}
+
+static void vec_free(void* p_vec)
+{
+    vec_t* p_vector = (vec_t*)p_vec;
+    assert(NULL != p_vector);
+    assert(NULL != p_vector->p_buffer);
+    vec_clear(p_vector);
+    free(p_vector->p_buffer);
+    p_vector->p_buffer = NULL;
+}
+
+static void vec_free_range(void** p_buffer, size_t start_idx, size_t end_idx)
+{
+    size_t i;
+    assert(NULL != p_buffer);
+    for(i = start_idx; i < end_idx; i++)
+    {
+        if (NULL != p_buffer[i])
+        {
+            mem_release(p_buffer[i]);
+            p_buffer[i] = NULL;
+        }
+    }
 }
 
