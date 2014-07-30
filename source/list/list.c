@@ -203,6 +203,28 @@ list_node_t* list_delete( list_t* list, size_t index)
     return node;
 }
 
+void list_delete_node(list_t* list, list_node_t* node)
+{
+    if (NULL != list && NULL != node)
+    {
+        /* not using list_prev so node not found case can be handled properly */
+        list_node_t* prev = NULL;
+        list_node_t* edon = list->head;
+        while(NULL != edon && edon != node)
+        {
+            prev = edon;
+            edon = edon->next;
+        }
+        if( NULL != edon)
+        {
+            if(NULL != prev) prev->next = node->next;
+            if(list->head == node) list->head = node->next;
+            if(list->tail == node) list->tail = prev;
+            node->next = NULL;
+        } /* else node not found, do nothing. */
+    }
+}
+
 void list_clear(list_t* list)
 {
     if (NULL != list->head)
