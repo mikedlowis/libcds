@@ -82,6 +82,17 @@ size_t list_size(list_t* list);
 bool list_empty(list_t* list);
 
 /**
+ * @brief Find the node before the given one in the specified list.
+ *
+ * @param list          The list to search thru
+ * @param node          The node to search for
+ *
+ * @return Pointer to the node before the given node or
+ *         NULL if given node is NULL, not present, or is the head of list
+ */
+list_node_t* list_prev(list_t* list, list_node_t* node);
+
+/**
  * @brief   Return the node at the specified index in a linked list.
  *
  * This function loops through the linked list and returns the node in the list
@@ -93,6 +104,21 @@ bool list_empty(list_t* list);
  * @return A pointer to the node at the supplied index, NULL if out of range.
  **/
 list_node_t* list_at(list_t* list, size_t index);
+
+/**
+ * @brief   Return the index of the specified node in a linked list.
+ *
+ * This function loops through the linked list and returns the index in the list
+ * that matches the specified node. Returns -1 if the node is not found.
+ * Note: since NULL is implicitly at the end of every list, calling this
+ * with NULL for the node is essentially equivalent to list_size
+ *
+ * @param list  The list to search thru
+ * @param node  The node to look for
+ *
+ * @return The int index of the supplied node, -1 if not found.
+ **/
+int list_index_of(list_t* list, list_node_t* node);
 
 /**
  * @brief Adds a new node to the front of an existing linked list.

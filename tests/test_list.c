@@ -118,6 +118,57 @@ TEST_SUITE(List) {
     }
 
     //-------------------------------------------------------------------------
+    // Test list_prev function
+    //-------------------------------------------------------------------------
+    TEST(Verify_list_prev_returns_NULL_when_list_is_empty)
+    {
+        list_t list = { NULL, NULL };
+        list_node_t bogus = { NULL, NULL };
+        CHECK( NULL == list_prev(&list, NULL) );
+        CHECK( NULL == list_prev(&list, &bogus) );
+    }
+
+    TEST(Verify_list_prev_returns_NULL_when_given_NULL)
+    {
+        list_node_t node3 = { NULL, NULL };
+        list_node_t node2 = { NULL, &node3 };
+        list_node_t node1 = { NULL, &node2 };
+        list_t list = { &node1, &node3 };
+        CHECK( NULL == list_prev(&list, NULL) );
+    }
+
+    TEST(Verify_list_prev_returns_NULL_when_given_node_not_present)
+    {
+        list_node_t node3 = { NULL, NULL };
+        list_node_t node2 = { NULL, &node3 };
+        list_node_t node1 = { NULL, &node2 };
+        list_node_t bogus = { NULL, &node2 };
+        list_t list = { &node1, &node3 };
+        CHECK( NULL == list_prev(&list, &bogus) );
+    }
+
+    TEST(Verify_list_prev_returns_NULL_when_given_node_at_head)
+    {
+        list_node_t node3 = { NULL, NULL };
+        list_node_t node2 = { NULL, &node3 };
+        list_node_t node1 = { NULL, &node2 };
+        list_t list = { &node1, &node3 };
+        CHECK( NULL == list_prev(&list, &node1) );
+    }
+
+    TEST(Verify_list_prev_returns_previous_node)
+    {
+        list_node_t node4 = { NULL, NULL };
+        list_node_t node3 = { NULL, &node4 };
+        list_node_t node2 = { NULL, &node3 };
+        list_node_t node1 = { NULL, &node2 };
+        list_t list = { &node1, &node3 };
+        CHECK( &node1 == list_prev(&list, &node2) );
+        CHECK( &node2 == list_prev(&list, &node3) );
+        CHECK( &node3 == list_prev(&list, &node4) );
+    }
+
+    //-------------------------------------------------------------------------
     // Test list_at function
     //-------------------------------------------------------------------------
     TEST(Verify_list_at_returns_NULL_when_list_is_empty)
@@ -160,6 +211,74 @@ TEST_SUITE(List) {
         list_node_t node1 = { NULL, &node2 };
         list_t list = { &node1, &node3 };
         CHECK( &node3 == list_at( &list, 2 ) );
+    }
+
+    //-------------------------------------------------------------------------
+    // Test list_index_of function
+    //-------------------------------------------------------------------------
+    TEST(Verify_list_index_of_returns_negative_one_when_list_is_empty)
+    {
+        list_t list = { NULL, NULL };
+        list_node_t bogus = { NULL, NULL };
+        CHECK( -1 == list_index_of(&list, &bogus) );
+    }
+
+    TEST(Verify_list_index_of_returns_negative_one_when_node_is_not_found)
+    {
+        list_node_t node3 = { NULL, NULL };
+        list_node_t node2 = { NULL, &node3 };
+        list_node_t node1 = { NULL, &node2 };
+        list_t list = { &node1, &node3 };
+        list_node_t bogus = { NULL, NULL };
+        CHECK( -1 == list_index_of(&list, &bogus) );
+    }
+
+    TEST(Verify_list_index_of_returns_list_size_when_node_is_null)
+    {
+        list_t list0 = { NULL, NULL };
+        CHECK( 0 == list_index_of(&list0, NULL) );
+
+        list_node_t node1_1 = { NULL, NULL };
+        list_t list1 = { &node1_1, &node1_1 };
+        CHECK( 1 == list_index_of(&list1, NULL) );
+
+        list_node_t node2_2 = { NULL, NULL};
+        list_node_t node2_1 = { NULL, &node2_2 };
+        list_t list2 = { &node2_1, &node2_2 };
+        CHECK( 2 == list_index_of(&list2, NULL) );
+
+        list_node_t node3_3 = { NULL, NULL };
+        list_node_t node3_2 = { NULL, &node3_3 };
+        list_node_t node3_1 = { NULL, &node3_2 };
+        list_t list3 = { &node3_1, &node3_3 };
+        CHECK( 3 == list_index_of(&list3, NULL) );
+    }
+
+    TEST(Verify_list_index_of_returns_zero_for_first_item_in_list)
+    {
+        list_node_t node3 = { NULL, NULL };
+        list_node_t node2 = { NULL, &node3 };
+        list_node_t node1 = { NULL, &node2 };
+        list_t list = { &node1, &node3 };
+        CHECK( 0 == list_index_of(&list, &node1) );
+    }
+
+    TEST(Verify_list_index_of_returns_zero_for_second_item_in_list)
+    {
+        list_node_t node3 = { NULL, NULL };
+        list_node_t node2 = { NULL, &node3 };
+        list_node_t node1 = { NULL, &node2 };
+        list_t list = { &node1, &node3 };
+        CHECK( 1 == list_index_of(&list, &node2) );
+    }
+
+    TEST(Verify_list_index_of_returns_zero_for_third_item_in_list)
+    {
+        list_node_t node3 = { NULL, NULL };
+        list_node_t node2 = { NULL, &node3 };
+        list_node_t node1 = { NULL, &node2 };
+        list_t list = { &node1, &node3 };
+        CHECK( 2 == list_index_of(&list, &node3) );
     }
 
     //-------------------------------------------------------------------------

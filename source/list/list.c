@@ -49,6 +49,12 @@ bool list_empty(list_t* list)
     return ((NULL == list->head) && (NULL == list->tail));
 }
 
+list_node_t* list_prev(list_t* list, list_node_t* node){
+	list_node_t* prev = (NULL != list && NULL != node && list->head != node) ? list->head : NULL;
+	while(NULL != prev && prev->next != node) prev = prev->next;
+	return prev;
+}
+
 list_node_t* list_at(list_t* list, size_t index)
 {
     list_node_t* node = NULL;
@@ -67,7 +73,17 @@ list_node_t* list_at(list_t* list, size_t index)
     return node;
 }
 
-#include <stdio.h>
+int list_index_of(list_t* list, list_node_t* node)
+{
+    int i = 0;
+    list_node_t* edon = list->head;
+    while( NULL != edon && edon != node)
+    {
+        edon = edon->next;
+        i++;
+    }
+    return (node == edon) ? i : -1;
+}
 
 list_node_t* list_push_front( list_t* list, void* contents )
 {
