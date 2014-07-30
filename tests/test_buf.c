@@ -18,10 +18,9 @@ TEST_SUITE(Buffer) {
     {
         buf_t* buf = buf_new(5);
         CHECK( NULL != buf );
-        CHECK( NULL != buf->buffer );
-        CHECK( 5 == buf->size );
-        CHECK( 0 == buf->reads );
-        CHECK( 0 == buf->writes );
+        CHECK( 5 == buf_size(buf) );
+        CHECK( 0 == buf_reads(buf) );
+        CHECK( 0 == buf_writes(buf) );
         mem_release(buf);
     }
 
@@ -45,14 +44,17 @@ TEST_SUITE(Buffer) {
     //-------------------------------------------------------------------------
     TEST(Verify_buf_empty_returns_1_when_buffer_is_empty)
     {
-        buf_t buf = { NULL, 5, 1, 1 };
-        CHECK( true == buf_empty( &buf ) );
+        buf_t* buf = buf_new(5);
+        CHECK( true == buf_empty( buf ) );
+        mem_release(buf);
     }
 
     TEST(Verify_buf_empty_returns_0_when_buffer_is_empty)
     {
-        buf_t buf = { NULL, 5, 1, 2 };
-        CHECK( false == buf_empty( &buf ) );
+        buf_t* buf = buf_new(5);
+        buf_write(buf, mem_box(0x1234));
+        CHECK( false == buf_empty( buf ) );
+        mem_release(buf);
     }
 
     //-------------------------------------------------------------------------
@@ -60,20 +62,25 @@ TEST_SUITE(Buffer) {
     //-------------------------------------------------------------------------
     TEST(Verify_buf_full_returns_1_if_buffer_is_full)
     {
-        buf_t buf = { NULL, 5, 1, 6 };
-        CHECK( true == buf_full( &buf ) );
+        buf_t* buf = buf_new(1);
+        buf_write(buf, mem_box(0x1234));
+        CHECK( true == buf_full( buf ) );
+        mem_release(buf);
     }
 
     TEST(Verify_buf_full_returns_0_if_buffer_empty)
     {
-        buf_t buf = { NULL, 5, 1, 1 };
-        CHECK( false == buf_full( &buf ) );
+        buf_t* buf = buf_new(5);
+        CHECK( false == buf_full( buf ) );
+        mem_release(buf);
     }
 
     TEST(Verify_buf_full_returns_0_if_buffer_not_full)
     {
-        buf_t buf = { NULL, 5, 1, 5 };
-        CHECK( false == buf_full( &buf ) );
+        buf_t* buf = buf_new(5);
+        buf_write(buf, mem_box(0x1234));
+        CHECK( false == buf_full( buf ) );
+        mem_release(buf);
     }
 
     //-------------------------------------------------------------------------
@@ -86,8 +93,8 @@ TEST_SUITE(Buffer) {
         buf_write( buf, mem_box(0x1235) );
         buf_write( buf, mem_box(0x1236) );
         buf_clear( buf );
-        CHECK( buf->reads == 0 );
-        CHECK( buf->writes == 0 );
+        CHECK( buf_reads(buf) == 0 );
+        CHECK( buf_writes(buf) == 0 );
         mem_release(buf);
     }
 

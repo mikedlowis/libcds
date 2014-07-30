@@ -14,13 +14,11 @@ extern "C" {
 #include <string.h>
 #include <stdbool.h>
 
+/* Forward declare our structure */
+struct buf_t;
+
 /** A structure defining a circular buffer */
-typedef struct {
-    void** buffer; /**< Pointer to the buffer */
-    size_t size    /**< Size of the allocated buffer */;
-    size_t reads   /**< Total number of reads that have occurred */;
-    size_t writes  /**< Total number of writes that have occrurred */;
-} buf_t;
+typedef struct buf_t buf_t;
 
 /**
  * @brief Creates a new buffer.
@@ -39,6 +37,24 @@ buf_t* buf_new(size_t size);
  * @return The size of the buffer.
  */
 size_t buf_size(buf_t* buf);
+
+/**
+ * @brief The number of reads from the buffer.
+ *
+ * @param buf The buffer on which to operate.
+ *
+ * @return The number of reads.
+ */
+size_t buf_reads(buf_t* buf);
+
+/**
+ * @brief Return the number of writes to the buffer.
+ *
+ * @param buf The buffer on which to operate.
+ *
+ * @return The number of writes.
+ */
+size_t buf_writes(buf_t* buf);
 
 /**
  * @brief Returns whether the buffer is empty.

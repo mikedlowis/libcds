@@ -8,6 +8,13 @@
 #include "buf.h"
 #include "mem.h"
 
+struct buf_t {
+    void** buffer; /**< Pointer to the buffer */
+    size_t size;   /**< Size of the allocated buffer */
+    size_t reads;  /**< Total number of reads that have occurred */
+    size_t writes; /**< Total number of writes that have occrurred */
+};
+
 static void buf_free(void* p_buf);
 
 buf_t* buf_new(size_t size)
@@ -26,8 +33,19 @@ buf_t* buf_new(size_t size)
 
 size_t buf_size(buf_t* buf)
 {
-    return (size_t)buf->size;
+    return buf->size;
 }
+
+size_t buf_reads(buf_t* buf)
+{
+    return buf->reads;
+}
+
+size_t buf_writes(buf_t* buf)
+{
+    return buf->writes;
+}
+
 
 bool buf_empty(buf_t* buf)
 {
