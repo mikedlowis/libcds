@@ -87,31 +87,12 @@ int list_index_of(list_t* list, list_node_t* node)
 
 list_node_t* list_push_front( list_t* list, void* contents )
 {
-    list_node_t* node = list_new_node( contents );
-    node->next = list->head;
-    list->head = node;
-    if( NULL == list->tail )
-    {
-        list->tail = node;
-    }
-    return node;
+    return list_insert_after(list, NULL, contents);
 }
 
 list_node_t* list_push_back( list_t* list, void* contents )
 {
-    list_node_t* node = list_new_node( contents );
-    node->next = NULL;
-    if( NULL == list->tail )
-    {
-        list->head = node;
-        list->tail = node;
-    }
-    else
-    {
-        list->tail->next = node;
-        list->tail = node;
-    }
-    return node;
+    return list_insert_after(list, list->tail, contents);
 }
 
 list_node_t* list_pop_front( list_t* list )
