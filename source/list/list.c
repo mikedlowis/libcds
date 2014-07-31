@@ -183,16 +183,20 @@ list_node_t* list_insert( list_t* list, size_t index, void* contents)
 
 list_node_t* list_insert_after( list_t* list, list_node_t* node, void* contents)
 {
-    list_node_t* new_node = NULL;
-    if (node != NULL)
+    list_node_t* new_node = list_new_node(contents);
+    if(NULL != node)
     {
-        new_node = list_new_node(contents);
         new_node->next = node->next;
         node->next = new_node;
-        if (node == list->tail)
-        {
-            list->tail = new_node;
-        }
+    }
+    else
+    {
+        new_node->next = list->head;
+        list->head = new_node;
+    }
+    if (node == list->tail)
+    {
+        list->tail = new_node;
     }
     return new_node;
 }

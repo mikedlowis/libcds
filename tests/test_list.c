@@ -480,11 +480,52 @@ TEST_SUITE(List) {
     //-------------------------------------------------------------------------
     // Test list_insert_after function
     //-------------------------------------------------------------------------
-    TEST(Verify_insert_after_should_fail_to_insert_if_node_is_null)
+    TEST(Verify_insert_after_should_to_insert_to_head_if_node_is_null_and_list_is_empty)
     {
         list_t* list = list_new();
-        list_node_t* node = list_insert_after( list, NULL, mem_box(0x1234) );
-        CHECK( node == NULL );
+        list_node_t* node = list_insert_after(list, NULL, mem_box(0x1234) );
+        CHECK( node == list->head );
+        CHECK( node == list->tail );
+        CHECK( NULL == node->next );
+        mem_release(list);
+    }
+
+    TEST(Verify_insert_after_should_insert_to_head_if_node_is_null_and_list_is_populated)
+    {
+        list_t* list = list_new();
+        list_node_t* node1 = list_insert_after(list, NULL, mem_box(0x0666));
+        list_node_t* node2 = list_insert_after(list, NULL, mem_box(0x4242));
+        CHECK( node2 == list->head );
+        CHECK( node1 == list->tail );
+        CHECK( node1 == node2->next );
+        CHECK( NULL == node1->next );
+        list_node_t* node3 = list_insert_after(list, NULL, mem_box(0x1234));
+        CHECK( node3 == list->head );
+        CHECK( node1 == list->tail );
+        CHECK( node2 == node3->next );
+        CHECK( node1 == node2->next );
+        CHECK( NULL == node1->next );
+        mem_release(list);
+    }
+
+    TEST(Verify_insert_after_can_build_list_linearly)
+    {
+        list_t* list = list_new();
+        list_node_t* node1 = list_insert_after(list, list->tail, mem_box(0x1234));
+        CHECK( node1 == list->head );
+        CHECK( node1 == list->tail );
+        CHECK( NULL == node1->next );
+        list_node_t* node2 = list_insert_after(list, list->tail, mem_box(0x4321));
+        CHECK( node1 == list->head );
+        CHECK( node2 == list->tail );
+        CHECK( node2 == node1->next );
+        CHECK( NULL == node2->next );
+        list_node_t* node3 = list_insert_after(list, list->tail, mem_box(0x4242));
+        CHECK( node1 == list->head );
+        CHECK( node3 == list->tail );
+        CHECK( node2 == node1->next );
+        CHECK( node3 == node2->next );
+        CHECK( NULL == node3->next );
         mem_release(list);
     }
 
