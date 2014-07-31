@@ -50,9 +50,9 @@ bool list_empty(list_t* list)
 }
 
 list_node_t* list_prev(list_t* list, list_node_t* node){
-	list_node_t* prev = (NULL != list && NULL != node && list->head != node) ? list->head : NULL;
-	while(NULL != prev && prev->next != node) prev = prev->next;
-	return prev;
+    list_node_t* prev = (NULL != list && NULL != node && list->head != node) ? list->head : NULL;
+    while(NULL != prev && prev->next != node) prev = prev->next;
+    return prev;
 }
 
 list_node_t* list_at(list_t* list, size_t index)
@@ -176,6 +176,22 @@ list_node_t* list_insert( list_t* list, size_t index, void* contents)
         else
         {
             mem_release(contents);
+        }
+    }
+    return new_node;
+}
+
+list_node_t* list_insert_after( list_t* list, list_node_t* node, void* contents)
+{
+    list_node_t* new_node = NULL;
+    if (node != NULL)
+    {
+        new_node = list_new_node(contents);
+        new_node->next = node->next;
+        node->next = new_node;
+        if (node == list->tail)
+        {
+            list->tail = new_node;
         }
     }
     return new_node;

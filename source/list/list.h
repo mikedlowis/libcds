@@ -186,6 +186,21 @@ list_node_t* list_pop_back( list_t* list );
 list_node_t* list_insert( list_t* list, size_t index, void* contents);
 
 /**
+ * @brief Inserts a new node in a linked list at the specified index.
+ *
+ * This function traverses the list to the desired index and inserts a new node
+ * with the given contents at that position. The node previously at the desired
+ * index becomes the child of the new node.
+ *
+ * @param list     The list to operate on.
+ * @param node     The node after which the item should be inserted.
+ * @param contents The contents of the new node.
+ *
+ * @return Pointer to the newly inserted node, NULL if index is out of range.
+ **/
+list_node_t* list_insert_after( list_t* list, list_node_t* node, void* contents);
+
+/**
  * @brief Deletes a node from the supplied list.
  *
  * This function traverses the list to the desired index and frees the memory
@@ -202,7 +217,7 @@ list_node_t* list_delete(list_t* list, size_t index);
 /**
  * @brief Delete a node from the supplied list.
  *
- * This function differs from the above list_delete in that it is given a 
+ * This function differs from the above list_delete in that it is given a
  * pointer to a node to be deleted instead of an index.
  * //TODO: verify node->next should be set to NULL following successful deletion
  * //TODO: verify node->next should not be touched if node not present in list

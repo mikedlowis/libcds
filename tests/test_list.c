@@ -478,6 +478,57 @@ TEST_SUITE(List) {
     }
 
     //-------------------------------------------------------------------------
+    // Test list_insert_after function
+    //-------------------------------------------------------------------------
+    TEST(Verify_insert_after_should_fail_to_insert_if_node_is_null)
+    {
+        list_t* list = list_new();
+        list_node_t* node = list_insert_after( list, NULL, mem_box(0x1234) );
+        CHECK( node == NULL );
+        mem_release(list);
+    }
+
+    TEST(Verify_insert_after_should_insert_after_the_head_node)
+    {
+        list_node_t* node;
+        list_t* list = list_new();
+        list_push_back(list, mem_box(0x1234));
+        node = list_insert_after( list, list_front(list), mem_box(0x1235) );
+        CHECK( node != NULL );
+        CHECK( node->next == NULL );
+        CHECK( list->tail == node );
+        mem_release(list);
+    }
+
+    TEST(Verify_insert_after_should_insert_after_the_tail_node)
+    {
+        list_node_t* node;
+        list_t* list = list_new();
+        list_push_back(list, mem_box(0x1234));
+        list_push_back(list, mem_box(0x1234));
+        node = list_insert_after( list, list_back(list), mem_box(0x1234) );
+        CHECK( node != NULL );
+        CHECK( node->next == NULL );
+        CHECK( list_at(list, 2) == node );
+        CHECK( list->tail == node );
+        mem_release(list);
+    }
+
+    TEST(Verify_insert_after_should_insert_after_an_inner_node)
+    {
+        list_node_t* node;
+        list_t* list = list_new();
+        list_push_back(list, mem_box(0x1234));
+        node = list_push_back(list, mem_box(0x1234));
+        list_push_back(list, mem_box(0x1234));
+        node = list_insert_after( list, node, mem_box(0x1234) );
+        CHECK( node != NULL );
+        CHECK( node->next == list->tail );
+        CHECK( node == list_at(list,2) );
+        mem_release(list);
+    }
+
+    //-------------------------------------------------------------------------
     // Test list_delete function
     //-------------------------------------------------------------------------
     TEST(Verify_delete_does_nothing_if_list_is_empty)
