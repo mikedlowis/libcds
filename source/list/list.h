@@ -188,9 +188,6 @@ list_node_t* list_insert( list_t* list, size_t index, void* contents);
 /**
  * @brief Inserts a new node in a linked list after the specified node
  *
- * This function traverses the list to the specified and inserts a new node after
- * it with the given contents at that position.
- *
  * @param list     The list to operate on.
  * @param node     The node after which the item should be inserted.
  * @param contents The contents of the new node.
