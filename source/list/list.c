@@ -234,6 +234,7 @@ void list_delete_node(list_t* list, list_node_t* node)
             if(list->head == node) list->head = node->next;
             if(list->tail == node) list->tail = prev;
             node->next = NULL;
+            mem_release(node);
         } /* else node not found, do nothing. */
     }
 }
