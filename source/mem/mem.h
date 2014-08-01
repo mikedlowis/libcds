@@ -29,6 +29,15 @@ typedef void (*destructor_t)(void* p_val);
 void* mem_allocate(size_t size, destructor_t p_destruct_fn);
 
 /**
+ * @brief Returns the reference count for the given object.
+ *
+ * @param p_obj The object whose reference count should be returned.
+ *
+ * @return Number of references.
+ */
+int mem_num_references(void* p_obj);
+
+/**
  * @brief Increments the reference count for the given object.
  *
  * @param p_obj The object to be retained.

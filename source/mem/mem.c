@@ -38,6 +38,12 @@ void mem_release(void* p_obj)
     }
 }
 
+int mem_num_references(void* p_obj)
+{
+    obj_t* p_hdr = (((obj_t*)p_obj)-1);
+    return p_hdr->refcount;
+}
+
 void mem_autorelease(void* p_obj)
 {
     (void)p_obj;
