@@ -39,10 +39,10 @@ static rb_color_t node_color(rb_node_t* node){
 }
 
 //NODE:the node to be inserted
-static void rb_tree_recolor(
-	rb_node_t* node, rb_node_t* parent,
-	rb_node_t* grandparent, rb_node_t* uncle
-){
+static void rb_tree_recolor(rb_node_t* node){
+	rb_node_t* parent = node->parent;
+	rb_node_t* grandparent = (parent ? parent->parent : NULL);
+	rb_node_t* uncle = (grandparent ? (parent == grandparent->left ? grandparent->right : grandparent->left) : NULL);
 	if(NULL == parent){
 		node->color = BLACK;
 	}else if(BLACK == node_color(parent)){
@@ -55,35 +55,32 @@ static void rb_tree_recolor(
 		//TODO
 	}
 }
-static void rb_tree_insert_node(rb_tree_t* tree,
-	rb_node_t* node, rb_node_t* parent,
-	rb_node_t* grandparent, rb_node_t* uncle
-){
+static void rb_tree_insert_node(rb_tree_t* tree, rb_node_t* node, rb_node_t* parent){
 	if(NULL == parent){ /* inserting root of the tree */
 		tree->root = node;
-		rb_tree_recolor(node, parent, grandparent, uncle);
+		rb_tree_recolor(node);
 	}else if(node->contents < parent->contents){
 		if(parent->left){
-			rb_tree_insert_node(tree, node, parent->left, parent, parent->right);
+			rb_tree_insert_node(tree, node, parent->left);
 		}else{
 			node->parent = parent;
 			parent->left = node;
-			rb_tree_recolor(node, parent, grandparent, uncle);
+			rb_tree_recolor(node);
 		}
 	}else{
 		if(parent->right){
-			rb_tree_insert_node(tree, node, parent->right, parent, parent->left);
+			rb_tree_insert_node(tree, node, parent->right);
 		}else{
 			node->parent = parent;
 			parent->right = node;
-			rb_tree_recolor(node, parent, grandparent, uncle);
+			rb_tree_recolor(node);
 		}
 	}
 }
 
 rb_node_t* rb_tree_insert(rb_tree_t* tree, int value){
 	rb_node_t* new_node = rb_node_new(value);
-	rb_tree_insert_node(tree, new_node, tree->root, NULL, NULL);
+	rb_tree_insert_node(tree, new_node, tree->root);
 	return new_node;
 }
 
