@@ -47,10 +47,11 @@ static void rb_tree_recolor(rb_node_t* node){
 		node->color = BLACK;
 	}else if(BLACK == node_color(parent)){
 		/* dont need to do anything */
-	}else if(node_color(parent) == BLACK && node_color(uncle) == BLACK){
+	}else if(node_color(parent) == RED && node_color(uncle) == RED){
 		grandparent->color = RED;
 		parent->color = BLACK;
 		uncle->color = BLACK;
+		rb_tree_recolor(grandparent);
 	}else{
 		//TODO
 	}

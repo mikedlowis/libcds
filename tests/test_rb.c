@@ -99,7 +99,6 @@ TEST_SUITE(RB) {
 		CHECK(rb_tree_is_valid(tree));
 		mem_release(tree);
     }
-    /*
     TEST(Verify_rb_insert_below_full_first_level_works){
 		rb_tree_t* tree = rb_tree_new();
 		rb_node_t* root = rb_tree_insert(tree, 42);
@@ -112,10 +111,11 @@ TEST_SUITE(RB) {
 		CHECK(NULL == node3->left);
 		CHECK(NULL == node3->right);
 		CHECK(BLACK == root->color);
-		CHECK(
+		CHECK(BLACK == node1->color);
+		CHECK(BLACK == node2->color);
+		CHECK(RED == node3->color);
 		CHECK(rb_tree_is_valid(tree));
 		mem_release(tree);
     }
-    */
 }
 
