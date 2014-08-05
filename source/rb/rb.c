@@ -32,12 +32,55 @@ rb_tree_t* rb_tree_new(){
 	return tree;
 }
 
+//leaves are NULL and black implicitly
+static rb_color_t node_color(rb_node_t* node){
+	return (node ? node->color : BLACK);
+}
+
+//NODE:the node to be inserted
+static void rb_tree_recolor(
+	rb_node_t* node, rb_node_t* parent,
+	rb_node_t* grandparent, rb_node_t* uncle
+){
+	if(NULL == parent){
+		node->color = BLACK;
+	}else if(BLACK == node_color(parent)){
+		/* dont need to do anything */
+	}else if(node_color(parent) == BLACK && node_color(uncle) == BLACK){
+		grandparent->color = RED;
+		parent->color = BLACK;
+		uncle->color = BLACK;
+	}else{
+		//TODO
+	}
+}
+static void rb_tree_insert_node(rb_tree_t* tree,
+	rb_node_t* node, rb_node_t* parent,
+	rb_node_t* grandparent, rb_node_t* uncle
+){
+	if(NULL == parent){ /* inserting root of the tree */
+		tree->root = node;
+		rb_tree_recolor(node, parent, grandparent, uncle);
+	}else if(node->contents < parent->contents){
+		if(parent->left){
+			rb_tree_insert_node(tree, node, parent->left, parent, parent->right);
+		}else{
+			parent->left = node;
+			rb_tree_recolor(node, parent, grandparent, uncle);
+		}
+	}else{
+		if(parent->right){
+			rb_tree_insert_node(tree, node, parent->right, parent, parent->left);
+		}else{
+			parent->right = node;
+			rb_tree_recolor(node, parent, grandparent, uncle);
+		}
+	}
+}
+
 rb_node_t* rb_tree_insert(rb_tree_t* tree, int value){
 	rb_node_t* new_node = rb_node_new(value);
-	if(NULL == tree->root){
-		new_node->color = BLACK;
-		tree->root = new_node;
-	}
+	rb_tree_insert_node(tree, new_node, tree->root, NULL, NULL);
 	return new_node;
 }
 
@@ -62,8 +105,8 @@ bool rb_node_is_valid(rb_node_t* node, int min_val, int max_val){
 	if(node){
 		ret &= (node->color == RED || node->color == BLACK);
 		if(node->color == RED){
-			ret &= (!node->left || node->left->color == BLACK);
-			ret &= (!node->right || node->right->color == BLACK);
+			ret &= ((node_color(node->left) == BLACK) && 
+					(node_color(node->right) == BLACK));
 		}
 		ret &= ( -1 == min_val || node->contents >= min_val);
 		ret &= ( -1 == max_val || node->contents <= max_val);
