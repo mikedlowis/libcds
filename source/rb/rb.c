@@ -38,6 +38,45 @@ static rb_color_t node_color(rb_node_t* node){
 	return (node ? node->color : BLACK);
 }
 
+static void rb_tree_rotate_outside_left(rb_node_t* node){
+	rb_node_t* parent = node->parent;
+	rb_node_t* grandparent = (parent ? parent->parent : NULL);
+	//rb_node_t* uncle = (grandparent ? (parent == grandparent->left ? grandparent->right : grandparent->left) : NULL);
+	rb_node_t* greatgrand = (grandparent ? grandparent->parent : NULL);
+	//move parent to grandparent's position:
+	//first point greatgrand at parent on the appropriate side:
+	if(greatgrand && grandparent == greatgrand->left) greatgrand->left = parent;
+	else if(greatgrand && grandparent == greatgrand->right) greatgrand->right = parent;
+	//update parent's parent pointer.
+	parent->parent = greatgrand;
+	//parent->right shouldn't actually be anything.. but save it anyway
+	grandparent->left = parent->right; //safe to overwrite gp->left. it is parent.
+	parent->right = grandparent;
+	grandparent->parent = parent;
+	//repaint nodes as needed:
+	parent->color = BLACK;
+	grandparent->color = RED;
+}
+
+//mirror of above:
+static void rb_tree_rotate_outside_right(rb_node_t* node){
+	rb_node_t* parent = node->parent;
+	rb_node_t* grandparent = (parent ? parent->parent : NULL);
+	//rb_node_t* uncle = (grandparent ? (parent == grandparent->left ? grandparent->right : grandparent->left) : NULL);
+	rb_node_t* greatgrand = (grandparent ? grandparent->parent : NULL);
+	//move parent to grandparent's position
+	if(greatgrand && grandparent == greatgrand->left) greatgrand->left = parent;
+	else if(greatgrand && grandparent == greatgrand->right) greatgrand->right = parent;
+	parent->parent = greatgrand;
+	//perform swap
+	grandparent->right = parent->left; //safe to overwrite gp->right. it is parent.
+	parent->left = grandparent;
+	grandparent->parent = parent;
+	//repaint nodes
+	parent->color = BLACK;
+	grandparent->color = RED;
+}
+
 //NODE:the node to be inserted
 static void rb_tree_recolor(rb_node_t* node){
 	rb_node_t* parent = node->parent;
@@ -47,15 +86,41 @@ static void rb_tree_recolor(rb_node_t* node){
 		node->color = BLACK;
 	}else if(BLACK == node_color(parent)){
 		/* dont need to do anything */
-	}else if(node_color(parent) == RED && node_color(uncle) == RED){
+	}else if(node_color(uncle) == RED){
+		//parent and uncle are both red. both can be painted black
 		grandparent->color = RED;
 		parent->color = BLACK;
 		uncle->color = BLACK;
 		rb_tree_recolor(grandparent);
-	}else{
-		//TODO
+	}else if(node == parent->right && parent == grandparent->left){
+		//parent is red, uncle is black, "inside left" case
+		//first rotate node and parent
+		grandparent->left = node;
+		node->parent = grandparent;
+		node->left = parent;
+		parent->parent = node;
+		parent->right = NULL;
+		//tree now transformed to an "outside left" case
+		rb_tree_rotate_outside_left(parent);
+	}else if(node == parent->left && parent == grandparent->right){
+		//parent is red, uncle is black, "inside right" case
+		//first rotate node and parent
+		grandparent->right = node;
+		node->parent = grandparent;
+		node->right = parent;
+		parent->parent = node;
+		parent->left = NULL;
+		//tree now transformed to an "outside right" case
+		rb_tree_rotate_outside_right(parent);
+	}else if(node == parent->left && parent == grandparent->left){
+		//parent is red, uncle is black, "outside left" case
+		rb_tree_rotate_outside_left(node);
+	}else if(node == parent->right && parent == grandparent->right){
+		//parent is red, uncle is black, "outside right" case
+		rb_tree_rotate_outside_right(node);
 	}
 }
+
 static void rb_tree_insert_node(rb_tree_t* tree, rb_node_t* node, rb_node_t* parent){
 	if(NULL == parent){ /* inserting root of the tree */
 		tree->root = node;
