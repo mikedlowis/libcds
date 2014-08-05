@@ -15,6 +15,7 @@ typedef enum {
 typedef struct rb_node_t {
 	struct rb_node_t* left;
 	struct rb_node_t* right;
+	struct rb_node_t* parent;
 	rb_color_t color;
 	int contents; /* int for development; TODO: make this a void* */
 } rb_node_t;

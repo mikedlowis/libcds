@@ -21,6 +21,7 @@ rb_node_t* rb_node_new(int contents){
 	rb_node_t* node = mem_allocate(sizeof(rb_node_t), &rb_node_free);
 	node->left = NULL;
 	node->right = NULL;
+	node->parent = NULL;
 	node->contents = contents;
 	node->color = RED;
 	return node;
@@ -65,6 +66,7 @@ static void rb_tree_insert_node(rb_tree_t* tree,
 		if(parent->left){
 			rb_tree_insert_node(tree, node, parent->left, parent, parent->right);
 		}else{
+			node->parent = parent;
 			parent->left = node;
 			rb_tree_recolor(node, parent, grandparent, uncle);
 		}
@@ -72,6 +74,7 @@ static void rb_tree_insert_node(rb_tree_t* tree,
 		if(parent->right){
 			rb_tree_insert_node(tree, node, parent->right, parent, parent->left);
 		}else{
+			node->parent = parent;
 			parent->right = node;
 			rb_tree_recolor(node, parent, grandparent, uncle);
 		}
