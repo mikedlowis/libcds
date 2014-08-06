@@ -38,7 +38,7 @@ static rb_color_t node_color(rb_node_t* node){
 	return (node ? node->color : BLACK);
 }
 
-static void rb_tree_rotate_outside_left(rb_node_t* node){
+static void rb_tree_rotate_outside_left(rb_tree_t* tree, rb_node_t* node){
 	rb_node_t* parent = node->parent;
 	rb_node_t* grandparent = (parent ? parent->parent : NULL);
 	//rb_node_t* uncle = (grandparent ? (parent == grandparent->left ? grandparent->right : grandparent->left) : NULL);
@@ -53,13 +53,15 @@ static void rb_tree_rotate_outside_left(rb_node_t* node){
 	grandparent->left = parent->right; //safe to overwrite gp->left. it is parent.
 	parent->right = grandparent;
 	grandparent->parent = parent;
+	//repair the tree root
+	if(tree->root == grandparent) tree->root = parent;
 	//repaint nodes as needed:
 	parent->color = BLACK;
 	grandparent->color = RED;
 }
 
 //mirror of above:
-static void rb_tree_rotate_outside_right(rb_node_t* node){
+static void rb_tree_rotate_outside_right(rb_tree_t* tree, rb_node_t* node){
 	rb_node_t* parent = node->parent;
 	rb_node_t* grandparent = (parent ? parent->parent : NULL);
 	//rb_node_t* uncle = (grandparent ? (parent == grandparent->left ? grandparent->right : grandparent->left) : NULL);
@@ -72,13 +74,15 @@ static void rb_tree_rotate_outside_right(rb_node_t* node){
 	grandparent->right = parent->left; //safe to overwrite gp->right. it is parent.
 	parent->left = grandparent;
 	grandparent->parent = parent;
+	//repair the tree root
+	if(tree->root == grandparent) tree->root = parent;
 	//repaint nodes
 	parent->color = BLACK;
 	grandparent->color = RED;
 }
 
 //NODE:the node to be inserted
-static void rb_tree_recolor(rb_node_t* node){
+static void rb_tree_recolor(rb_tree_t* tree, rb_node_t* node){
 	rb_node_t* parent = node->parent;
 	rb_node_t* grandparent = (parent ? parent->parent : NULL);
 	rb_node_t* uncle = (grandparent ? (parent == grandparent->left ? grandparent->right : grandparent->left) : NULL);
@@ -91,7 +95,7 @@ static void rb_tree_recolor(rb_node_t* node){
 		grandparent->color = RED;
 		parent->color = BLACK;
 		uncle->color = BLACK;
-		rb_tree_recolor(grandparent);
+		rb_tree_recolor(tree, grandparent);
 	}else if(node == parent->right && parent == grandparent->left){
 		//parent is red, uncle is black, "inside left" case
 		//first rotate node and parent
@@ -101,7 +105,7 @@ static void rb_tree_recolor(rb_node_t* node){
 		parent->parent = node;
 		parent->right = NULL;
 		//tree now transformed to an "outside left" case
-		rb_tree_rotate_outside_left(parent);
+		rb_tree_rotate_outside_left(tree, parent);
 	}else if(node == parent->left && parent == grandparent->right){
 		//parent is red, uncle is black, "inside right" case
 		//first rotate node and parent
@@ -111,27 +115,27 @@ static void rb_tree_recolor(rb_node_t* node){
 		parent->parent = node;
 		parent->left = NULL;
 		//tree now transformed to an "outside right" case
-		rb_tree_rotate_outside_right(parent);
+		rb_tree_rotate_outside_right(tree, parent);
 	}else if(node == parent->left && parent == grandparent->left){
 		//parent is red, uncle is black, "outside left" case
-		rb_tree_rotate_outside_left(node);
+		rb_tree_rotate_outside_left(tree, node);
 	}else if(node == parent->right && parent == grandparent->right){
 		//parent is red, uncle is black, "outside right" case
-		rb_tree_rotate_outside_right(node);
+		rb_tree_rotate_outside_right(tree, node);
 	}
 }
 
 static void rb_tree_insert_node(rb_tree_t* tree, rb_node_t* node, rb_node_t* parent){
 	if(NULL == parent){ /* inserting root of the tree */
 		tree->root = node;
-		rb_tree_recolor(node);
+		rb_tree_recolor(tree, node);
 	}else if(node->contents < parent->contents){
 		if(parent->left){
 			rb_tree_insert_node(tree, node, parent->left);
 		}else{
 			node->parent = parent;
 			parent->left = node;
-			rb_tree_recolor(node);
+			rb_tree_recolor(tree, node);
 		}
 	}else{
 		if(parent->right){
@@ -139,7 +143,7 @@ static void rb_tree_insert_node(rb_tree_t* tree, rb_node_t* node, rb_node_t* par
 		}else{
 			node->parent = parent;
 			parent->right = node;
-			rb_tree_recolor(node);
+			rb_tree_recolor(tree, node);
 		}
 	}
 }

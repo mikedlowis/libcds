@@ -117,5 +117,33 @@ TEST_SUITE(RB) {
 		CHECK(rb_tree_is_valid(tree));
 		mem_release(tree);
     }
+    TEST(Verify_rb_insert_parent_uncle_mismatch_outside_left){
+		rb_tree_t* tree = rb_tree_new();
+		rb_node_t* node1 = rb_tree_insert(tree, 42);
+		rb_node_t* node2 = rb_tree_insert(tree, 32);
+		CHECK(RED == node2->color);
+		//tree->root->right == NULL ; black implicitly
+		rb_node_t* node3 = rb_tree_insert(tree, 15);
+		CHECK(node2 == tree->root);
+		//check node2 fields 
+		CHECK(node3 == node2->left);
+		CHECK(node1 == node2->right);
+		CHECK(NULL == node2->parent)
+		CHECK(BLACK == node2->color);
+		CHECK(32 == node2->contents);
+		//check node1 fields
+		CHECK(NULL == node1->left);
+		CHECK(NULL == node1->right);
+		CHECK(node2 == node1->parent)
+		CHECK(RED == node1->color);
+		CHECK(42 == node1->contents);
+		//check node3 fields
+		CHECK(NULL == node3->left);
+		CHECK(NULL == node3->right);
+		CHECK(node2 == node3->parent);
+		CHECK(RED == node3->color);
+		CHECK(15 == node3->contents);
+		mem_release(tree);
+    }
 }
 
