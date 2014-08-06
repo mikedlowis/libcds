@@ -175,9 +175,30 @@ static void rb_tree_delete_node(rb_tree_t* tree, rb_node_t* node){
 		//has two children. TODO
 	}else{
 		rb_node_t* parent = node->parent;
-		if(RED == node->color){
+		if(RED == node_color(node)){
 			if(node == parent->left) parent->left = NULL;
 			else parent->right = NULL;
+			node->parent = NULL;
+			mem_release(node);
+		} else if(RED == node_color(node->left) && BLACK == node_color(node->right)){
+			//single red child, to the left
+			rb_node_t* child = node->left;
+			child->parent = parent;
+			if(parent->left == node) parent->left = child;
+			else parent->right = child;
+			//safe to destroy node->right ; it is a NULL leaf
+			child->color = BLACK;
+			node->left = NULL;
+			node->parent = NULL;
+			mem_release(node);
+		} else if(RED == node_color(node->right) && BLACK == node_color(node->left)){
+			//single red child, to the right
+			rb_node_t* child = node->right;
+			child->parent = parent;
+			if(parent->left == node) parent->left = child;
+			else parent->right = child;
+			child->color = BLACK;
+			node->right = NULL;
 			node->parent = NULL;
 			mem_release(node);
 		}
