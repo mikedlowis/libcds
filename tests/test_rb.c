@@ -458,5 +458,19 @@ TEST_SUITE(RB) {
 		mem_release(node1);
 		mem_release(tree);
 	}
+	TEST(Verify_rb_delete_root_node_with_no_children){
+		rb_tree_t* tree = rb_tree_new();
+		rb_node_t* node1 = rb_tree_insert(tree, 88);
+		mem_retain(node1);
+		rb_tree_delete(tree, 88);
+		CHECK(1 == mem_num_references(node1));
+		CHECK(NULL == tree->root);
+		CHECK(NULL == node1->left);
+		CHECK(NULL == node1->right);
+		CHECK(NULL == node1->parent);
+		CHECK(rb_tree_is_valid(tree));
+		mem_release(node1);
+		mem_release(tree);
+	}
 }
 

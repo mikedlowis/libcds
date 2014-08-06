@@ -174,8 +174,10 @@ static void rb_tree_delete_node(rb_tree_t* tree, rb_node_t* node){
 	if(node->left && node->right){
 		//has two children. TODO
 	}else{
+		//node has at most one non-leaf child
 		rb_node_t* parent = node->parent;
 		if(RED == node_color(node)){
+			//node is red and has only leaf children or tree is invalid.
 			if(node == parent->left) parent->left = NULL;
 			else parent->right = NULL;
 			node->parent = NULL;
@@ -203,6 +205,14 @@ static void rb_tree_delete_node(rb_tree_t* tree, rb_node_t* node){
 			node->right = NULL;
 			node->parent = NULL;
 			mem_release(node);
+		} else if(node == tree->root){
+			//at most one child. no red children :: no children.
+			tree->root = NULL;
+			//pointers should already be null.
+			mem_release(node);
+		} else {
+			//node is not root.
+			//node is black, and has only leaf children or tree is invalid.
 		}
 	}
 }
