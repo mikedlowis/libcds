@@ -419,7 +419,44 @@ TEST_SUITE(RB) {
 		mem_release(tree);
     }
 	//second class: deleting nodes that have two children
-	//third class: special cases
-	TEST(Verify_rb_delete_root){}
+	//third class: special cases: deleting root
+	TEST(Verify_rb_delete_root_node_with_single_red_left_child){
+		rb_tree_t* tree = rb_tree_new();
+		rb_node_t* node1 = rb_tree_insert(tree, 88);
+		rb_node_t* node2 = rb_tree_insert(tree, 42);
+		mem_retain(node1);
+		rb_tree_delete(tree, 88);
+		CHECK(1 == mem_num_references(node1));
+		CHECK(node2 == tree->root);
+		CHECK(NULL == node2->left);
+		CHECK(NULL == node2->right);
+		CHECK(NULL == node2->parent);
+		//check node1 pointers are nulld
+		CHECK(NULL == node1->parent);
+		CHECK(NULL == node1->left);
+		CHECK(NULL == node1->right);
+		CHECK(rb_tree_is_valid(tree));
+		mem_release(node1);
+		mem_release(tree);
+	}
+	TEST(Verify_rb_delete_root_node_with_single_red_right_child){
+		rb_tree_t* tree = rb_tree_new();
+		rb_node_t* node1 = rb_tree_insert(tree, 42);
+		rb_node_t* node2 = rb_tree_insert(tree, 88);
+		mem_retain(node1);
+		rb_tree_delete(tree, 42);
+		CHECK(1 == mem_num_references(node1));
+		CHECK(node2 == tree->root);
+		CHECK(NULL == node2->left);
+		CHECK(NULL == node2->right);
+		CHECK(NULL == node2->parent);
+		//check node1 pointers are nulld
+		CHECK(NULL == node1->parent);
+		CHECK(NULL == node1->left);
+		CHECK(NULL == node1->right);
+		CHECK(rb_tree_is_valid(tree));
+		mem_release(node1);
+		mem_release(tree);
+	}
 }
 

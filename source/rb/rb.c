@@ -184,7 +184,8 @@ static void rb_tree_delete_node(rb_tree_t* tree, rb_node_t* node){
 			//single red child, to the left
 			rb_node_t* child = node->left;
 			child->parent = parent;
-			if(parent->left == node) parent->left = child;
+			if(NULL == parent) tree->root = child;
+			else if(parent->left == node) parent->left = child;
 			else parent->right = child;
 			//safe to destroy node->right ; it is a NULL leaf
 			child->color = BLACK;
@@ -195,7 +196,8 @@ static void rb_tree_delete_node(rb_tree_t* tree, rb_node_t* node){
 			//single red child, to the right
 			rb_node_t* child = node->right;
 			child->parent = parent;
-			if(parent->left == node) parent->left = child;
+			if(NULL == parent) tree->root = child;
+			else if(parent->left == node) parent->left = child;
 			else parent->right = child;
 			child->color = BLACK;
 			node->right = NULL;
