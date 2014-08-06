@@ -29,6 +29,9 @@ rb_node_t* rb_node_new(int contents);
 rb_tree_t* rb_tree_new();
 //returns a pointer to the new node
 rb_node_t* rb_tree_insert(rb_tree_t* tree, int value);
+void rb_tree_delete(rb_tree_t* tree, int value);
+//look up a node in the tree with the given value
+rb_node_t* rb_tree_lookup(rb_tree_t* tree, int value);
 
 //TEST FUNCTIONS:
 bool rb_tree_is_valid(rb_tree_t* tree);

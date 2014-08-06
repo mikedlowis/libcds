@@ -155,6 +155,39 @@ rb_node_t* rb_tree_insert(rb_tree_t* tree, int value){
 }
 
 
+static rb_node_t* rb_lookup_node(rb_node_t* node, int value){
+	rb_node_t* ret = NULL;
+	if(node){
+		if(value == node->contents) ret = node;
+		else if(value > node->contents) ret = rb_lookup_node(node->right, value);
+		else if(value < node->contents) ret = rb_lookup_node(node->left, value);
+	}
+	return ret;
+}
+
+rb_node_t* rb_tree_lookup(rb_tree_t* tree, int value){
+	return rb_lookup_node(tree->root, value);
+}
+
+static void rb_tree_delete_node(rb_tree_t* tree, rb_node_t* node){
+	(void) tree;
+	if(node->left && node->right){
+		//has two children. TODO
+	}else{
+		rb_node_t* parent = node->parent;
+		if(RED == node->color){
+			if(node == parent->left) parent->left = NULL;
+			else parent->right = NULL;
+			node->parent = NULL;
+			mem_release(node);
+		}
+	}
+}
+void rb_tree_delete(rb_tree_t* tree, int value){
+	rb_node_t* doomed = rb_lookup_node(tree->root, value);
+	if(doomed) rb_tree_delete_node(tree, doomed);
+}
+
 /* THE FOLLOWING FUNCTIONS (TO EOF) ARE USED FOR TESTING PURPOSES ONLY */
 
 //if path to the left != path to the right, return -1 (invalid)
