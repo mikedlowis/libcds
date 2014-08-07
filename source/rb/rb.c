@@ -82,7 +82,7 @@ static void rb_tree_rotate_outside_right(rb_tree_t* tree, rb_node_t* node){
 }
 
 //NODE:the node to be inserted
-static void rb_tree_recolor(rb_tree_t* tree, rb_node_t* node){
+static void rb_tree_ins_recolor(rb_tree_t* tree, rb_node_t* node){
 	rb_node_t* parent = node->parent;
 	rb_node_t* grandparent = (parent ? parent->parent : NULL);
 	rb_node_t* uncle = (grandparent ? (parent == grandparent->left ? grandparent->right : grandparent->left) : NULL);
@@ -95,7 +95,7 @@ static void rb_tree_recolor(rb_tree_t* tree, rb_node_t* node){
 		grandparent->color = RED;
 		parent->color = BLACK;
 		uncle->color = BLACK;
-		rb_tree_recolor(tree, grandparent);
+		rb_tree_ins_recolor(tree, grandparent);
 	}else if(node == parent->right && parent == grandparent->left){
 		//parent is red, uncle is black, "inside left" case
 		//first rotate node and parent
@@ -128,14 +128,14 @@ static void rb_tree_recolor(rb_tree_t* tree, rb_node_t* node){
 static void rb_tree_insert_node(rb_tree_t* tree, rb_node_t* node, rb_node_t* parent){
 	if(NULL == parent){ /* inserting root of the tree */
 		tree->root = node;
-		rb_tree_recolor(tree, node);
+		rb_tree_ins_recolor(tree, node);
 	}else if(node->contents < parent->contents){
 		if(parent->left){
 			rb_tree_insert_node(tree, node, parent->left);
 		}else{
 			node->parent = parent;
 			parent->left = node;
-			rb_tree_recolor(tree, node);
+			rb_tree_ins_recolor(tree, node);
 		}
 	}else{
 		if(parent->right){
@@ -143,7 +143,7 @@ static void rb_tree_insert_node(rb_tree_t* tree, rb_node_t* node, rb_node_t* par
 		}else{
 			node->parent = parent;
 			parent->right = node;
-			rb_tree_recolor(tree, node);
+			rb_tree_ins_recolor(tree, node);
 		}
 	}
 }
