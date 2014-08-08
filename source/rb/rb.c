@@ -78,23 +78,6 @@ static void rb_tree_rotate_outside_left(rb_tree_t* tree, rb_node_t* node){
 	rb_node_t* parent = node->parent;
 	rb_node_t* grandparent = (parent ? parent->parent : NULL);
 	rotate_right(tree, grandparent);
-	/*
-	//rb_node_t* uncle = (grandparent ? (parent == grandparent->left ? grandparent->right : grandparent->left) : NULL);
-	rb_node_t* greatgrand = (grandparent ? grandparent->parent : NULL);
-	//move parent to grandparent's position:
-	//first point greatgrand at parent on the appropriate side:
-	if(greatgrand && grandparent == greatgrand->left) greatgrand->left = parent;
-	else if(greatgrand && grandparent == greatgrand->right) greatgrand->right = parent;
-	//update parent's parent pointer.
-	parent->parent = greatgrand;
-	//parent->right shouldn't actually be anything.. but save it anyway
-	grandparent->left = parent->right; //safe to overwrite gp->left. it is parent.
-	parent->right = grandparent;
-	grandparent->parent = parent;
-	//repair the tree root
-	if(tree->root == grandparent) tree->root = parent;
-	//repaint nodes as needed:
-	*/
 	parent->color = BLACK;
 	grandparent->color = RED;
 }
@@ -104,21 +87,6 @@ static void rb_tree_rotate_outside_right(rb_tree_t* tree, rb_node_t* node){
 	rb_node_t* parent = node->parent;
 	rb_node_t* grandparent = (parent ? parent->parent : NULL);
 	rotate_left(tree, grandparent);
-	/*
-	//rb_node_t* uncle = (grandparent ? (parent == grandparent->left ? grandparent->right : grandparent->left) : NULL);
-	rb_node_t* greatgrand = (grandparent ? grandparent->parent : NULL);
-	//move parent to grandparent's position
-	if(greatgrand && grandparent == greatgrand->left) greatgrand->left = parent;
-	else if(greatgrand && grandparent == greatgrand->right) greatgrand->right = parent;
-	parent->parent = greatgrand;
-	//perform swap
-	grandparent->right = parent->left; //safe to overwrite gp->right. it is parent.
-	parent->left = grandparent;
-	grandparent->parent = parent;
-	//repair the tree root
-	if(tree->root == grandparent) tree->root = parent;
-	//repaint nodes
-	*/
 	parent->color = BLACK;
 	grandparent->color = RED;
 }
@@ -142,26 +110,12 @@ static void rb_tree_ins_recolor(rb_tree_t* tree, rb_node_t* node){
 		//parent is red, uncle is black, "inside left" case
 		//first rotate node and parent
 		rotate_left(tree, parent);
-		/*
-		grandparent->left = node;
-		node->parent = grandparent;
-		node->left = parent;
-		parent->parent = node;
-		parent->right = NULL;
-		*/
 		//tree now transformed to an "outside left" case
 		rb_tree_rotate_outside_left(tree, parent);
 	}else if(node == parent->left && parent == grandparent->right){
 		//parent is red, uncle is black, "inside right" case
 		//first rotate node and parent
 		rotate_right(tree, parent);
-		/*
-		grandparent->right = node;
-		node->parent = grandparent;
-		node->right = parent;
-		parent->parent = node;
-		parent->left = NULL;
-		*/
 		//tree now transformed to an "outside right" case
 		rb_tree_rotate_outside_right(tree, parent);
 	}else if(node == parent->left && parent == grandparent->left){
