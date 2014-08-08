@@ -9,35 +9,320 @@ static void test_setup(void) { }
 // Begin Unit Tests
 //-----------------------------------------------------------------------------
 TEST_SUITE(RB) {
-    //-------------------------------------------------------------------------
-    // Test the rb_node_new function
-    //-------------------------------------------------------------------------
-    TEST(Verify_rb_node_new_returns_a_new_node){
+	//-------------------------------------------------------------------------
+	// Test the rb_node_new function
+	//-------------------------------------------------------------------------
+	TEST(Verify_rb_node_new_returns_a_new_node){
 		rb_node_t* node = rb_node_new(42);
 		CHECK(NULL != node);
 		CHECK(NULL == node->left);
 		CHECK(NULL == node->right);
 		CHECK(NULL == node->parent);
 		CHECK(42 == node->contents);
-		CHECK(rb_node_is_valid(node, -1, -1));
+		CHECK(OK == rb_node_is_valid(node, -1, -1));
 		mem_release(node);
-    }
+	}
 
-    //-------------------------------------------------------------------------
-    // Test the rb_tree_new function
-    //-------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
+	// Test the rb_tree_new function
+	//-------------------------------------------------------------------------
 	TEST(Verify_rb_tree_new_returns_an_empty_red_black_tree){
 		rb_tree_t* tree = rb_tree_new();
 		CHECK(NULL != tree);
 		CHECK(NULL == tree->root);
-		CHECK(rb_tree_is_valid(tree));
+		CHECK(OK == rb_tree_is_valid(tree));
 		mem_release(tree);
 	}
 
-    //-------------------------------------------------------------------------
-    // Test insert functions
-    //-------------------------------------------------------------------------
-    TEST(Verify_rb_insert_to_an_empty_list_assigns_root){
+	//-------------------------------------------------------------------------
+	// Test the test function. testception.
+	//-------------------------------------------------------------------------
+	TEST(Verify_null_and_empty_trees_are_considered_valid){
+		rb_tree_t* tree = NULL;
+		CHECK(OK == rb_tree_is_valid(tree));
+		tree = rb_tree_new();
+		CHECK(OK == rb_tree_is_valid(tree));
+		mem_release(tree);
+	}
+	TEST(Verify_tree_is_valid_checks_root_is_always_black_property){
+		rb_tree_t* tree = rb_tree_new();
+		rb_tree_insert(tree, 88);
+		CHECK(BLACK == tree->root->color);
+		CHECK(OK == rb_tree_is_valid(tree));
+		tree->root->color = RED;
+		CHECK(BAD_ROOT_COLOR == rb_tree_is_valid(tree));
+		mem_release(tree);
+	}
+	TEST(Verify_tree_is_valid_fails_when_nodes_not_sorted_two_nodes){
+		rb_tree_t* tree = rb_tree_new();
+		rb_node_t* node1 = rb_node_new(42);
+		rb_node_t* node2 = rb_node_new(88);
+		tree->root = node1;
+		node1->color = BLACK;
+		node1->parent = NULL;
+		node1->left = node2;
+		node1->right = NULL;
+		node2->color = RED;
+		node2->parent = node1;
+		node2->left = NULL;
+		node2->right = NULL;
+		CHECK(OUT_OF_ORDER == rb_tree_is_valid(tree));
+		mem_release(tree);
+	}
+	TEST(Verify_tree_is_valid_fails_when_nodes_not_sorted_four_nodes){
+		rb_tree_t* tree = rb_tree_new();
+		rb_node_t* node1 = rb_node_new(42);
+		rb_node_t* node2 = rb_node_new(88);
+		rb_node_t* node3 = rb_node_new(25);
+		rb_node_t* node4 = rb_node_new(99);
+		tree->root = node1;
+		node1->color = BLACK;
+		node1->parent = NULL;
+		node1->left = node3;
+		node1->right = node2;
+		node2->color = BLACK;
+		node2->parent = node1;
+		node2->left = node4;
+		node2->right = NULL;
+		node3->color = BLACK;
+		node3->parent = node1;
+		node3->left = NULL;
+		node3->right = NULL;
+		node4->color = RED;
+		node4->parent = node2;
+		node4->left = NULL;
+		node4->right = NULL;
+		CHECK(OUT_OF_ORDER == rb_tree_is_valid(tree));
+		node2->left = NULL;
+		node2->right = node4;
+		CHECK(OK == rb_tree_is_valid(tree));
+		node1->left = node2;
+		node1->right = node3;
+		CHECK(OUT_OF_ORDER == rb_tree_is_valid(tree));
+		mem_release(tree);
+	}
+	TEST(Verify_tree_is_valid_fails_when_black_nodes_are_unbalanced_two_nodes){
+		rb_tree_t* tree = rb_tree_new();
+		rb_node_t* node1 = rb_node_new(42);
+		rb_node_t* node2 = rb_node_new(88);
+		tree->root = node1;
+		node1->color = BLACK;
+		node1->parent = NULL;
+		node1->left = NULL;
+		node1->right = node2;
+		node2->color = BLACK;
+		node2->parent = node1;
+		node2->left = NULL;
+		node2->right = NULL;
+		CHECK(BLACK_NODES_UNBALANCED == rb_tree_is_valid(tree));
+		node2->color = RED;
+		CHECK(OK == rb_tree_is_valid(tree));
+		mem_release(tree);
+	}
+	TEST(Verify_tree_is_valid_fails_when_black_nodes_are_unbalanced_three_nodes){
+		rb_tree_t* tree = rb_tree_new();
+		rb_node_t* node1 = rb_node_new(42);
+		rb_node_t* node2 = rb_node_new(22);
+		rb_node_t* node3 = rb_node_new(88);
+		tree->root = node1;
+		node1->color = BLACK;
+		node1->parent = NULL;
+		node1->left = node2;
+		node1->right = node3;
+		node2->color = RED;
+		node2->parent = node1;
+		node2->left = NULL;
+		node2->right = NULL;
+		node3->color = BLACK;
+		node3->parent = node1;
+		node3->left = NULL;
+		node3->right = NULL;
+		CHECK(BLACK_NODES_UNBALANCED == rb_tree_is_valid(tree));
+		node2->color = BLACK;
+		node3->color = RED;
+		CHECK(BLACK_NODES_UNBALANCED == rb_tree_is_valid(tree));
+		node2->color = BLACK;
+		node3->color = BLACK;
+		CHECK(OK == rb_tree_is_valid(tree));
+		node2->color = RED;
+		node3->color = RED;
+		CHECK(OK == rb_tree_is_valid(tree));
+		mem_release(tree);
+	}
+	TEST(Verify_tree_is_valid_fails_when_black_nodes_are_unbalanced_four_nodes){
+		rb_tree_t* tree = rb_tree_new();
+		rb_node_t* node1 = rb_node_new(42);
+		rb_node_t* node2 = rb_node_new(22);
+		rb_node_t* node3 = rb_node_new(88);
+		rb_node_t* node4 = rb_node_new(33);
+		tree->root = node1;
+		node1->color = BLACK;
+		node1->parent = NULL;
+		node1->left = node2;
+		node1->right = node3;
+		node2->color = RED;
+		node2->parent = node1;
+		node2->left = NULL;
+		node2->right = node4;
+		node3->color = BLACK;
+		node3->parent = node1;
+		node3->left = NULL;
+		node3->right = NULL;
+		node4->color = BLACK;
+		node4->parent = node2;
+		node4->left = NULL;
+		node4->right = NULL;
+		CHECK(BLACK_NODES_UNBALANCED == rb_tree_is_valid(tree));
+		node2->color = BLACK;
+		node3->color = RED;
+		CHECK(BLACK_NODES_UNBALANCED == rb_tree_is_valid(tree));
+		node4->color = RED;
+		CHECK(BLACK_NODES_UNBALANCED == rb_tree_is_valid(tree));
+		node2->color = BLACK;
+		node3->color = BLACK;
+		node4->color = BLACK;
+		CHECK(BLACK_NODES_UNBALANCED == rb_tree_is_valid(tree));
+		node4->color = RED;
+		CHECK(OK == rb_tree_is_valid(tree));
+		mem_release(tree);
+	}
+	TEST(Verify_tree_is_valid_fails_when_node_is_unvalid_color){
+		rb_tree_t* tree = rb_tree_new();
+		rb_node_t* node1 = rb_node_new(42);
+		rb_node_t* node2 = rb_node_new(88);
+		tree->root = node1;
+		node1->color = BLACK;
+		node1->parent = NULL;
+		node1->right = node2;
+		node1->left = NULL;
+		node2->color = 42;
+		node2->parent = node1;
+		node2->right = NULL;
+		node2->left = NULL;
+		CHECK(UNKNOWN_COLOR == rb_tree_is_valid(tree));
+		node2->color = RED;
+		CHECK(OK == rb_tree_is_valid(tree));
+		mem_release(tree);
+	}
+	TEST(Verify_tree_is_valid_fails_when_root_parent_pointer_is_not_null){
+		rb_tree_t* tree = rb_tree_new();
+		rb_node_t* node1 = rb_node_new(42);
+		rb_node_t* node2 = rb_node_new(88);
+		tree->root = node1;
+		node1->color = BLACK;
+		node1->parent = node2;
+		node1->left = NULL;
+		node1->right = node2;
+		node2->color = RED;
+		node2->parent = node1;
+		node2->left = NULL;
+		node2->right = NULL;
+		CHECK(BAD_PARENT_POINTER == rb_tree_is_valid(tree));
+		node1->parent = NULL;
+		CHECK(OK == rb_tree_is_valid(tree));
+		mem_release(tree);
+	}
+	TEST(Verify_tree_is_valid_fails_when_node_parent_poitners_are_wrong_two_nodes){
+		rb_tree_t* tree = rb_tree_new();
+		rb_node_t* node1 = rb_node_new(42);
+		rb_node_t* node2 = rb_node_new(88);
+		rb_node_t* node3 = rb_node_new(99);
+		tree->root = node1;
+		node1->color = BLACK;
+		node1->parent = NULL;
+		node1->left = NULL;
+		node1->right = node2;
+		node2->color = RED;
+		node2->parent = node1;
+		node2->left = NULL;
+		node2->right = NULL;
+		CHECK(OK == rb_tree_is_valid(tree));
+		node2->parent = node3;
+		CHECK(BAD_PARENT_POINTER == rb_tree_is_valid(tree));
+		node2->parent = NULL;
+		CHECK(BAD_PARENT_POINTER == rb_tree_is_valid(tree));
+		node2->parent = node1;
+		CHECK(OK == rb_tree_is_valid(tree));
+		mem_release(tree);
+	}
+	TEST(Verify_tree_is_valid_fails_when_node_parent_poitners_are_wrong_four_nodes){
+		rb_tree_t* tree = rb_tree_new();
+		rb_node_t* node1 = rb_node_new(42);
+		rb_node_t* node2 = rb_node_new(22);
+		rb_node_t* node3 = rb_node_new(88);
+		rb_node_t* node4 = rb_node_new(33);
+		tree->root = node1;
+		node1->color = BLACK;
+		node1->parent = NULL;
+		node1->left = node2;
+		node1->right = node3;
+		node2->color = BLACK;
+		node2->parent = node1;
+		node2->left = NULL;
+		node2->right = node4;
+		node3->color = BLACK;
+		node3->parent = node1;
+		node3->left = NULL;
+		node3->right = NULL;
+		node4->color = RED;
+		node4->parent = node2;
+		node4->left = NULL;
+		node4->right = NULL;
+		CHECK(OK == rb_tree_is_valid(tree));
+		node4->parent = node1;
+		CHECK(BAD_PARENT_POINTER == rb_tree_is_valid(tree));
+		node4->parent = NULL;
+		CHECK(BAD_PARENT_POINTER == rb_tree_is_valid(tree));
+		node4->parent = node4;
+		CHECK(BAD_PARENT_POINTER == rb_tree_is_valid(tree));
+		node4->parent = node2;
+		CHECK(OK == rb_tree_is_valid(tree));
+		mem_release(tree);
+	}
+	TEST(Verify_tree_is_valid_fails_when_node_points_to_itself){
+		rb_tree_t* tree = rb_tree_new();
+		rb_node_t* node1 = rb_node_new(42);
+		rb_node_t* node2 = rb_node_new(22);
+		rb_node_t* node3 = rb_node_new(88);
+		rb_node_t* node4 = rb_node_new(33);
+		tree->root = node1;
+		node1->color = BLACK;
+		node1->parent = NULL;
+		node1->left = node2;
+		node1->right = node3;
+		node2->color = BLACK;
+		node2->parent = node1;
+		node2->left = NULL;
+		node2->right = node4;
+		node3->color = BLACK;
+		node3->parent = node1;
+		node3->left = NULL;
+		node3->right = NULL;
+		node4->color = RED;
+		node4->parent = node2;
+		node4->left = NULL;
+		node4->right = NULL;
+		CHECK(OK == rb_tree_is_valid(tree));
+		node4->right = node4;
+		CHECK(SELF_REFERENCE == rb_tree_is_valid(tree));
+		node4->right = NULL;
+		node2->left = node2;
+		CHECK(SELF_REFERENCE == rb_tree_is_valid(tree));
+		node2->left = NULL;
+		node2->right = node2;
+		CHECK(SELF_REFERENCE == rb_tree_is_valid(tree));
+		node2->right = node4;
+		node3->left = node3;
+		CHECK(SELF_REFERENCE == rb_tree_is_valid(tree));
+		node3->left = NULL;
+		CHECK(OK == rb_tree_is_valid(tree));
+		mem_release(tree);
+	}
+
+	//-------------------------------------------------------------------------
+	// Test insert functions
+	//-------------------------------------------------------------------------
+	TEST(Verify_rb_insert_to_an_empty_list_assigns_root){
 		rb_tree_t* tree = rb_tree_new();
 		rb_node_t* node = rb_tree_insert(tree, 42);
 		CHECK(NULL != node);
@@ -46,10 +331,10 @@ TEST_SUITE(RB) {
 		CHECK(NULL == node->left);
 		CHECK(NULL == node->right);
 		CHECK(NULL == node->parent);
-		CHECK(rb_tree_is_valid(tree));
+		CHECK(OK == rb_tree_is_valid(tree));
 		mem_release(tree);
-    }
-    TEST(Verify_rb_insert_node_to_root_left_works){
+	}
+	TEST(Verify_rb_insert_node_to_root_left_works){
 		rb_tree_t* tree = rb_tree_new();
 		rb_node_t* root = rb_tree_insert(tree, 42);
 		rb_node_t* node1 = rb_tree_insert(tree, 31);
@@ -61,10 +346,10 @@ TEST_SUITE(RB) {
 		CHECK(node1 == root->left);
 		CHECK(NULL == root->right);
 		CHECK(RED == node1->color);
-		CHECK(rb_tree_is_valid(tree));
+		CHECK(OK == rb_tree_is_valid(tree));
 		mem_release(tree);
-    }
-    TEST(Verify_rb_insert_node_to_root_right_works){
+	}
+	TEST(Verify_rb_insert_node_to_root_right_works){
 		rb_tree_t* tree = rb_tree_new();
 		rb_node_t* root = rb_tree_insert(tree, 42);
 		rb_node_t* node2 = rb_tree_insert(tree, 64);
@@ -76,10 +361,10 @@ TEST_SUITE(RB) {
 		CHECK(node2 == root->right);
 		CHECK(NULL == root->left);
 		CHECK(RED == node2->color);
-		CHECK(rb_tree_is_valid(tree));
+		CHECK(OK == rb_tree_is_valid(tree));
 		mem_release(tree);
-    }
-    TEST(Verify_rb_insert_first_level_works){
+	}
+	TEST(Verify_rb_insert_first_level_works){
 		rb_tree_t* tree = rb_tree_new();
 		rb_node_t* root = rb_tree_insert(tree, 42);
 		rb_node_t* node1 = rb_tree_insert(tree, 31);
@@ -96,10 +381,10 @@ TEST_SUITE(RB) {
 		CHECK(node2 == root->right);
 		CHECK(RED == node1->color);
 		CHECK(RED == node2->color);
-		CHECK(rb_tree_is_valid(tree));
+		CHECK(OK == rb_tree_is_valid(tree));
 		mem_release(tree);
-    }
-    TEST(Verify_rb_insert_below_full_first_level_works){
+	}
+	TEST(Verify_rb_insert_below_full_first_level_works){
 		rb_tree_t* tree = rb_tree_new();
 		rb_node_t* root = rb_tree_insert(tree, 42);
 		rb_node_t* node1 = rb_tree_insert(tree, 31);
@@ -114,10 +399,10 @@ TEST_SUITE(RB) {
 		CHECK(BLACK == node1->color);
 		CHECK(BLACK == node2->color);
 		CHECK(RED == node3->color);
-		CHECK(rb_tree_is_valid(tree));
+		CHECK(OK == rb_tree_is_valid(tree));
 		mem_release(tree);
-    }
-    TEST(Verify_rb_insert_parent_uncle_mismatch_outside_left){
+	}
+	TEST(Verify_rb_insert_parent_uncle_mismatch_outside_left){
 		rb_tree_t* tree = rb_tree_new();
 		rb_node_t* node1 = rb_tree_insert(tree, 42);
 		rb_node_t* node2 = rb_tree_insert(tree, 32);
@@ -147,10 +432,10 @@ TEST_SUITE(RB) {
 		CHECK(node2 == node3->parent);
 		CHECK(RED == node3->color);
 		CHECK(15 == node3->contents);
-		CHECK(rb_tree_is_valid(tree));
+		CHECK(OK == rb_tree_is_valid(tree));
 		mem_release(tree);
-    }
-    TEST(Verify_rb_insert_parent_uncle_mismatch_outside_right){
+	}
+	TEST(Verify_rb_insert_parent_uncle_mismatch_outside_right){
 		rb_tree_t* tree = rb_tree_new();
 		rb_node_t* node1 = rb_tree_insert(tree, 42);
 		rb_node_t* node2 = rb_tree_insert(tree, 53);
@@ -179,7 +464,7 @@ TEST_SUITE(RB) {
 		CHECK(node2 == node3->parent);
 		CHECK(RED == node3->color);
 		CHECK(99 == node3->contents);
-		CHECK(rb_tree_is_valid(tree));
+		CHECK(OK == rb_tree_is_valid(tree));
 		mem_release(tree);
 	}
 	TEST(Verify_rb_insert_parent_uncle_mismatch_inside_left){
@@ -211,7 +496,7 @@ TEST_SUITE(RB) {
 		CHECK(node3 == node1->parent);
 		CHECK(RED == node1->color);
 		CHECK(42 == node1->contents);
-		CHECK(rb_tree_is_valid(tree));
+		CHECK(OK == rb_tree_is_valid(tree));
 		mem_release(tree);
 	}
 	TEST(Verify_rb_insert_parent_uncle_mismatch_inside_right){
@@ -243,14 +528,14 @@ TEST_SUITE(RB) {
 		CHECK(node3 == node1->parent);
 		CHECK(RED == node1->color);
 		CHECK(42 == node1->contents);
-		CHECK(rb_tree_is_valid(tree));
+		CHECK(OK == rb_tree_is_valid(tree));
 		mem_release(tree);
 	}
 	
-    //-------------------------------------------------------------------------
-    // Test lookup function
-    //-------------------------------------------------------------------------
-    TEST(Verify_rb_lookup_returns_null_if_not_found){
+	//-------------------------------------------------------------------------
+	// Test lookup function
+	//-------------------------------------------------------------------------
+	TEST(Verify_rb_lookup_returns_null_if_not_found){
 		rb_tree_t* tree = rb_tree_new();
 		rb_tree_insert(tree, 42);
 		rb_tree_insert(tree, 33);
@@ -258,8 +543,8 @@ TEST_SUITE(RB) {
 		rb_tree_insert(tree, 15);
 		CHECK(NULL == rb_tree_lookup(tree, 78));
 		mem_release(tree);
-    }
-    TEST(Verify_rb_lookup_returns_correct_node){
+	}
+	TEST(Verify_rb_lookup_returns_correct_node){
 		rb_tree_t* tree = rb_tree_new();
 		rb_node_t* node1 = rb_tree_insert(tree, 42);
 		rb_node_t* node2 = rb_tree_insert(tree, 33);
@@ -278,13 +563,16 @@ TEST_SUITE(RB) {
 		CHECK(node3 == rb_tree_lookup(tree, 88));
 		CHECK(node4 == rb_tree_lookup(tree, 15));
 		mem_release(tree);
-    }
+	}
 
-    //-------------------------------------------------------------------------
-    // Test delete function
-    //-------------------------------------------------------------------------
-    //first class: delete nodes that have at most one non-null child
-    TEST(Verify_rb_delete_red_node_without_children){
+	//-------------------------------------------------------------------------
+	// Test delete function
+	//-------------------------------------------------------------------------
+	//first class: delete nodes that have at most one non-null child
+	//case 1; red node: only leaf children
+	//properties of rbt prevent red node w/ only one non-leaf black child.
+	//node w/ two non-leaf black children handled by second class.
+	TEST(Verify_rb_delete_red_node_without_children){
 		rb_tree_t* tree = rb_tree_new();
 		rb_node_t* node1 = rb_tree_insert(tree, 42);
 		rb_node_t* node2 = rb_tree_insert(tree, 33);
@@ -306,11 +594,12 @@ TEST_SUITE(RB) {
 		CHECK(NULL == node4->parent);
 		CHECK(NULL == node4->left);
 		CHECK(NULL == node4->right);
-		CHECK(rb_tree_is_valid(tree));
+		CHECK(OK == rb_tree_is_valid(tree));
 		mem_release(node4);
 		mem_release(tree);
-    }
-    TEST(Verify_rb_delete_left_black_node_with_single_red_left_child){
+	}
+	//case 2: black node, one red child
+	TEST(Verify_rb_delete_left_black_node_with_single_red_left_child){
 		rb_tree_t* tree = rb_tree_new();
 		rb_node_t* node1 = rb_tree_insert(tree, 42);
 		rb_node_t* node2 = rb_tree_insert(tree, 33);
@@ -333,11 +622,11 @@ TEST_SUITE(RB) {
 		CHECK(NULL == node2->parent);
 		CHECK(NULL == node2->left);
 		CHECK(NULL == node2->right);
-		CHECK(rb_tree_is_valid(tree));
+		CHECK(OK == rb_tree_is_valid(tree));
 		mem_release(node2);
 		mem_release(tree);
-    }
-    TEST(Verify_rb_delete_left_black_node_with_single_red_right_child){
+	}
+	TEST(Verify_rb_delete_left_black_node_with_single_red_right_child){
 		rb_tree_t* tree = rb_tree_new();
 		rb_node_t* node1 = rb_tree_insert(tree, 42);
 		rb_node_t* node2 = rb_tree_insert(tree, 33);
@@ -360,11 +649,11 @@ TEST_SUITE(RB) {
 		CHECK(NULL == node2->parent);
 		CHECK(NULL == node2->left);
 		CHECK(NULL == node2->right);
-		CHECK(rb_tree_is_valid(tree));
+		CHECK(OK == rb_tree_is_valid(tree));
 		mem_release(node2);
 		mem_release(tree);
-    }
-    TEST(Verify_rb_delete_right_black_node_with_single_red_right_child){
+	}
+	TEST(Verify_rb_delete_right_black_node_with_single_red_right_child){
 		rb_tree_t* tree = rb_tree_new();
 		rb_node_t* node1 = rb_tree_insert(tree, 42);
 		rb_node_t* node2 = rb_tree_insert(tree, 33);
@@ -387,11 +676,11 @@ TEST_SUITE(RB) {
 		CHECK(NULL == node3->parent);
 		CHECK(NULL == node3->left);
 		CHECK(NULL == node3->right);
-		CHECK(rb_tree_is_valid(tree));
+		CHECK(OK == rb_tree_is_valid(tree));
 		mem_release(node3);
 		mem_release(tree);
-    }
-    TEST(Verify_rb_delete_right_black_node_with_single_red_left_child){
+	}
+	TEST(Verify_rb_delete_right_black_node_with_single_red_left_child){
 		rb_tree_t* tree = rb_tree_new();
 		rb_node_t* node1 = rb_tree_insert(tree, 42);
 		rb_node_t* node2 = rb_tree_insert(tree, 33);
@@ -414,10 +703,10 @@ TEST_SUITE(RB) {
 		CHECK(NULL == node3->parent);
 		CHECK(NULL == node3->left);
 		CHECK(NULL == node3->right);
-		CHECK(rb_tree_is_valid(tree));
+		CHECK(OK == rb_tree_is_valid(tree));
 		mem_release(node3);
 		mem_release(tree);
-    }
+	}
 	//second class: deleting nodes that have two children
 	//third class: special cases: deleting root
 	TEST(Verify_rb_delete_root_node_with_single_red_left_child){
@@ -435,7 +724,7 @@ TEST_SUITE(RB) {
 		CHECK(NULL == node1->parent);
 		CHECK(NULL == node1->left);
 		CHECK(NULL == node1->right);
-		CHECK(rb_tree_is_valid(tree));
+		CHECK(OK == rb_tree_is_valid(tree));
 		mem_release(node1);
 		mem_release(tree);
 	}
@@ -454,7 +743,7 @@ TEST_SUITE(RB) {
 		CHECK(NULL == node1->parent);
 		CHECK(NULL == node1->left);
 		CHECK(NULL == node1->right);
-		CHECK(rb_tree_is_valid(tree));
+		CHECK(OK == rb_tree_is_valid(tree));
 		mem_release(node1);
 		mem_release(tree);
 	}
@@ -468,7 +757,7 @@ TEST_SUITE(RB) {
 		CHECK(NULL == node1->left);
 		CHECK(NULL == node1->right);
 		CHECK(NULL == node1->parent);
-		CHECK(rb_tree_is_valid(tree));
+		CHECK(OK == rb_tree_is_valid(tree));
 		mem_release(node1);
 		mem_release(tree);
 	}

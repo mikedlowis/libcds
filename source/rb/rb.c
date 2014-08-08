@@ -284,29 +284,31 @@ int count_black_nodes_to_leaf(rb_node_t* node){
 	return ret;
 }
 
-bool rb_node_is_valid(rb_node_t* node, int min_val, int max_val){
-	bool ret = true;
+rb_status_t rb_node_is_valid(rb_node_t* node, int min_val, int max_val){
+	rb_status_t ret = OK;
 	if(node){
-		ret &= (node->color == RED || node->color == BLACK);
-		if(node->color == RED){
-			ret &= ((node_color(node->left) == BLACK) && 
-					(node_color(node->right) == BLACK));
-		}
-		ret &= ( -1 == min_val || node->contents >= min_val);
-		ret &= ( -1 == max_val || node->contents <= max_val);
-		ret &= rb_node_is_valid(node->left, min_val, node->contents);
-		ret &= rb_node_is_valid(node->right, node->contents, max_val);
+		if(node->color != RED && node->color != BLACK) ret = UNKNOWN_COLOR;
+		else if(node->color == RED && (node_color(node->left) != BLACK && node_color(node->right) != BLACK))
+			ret = RED_WITH_RED_CHILD;
+		else if(min_val > -1 && node->contents < min_val) ret = OUT_OF_ORDER;
+		else if(max_val > -1 && node->contents > max_val) ret = OUT_OF_ORDER;
+		else if(node->left == node || node->right == node) ret = SELF_REFERENCE;
+		else if(node->left && node->left->parent != node) ret = BAD_PARENT_POINTER;
+		else if(node->right && node->right->parent != node) ret = BAD_PARENT_POINTER;
+		if(ret == OK) ret = rb_node_is_valid(node->left, min_val, node->contents);
+		if(ret == OK) ret = rb_node_is_valid(node->right, node->contents, max_val);
 	}
 	return ret;
 }
 
 //check the contents of the given tree/node as valid
-bool rb_tree_is_valid(rb_tree_t* tree){
-	bool ret = true;
+rb_status_t rb_tree_is_valid(rb_tree_t* tree){
+	rb_status_t ret = OK;
 	if(tree){
 		ret = rb_node_is_valid(tree->root, -1, -1);
-		if(tree->root) ret &= (tree->root->color == BLACK);
-		ret &= (count_black_nodes_to_leaf(tree->root) != -1);
+		if(ret == OK && tree->root && tree->root->parent) ret = BAD_PARENT_POINTER;
+		if(ret == OK && node_color(tree->root) != BLACK) ret = BAD_ROOT_COLOR;
+		if(ret == OK && count_black_nodes_to_leaf(tree->root) == -1) ret = BLACK_NODES_UNBALANCED;
 	}
 	return ret;
 }

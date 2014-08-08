@@ -12,6 +12,17 @@ typedef enum {
 	BLACK
 } rb_color_t;
 
+typedef enum {
+	OK = 0,
+	OUT_OF_ORDER,
+	BAD_ROOT_COLOR,
+	BLACK_NODES_UNBALANCED,
+	UNKNOWN_COLOR,
+	RED_WITH_RED_CHILD,
+	BAD_PARENT_POINTER,
+	SELF_REFERENCE,
+} rb_status_t;
+
 typedef struct rb_node_t {
 	struct rb_node_t* left;
 	struct rb_node_t* right;
@@ -34,8 +45,8 @@ void rb_tree_delete(rb_tree_t* tree, int value);
 rb_node_t* rb_tree_lookup(rb_tree_t* tree, int value);
 
 //TEST FUNCTIONS:
-bool rb_tree_is_valid(rb_tree_t* tree);
-bool rb_node_is_valid(rb_node_t* node, int min_val, int max_val);
+rb_status_t rb_tree_is_valid(rb_tree_t* tree);
+rb_status_t rb_node_is_valid(rb_node_t* node, int min_val, int max_val);
 
 #ifdef __cplusplus
 }
