@@ -13,6 +13,7 @@ extern "C" {
 
 #include <string.h>
 #include <stdbool.h>
+#include "mem.h"
 
 /* Forward declare our structure */
 struct buf_t;

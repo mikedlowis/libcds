@@ -7,6 +7,7 @@ extern "C" {
 
 #include <string.h>
 #include <stdbool.h>
+#include "mem.h"
 
 /** A linked list node. */
 typedef struct list_node_t
@@ -202,7 +203,7 @@ list_node_t* list_delete(list_t* list, size_t index);
 /**
  * @brief Delete a node from the supplied list.
  *
- * This function differs from the above list_delete in that it is given a 
+ * This function differs from the above list_delete in that it is given a
  * pointer to a node to be deleted instead of an index.
  * //TODO: verify node->next should be set to NULL following successful deletion
  * //TODO: verify node->next should not be touched if node not present in list
