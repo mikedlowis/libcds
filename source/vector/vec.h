@@ -12,16 +12,15 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-/** A vector implementation */
-typedef struct {
-    size_t size;       /*< The number of elements currently in the array */
-    size_t capacity;   /*< The size of the internal array */
-    void** p_buffer;   /*< Pointer to the array */
-} vec_t;
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/* Forward declare our type */
+struct vec_t;
+
+/** A vector implementation */
+typedef struct vec_t vec_t;
 
 /** The default capacity of the vector if no initializing elements have been
  *  provided. */

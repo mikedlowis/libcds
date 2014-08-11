@@ -10,6 +10,12 @@
 #include <string.h>
 #include <assert.h>
 
+struct vec_t {
+    size_t size;       /*< The number of elements currently in the array */
+    size_t capacity;   /*< The size of the internal array */
+    void** p_buffer;   /*< Pointer to the array */
+};
+
 static void vec_free(void* p_vec);
 
 static void vec_free_range(void** p_buffer, size_t start_idx, size_t end_idx);
