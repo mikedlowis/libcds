@@ -232,10 +232,49 @@ static void rb_tree_delete_node(rb_tree_t* tree, rb_node_t* node){
 				rotate_left(tree, parent);
 			}
 			mem_release(node);
+		} else if(node == parent->right){
+			//node is black. parent is black. node is parent's right child.
+			rb_node_t* sib = parent->left;
+			//remove/release the node
+			parent->right = NULL;
+			node->parent = NULL;
+			mem_release(node);
+			//rebalance the tree
+			//fix sibbling if red first
+			if(RED == node_color(sib)){
+				sib->color = BLACK;
+				sib->right->color = RED;
+				//sib->left->color = RED; //unnecessary; gets overwritten anyway.
+			}
+			//rotate "inside" case to "outside"
+			if(sib->right && !sib->left){
+				sib->right->color = BLACK;
+				rotate_left(tree, sib);
+			}
+			if(sib->left) sib->left->color = BLACK;
+			rotate_right(tree, parent);
 		} else {
-			//node is not root.
-			//parent is black
-			//node is black, and has only leaf children or tree is invalid.
+			//node is black. parent is black. node is parent's left child.
+			rb_node_t* sib = parent->right;
+			//remove/release the node
+			parent->left = NULL;
+			node->parent = NULL;
+			mem_release(node);
+			//rebalance the tree
+			//fix sibbling if red first
+			if(RED == node_color(sib)){
+				sib->color = BLACK;
+				sib->left->color = RED;
+				//sib->right->color = RED; //unnecessary; gets overwritten anyway.
+			}
+			//rotate "inside" case to "outside"
+			if(sib->left && !sib->right){
+				sib->left->color = BLACK;
+				rotate_right(tree, sib);
+			}
+			if(sib->right) sib->right->color = BLACK;
+			rotate_left(tree, parent);
+
 		}
 	}
 }

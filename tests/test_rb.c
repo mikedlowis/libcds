@@ -1038,11 +1038,296 @@ TEST_SUITE(RB) {
 	//properties of RBT imply node has a sibbling
 	//five subcases
 	//4.1: sibbling is black, no children //TODO
-	//4.2: sibbling is black, left red child
-	//4.3: sibbling is black, right red child
+	//4.2: sibbling is black, outside red child
+	TEST(Verify_rb_delete_black_node_from_black_parent_sib_has_outside_red_child_right){
+		int target = 99;
+		//create tree w/ several nodes
+		rb_tree_t* tree = rb_tree_new();
+		rb_node_t* node1 = rb_tree_insert(tree, 88); //root
+		rb_node_t* node2 = rb_tree_insert(tree, target); //target
+		rb_node_t* node3 = rb_tree_insert(tree, 42); //sibbling
+		rb_node_t* node4 = rb_tree_insert(tree, 22); //sib child
+		//force colors to match scenario being tested
+		(void)node1;
+		node2->color = BLACK;
+		node3->color = BLACK;
+		node4->color = RED;
+		//confirm tree is valid & node can be found
+		CHECK(OK == rb_tree_is_valid(tree));
+		CHECK(node2 == rb_tree_lookup(tree, target));
+		//confirm tree is shaped as expected
+		CHECK(node1 == tree->root);
+		CHECK(node2 == node1->right);
+		CHECK(node3 == node1->left);
+		CHECK(node4 == node3->left);
+		//delete the node from the tree
+		mem_retain(node2);
+		rb_tree_delete(tree, target);
+		//confirm refcounting decremented, node no longer in tree, node pointers nulld and tree still valid
+		CHECK(1 == mem_num_references(node2));
+		CHECK(NULL == rb_tree_lookup(tree, target));
+		CHECK(NULL == node2->parent);
+		CHECK(NULL == node2->left);
+		CHECK(NULL == node2->right);
+		CHECK(OK == rb_tree_is_valid(tree));
+		mem_release(node2);
+		mem_release(tree);
+	}
+	TEST(Verify_rb_delete_black_node_from_black_parent_sib_has_outside_red_child_left){
+		int target = 8;
+		//create tree w/ several nodes
+		rb_tree_t* tree = rb_tree_new();
+		rb_node_t* node1 = rb_tree_insert(tree, 42); //root
+		rb_node_t* node2 = rb_tree_insert(tree, target); //target
+		rb_node_t* node3 = rb_tree_insert(tree, 88); //sibbling
+		rb_node_t* node4 = rb_tree_insert(tree, 123); //sib child
+		//force colors to match scenario being tested
+		(void)node1;
+		node2->color = BLACK;
+		node3->color = BLACK;
+		node4->color = RED;
+		//confirm tree is valid & node can be found
+		CHECK(OK == rb_tree_is_valid(tree));
+		CHECK(node2 == rb_tree_lookup(tree, target));
+		//confirm tree is shaped as expected
+		CHECK(node1 == tree->root);
+		CHECK(node2 == node1->left);
+		CHECK(node3 == node1->right);
+		CHECK(node4 == node3->right);
+		//delete the node from the tree
+		mem_retain(node2);
+		rb_tree_delete(tree, target);
+		//confirm refcounting decremented, node no longer in tree, node pointers nulld and tree still valid
+		CHECK(1 == mem_num_references(node2));
+		CHECK(NULL == rb_tree_lookup(tree, target));
+		CHECK(NULL == node2->parent);
+		CHECK(NULL == node2->left);
+		CHECK(NULL == node2->right);
+		CHECK(OK == rb_tree_is_valid(tree));
+		mem_release(node2);
+		mem_release(tree);
+	}
+	//4.3: sibbling is black, inside red child
+	TEST(Verify_rb_delete_black_node_from_black_parent_sib_has_inside_red_child_right){
+		int target = 99;
+		//create tree w/ several nodes
+		rb_tree_t* tree = rb_tree_new();
+		rb_node_t* node1 = rb_tree_insert(tree, 88); //root
+		rb_node_t* node2 = rb_tree_insert(tree, target); //target
+		rb_node_t* node3 = rb_tree_insert(tree, 42); //sibbling
+		rb_node_t* node4 = rb_tree_insert(tree, 55); //sib child
+		//force colors to match scenario being tested
+		(void)node1;
+		node2->color = BLACK;
+		node3->color = BLACK;
+		node4->color = RED;
+		//confirm tree is valid & node can be found
+		CHECK(OK == rb_tree_is_valid(tree));
+		CHECK(node2 == rb_tree_lookup(tree, target));
+		//confirm tree is shaped as expected
+		CHECK(node1 == tree->root);
+		CHECK(node2 == node1->right);
+		CHECK(node3 == node1->left);
+		CHECK(node4 == node3->right);
+		//delete the node from the tree
+		mem_retain(node2);
+		rb_tree_delete(tree, target);
+		//confirm refcounting decremented, node no longer in tree, node pointers nulld and tree still valid
+		CHECK(1 == mem_num_references(node2));
+		CHECK(NULL == rb_tree_lookup(tree, target));
+		CHECK(NULL == node2->parent);
+		CHECK(NULL == node2->left);
+		CHECK(NULL == node2->right);
+		CHECK(OK == rb_tree_is_valid(tree));
+		mem_release(node2);
+		mem_release(tree);
+	}
+	TEST(Verify_rb_delete_black_node_from_black_parent_sib_has_inside_red_child_left){
+		int target = 8;
+		//create tree w/ several nodes
+		rb_tree_t* tree = rb_tree_new();
+		rb_node_t* node1 = rb_tree_insert(tree, 42); //root
+		rb_node_t* node2 = rb_tree_insert(tree, target); //target
+		rb_node_t* node3 = rb_tree_insert(tree, 88); //sibbling
+		rb_node_t* node4 = rb_tree_insert(tree, 70); //sib child
+		//force colors to match scenario being tested
+		(void)node1;
+		node2->color = BLACK;
+		node3->color = BLACK;
+		node4->color = RED;
+		//confirm tree is valid & node can be found
+		CHECK(OK == rb_tree_is_valid(tree));
+		CHECK(node2 == rb_tree_lookup(tree, target));
+		//confirm tree is shaped as expected
+		CHECK(node1 == tree->root);
+		CHECK(node2 == node1->left);
+		CHECK(node3 == node1->right);
+		CHECK(node4 == node3->left);
+		//delete the node from the tree
+		mem_retain(node2);
+		rb_tree_delete(tree, target);
+		//confirm refcounting decremented, node no longer in tree, node pointers nulld and tree still valid
+		CHECK(1 == mem_num_references(node2));
+		CHECK(NULL == rb_tree_lookup(tree, target));
+		CHECK(NULL == node2->parent);
+		CHECK(NULL == node2->left);
+		CHECK(NULL == node2->right);
+		CHECK(OK == rb_tree_is_valid(tree));
+		mem_release(node2);
+		mem_release(tree);
+	}
 	//4.4: sibbling is black, two red children
+	TEST(Verify_rb_delete_black_node_from_black_parent_sib_has_two_children_right){
+		int target = 99;
+		//create tree w/ several nodes
+		rb_tree_t* tree = rb_tree_new();
+		rb_node_t* node1 = rb_tree_insert(tree, 88); //root
+		rb_node_t* node2 = rb_tree_insert(tree, target); //target
+		rb_node_t* node3 = rb_tree_insert(tree, 42); //sibbling
+		rb_node_t* node4 = rb_tree_insert(tree, 22); //sib child 1
+		rb_node_t* node5 = rb_tree_insert(tree, 55); //sib child 2
+		//force colors to match scenario being tested
+		(void)node1;
+		node2->color = BLACK;
+		node3->color = BLACK;
+		node4->color = RED;
+		node5->color = RED;
+		//confirm tree is valid & node can be found
+		CHECK(OK == rb_tree_is_valid(tree));
+		CHECK(node2 == rb_tree_lookup(tree, target));
+		//confirm tree is shaped as expected
+		CHECK(node1 == tree->root);
+		CHECK(node2 == node1->right);
+		CHECK(node3 == node1->left);
+		CHECK(node4 == node3->left);
+		CHECK(node5 == node3->right);
+		//delete the node from the tree
+		mem_retain(node2);
+		rb_tree_delete(tree, target);
+		//confirm refcounting decremented, node no longer in tree, node pointers nulld and tree still valid
+		CHECK(1 == mem_num_references(node2));
+		CHECK(NULL == rb_tree_lookup(tree, target));
+		CHECK(NULL == node2->parent);
+		CHECK(NULL == node2->left);
+		CHECK(NULL == node2->right);
+		CHECK(OK == rb_tree_is_valid(tree));
+		mem_release(node2);
+		mem_release(tree);
+	}
+	TEST(Verify_rb_delete_black_node_from_black_parent_sib_has_two_children_left){
+		int target = 8;
+		//create tree w/ several nodes
+		rb_tree_t* tree = rb_tree_new();
+		rb_node_t* node1 = rb_tree_insert(tree, 42); //root
+		rb_node_t* node2 = rb_tree_insert(tree, target); //target
+		rb_node_t* node3 = rb_tree_insert(tree, 88); //sibbling
+		rb_node_t* node4 = rb_tree_insert(tree, 70); //sib child 1
+		rb_node_t* node5 = rb_tree_insert(tree, 123); //sib child 2
+		//force colors to match scenario being tested
+		(void)node1;
+		node2->color = BLACK;
+		node3->color = BLACK;
+		node4->color = RED;
+		node5->color = RED;
+		//confirm tree is valid & node can be found
+		CHECK(OK == rb_tree_is_valid(tree));
+		CHECK(node2 == rb_tree_lookup(tree, target));
+		//confirm tree is shaped as expected
+		CHECK(node1 == tree->root);
+		CHECK(node2 == node1->left);
+		CHECK(node3 == node1->right);
+		CHECK(node4 == node3->left);
+		CHECK(node5 == node3->right);
+		//delete the node from the tree
+		mem_retain(node2);
+		rb_tree_delete(tree, target);
+		//confirm refcounting decremented, node no longer in tree, node pointers nulld and tree still valid
+		CHECK(1 == mem_num_references(node2));
+		CHECK(NULL == rb_tree_lookup(tree, target));
+		CHECK(NULL == node2->parent);
+		CHECK(NULL == node2->left);
+		CHECK(NULL == node2->right);
+		CHECK(OK == rb_tree_is_valid(tree));
+		mem_release(node2);
+		mem_release(tree);
+	}
 	//4.5: sibbling is red, two black children
+	TEST(Verify_rb_delete_black_node_from_black_parent_red_sib_right){
+		int target = 99;
+		//create tree w/ several nodes
+		rb_tree_t* tree = rb_tree_new();
+		rb_node_t* node1 = rb_tree_insert(tree, 88); //root
+		rb_node_t* node2 = rb_tree_insert(tree, target); //target
+		rb_node_t* node3 = rb_tree_insert(tree, 42); //sibbling
+		rb_node_t* node4 = rb_tree_insert(tree, 22); //sib child 1
+		rb_node_t* node5 = rb_tree_insert(tree, 55); //sib child 2
+		//force colors to match scenario being tested
+		(void)node1;
+		node2->color = BLACK;
+		node3->color = RED;
+		node4->color = BLACK;
+		node5->color = BLACK;
+		//confirm tree is valid & node can be found
+		CHECK(OK == rb_tree_is_valid(tree));
+		CHECK(node2 == rb_tree_lookup(tree, target));
+		//confirm tree is shaped as expected
+		CHECK(node1 == tree->root);
+		CHECK(node2 == node1->right);
+		CHECK(node3 == node1->left);
+		CHECK(node4 == node3->left);
+		CHECK(node5 == node3->right);
+		//delete the node from the tree
+		mem_retain(node2);
+		rb_tree_delete(tree, target);
+		//confirm refcounting decremented, node no longer in tree, node pointers nulld and tree still valid
+		CHECK(1 == mem_num_references(node2));
+		CHECK(NULL == rb_tree_lookup(tree, target));
+		CHECK(NULL == node2->parent);
+		CHECK(NULL == node2->left);
+		CHECK(NULL == node2->right);
+		CHECK(OK == rb_tree_is_valid(tree));
+		mem_release(node2);
+		mem_release(tree);
+	}
+	TEST(Verify_rb_delete_black_node_from_black_parent_red_sib_left){
+		int target = 8;
+		//create tree w/ several nodes
+		rb_tree_t* tree = rb_tree_new();
+		rb_node_t* node1 = rb_tree_insert(tree, 42); //root
+		rb_node_t* node2 = rb_tree_insert(tree, target); //target
+		rb_node_t* node3 = rb_tree_insert(tree, 88); //sibbling
+		rb_node_t* node4 = rb_tree_insert(tree, 70); //sib child 1
+		rb_node_t* node5 = rb_tree_insert(tree, 123); //sib child 2
+		//force colors to match scenario being tested
+		(void)node1;
+		node2->color = BLACK;
+		node3->color = RED;
+		node4->color = BLACK;
+		node5->color = BLACK;
+		//confirm tree is valid & node can be found
+		CHECK(OK == rb_tree_is_valid(tree));
+		CHECK(node2 == rb_tree_lookup(tree, target));
+		//confirm tree is shaped as expected
+		CHECK(node1 == tree->root);
+		CHECK(node2 == node1->left);
+		CHECK(node3 == node1->right);
+		CHECK(node4 == node3->left);
+		CHECK(node5 == node3->right);
+		//delete the node from the tree
+		mem_retain(node2);
+		rb_tree_delete(tree, target);
+		//confirm refcounting decremented, node no longer in tree, node pointers nulld and tree still valid
+		CHECK(1 == mem_num_references(node2));
+		CHECK(NULL == rb_tree_lookup(tree, target));
+		CHECK(NULL == node2->parent);
+		CHECK(NULL == node2->left);
+		CHECK(NULL == node2->right);
+		CHECK(OK == rb_tree_is_valid(tree));
+		mem_release(node2);
+		mem_release(tree);
+	}
 	//second class: deleting nodes that have two children
+	//TODO
 	//third class: special cases: deleting root
 	TEST(Verify_rb_delete_root_node_with_single_red_left_child){
 		rb_tree_t* tree = rb_tree_new();
