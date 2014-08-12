@@ -244,6 +244,7 @@ TEST_SUITE(RB) {
 		node2->parent = node1;
 		CHECK(OK == rb_tree_is_valid(tree));
 		mem_release(tree);
+		mem_release(node3);
 	}
 	TEST(Verify_tree_is_valid_fails_when_node_parent_poitners_are_wrong_four_nodes){
 		rb_tree_t* tree = rb_tree_new();
