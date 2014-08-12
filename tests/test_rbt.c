@@ -1,8 +1,11 @@
 // Unit Test Framework Includes
+#include <time.h>
+#include <stdlib.h>
 #include "test.h"
 
 #include "rbt.h"
 #include "mem.h"
+#include "list.h"
 
 static int test_compare(void* a, void* b){
 	int ia = (int)(mem_unbox(a));
@@ -2452,6 +2455,39 @@ TEST_SUITE(RBT) {
 		CHECK(NULL == doomed->right);
 		CHECK(OK == rbt_check_status(tree));
 		mem_release(doomed);
+		mem_release(tree);
+	}
+
+	TEST(Ridiculous){
+		int test_val_count = 1024;
+		int i, j;
+		int list_size = 0;
+		rbt_t* tree = rbt_new(NULL);
+		list_t* vals = list_new();
+		srand(time(NULL));
+		for(j = 0; j < 10; j++){
+			for(i = 0; i < test_val_count; i ++){
+				void* foo = mem_box(rand());
+				list_push_back(vals, foo);
+				mem_retain(foo);
+				rbt_insert(tree, foo);
+				list_size++;
+			}
+			rbt_status_t status = rbt_check_status(tree);
+			//printf("status after inserts is %d\n", status);
+			CHECK(OK == status);
+			for(i = 0; i < test_val_count/2; i++){
+				int idx = rand()%list_size;
+				void* foo = list_at(vals, idx);
+				rbt_delete(tree, foo);
+				list_delete(vals, idx);
+				list_size--;
+			}
+			status = rbt_check_status(tree);
+			//printf("status after deletes is %d\n", status);
+			CHECK(OK == status);
+		}
+		mem_release(vals);
 		mem_release(tree);
 	}
 }
