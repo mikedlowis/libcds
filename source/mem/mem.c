@@ -83,7 +83,7 @@ static void deregister_block(void* p_obj)
 {
     block_t* p_prev = NULL;
     block_t* p_curr = Live_Blocks;
-    while((NULL != p_curr) && (NULL != p_curr->p_next))
+    while(NULL != p_curr)
     {
         if (p_obj == p_curr->p_obj)
         {
