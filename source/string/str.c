@@ -55,10 +55,14 @@ char str_at(str_t* p_str, size_t index)
 
 str_t* str_set(str_t* p_str, size_t index, char val)
 {
-    (void)p_str;
-    (void)index;
-    (void)val;
-    return NULL;
+    str_t* p_newstr = NULL;
+    assert(NULL != p_str);
+    if (index < p_str->size)
+    {
+        p_newstr = str_copy(p_str);
+        p_newstr->data[index] = val;
+    }
+    return p_newstr;
 }
 
 str_t* str_concat(str_t* p_str1, str_t* p_str2)
