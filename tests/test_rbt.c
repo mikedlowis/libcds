@@ -7,14 +7,14 @@
 static int test_compare(void* a, void* b){
 	int ia = (int)(mem_unbox(a));
 	int ib = (int)(mem_unbox(b));
-	return (ia<ib ? -1 : (ib>ia ? 1 : 0));
+	return (ia == ib ? 0 : (ia<ib ? -1 : 1 ));
 }
 
 static void test_setup(void) { }
 //-----------------------------------------------------------------------------
 // Begin Unit Tests
 //-----------------------------------------------------------------------------
-TEST_SUITE(RB) {
+TEST_SUITE(RBT) {
 	//-------------------------------------------------------------------------
 	// Test the rbt_node_new function
 	//-------------------------------------------------------------------------
@@ -52,8 +52,8 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_tree_is_valid_checks_root_is_always_black_property){
-		rbt_t* tree = rbt_new(test_compare);
 		void* box88 = mem_box(88);
+		rbt_t* tree = rbt_new(test_compare);
 		rbt_insert(tree, box88);
 		CHECK(BLACK == tree->root->color);
 		CHECK(OK == rbt_check_status(tree));
@@ -62,10 +62,10 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_tree_is_valid_fails_when_nodes_not_sorted_two_nodes){
-		rbt_t* tree = rbt_new(test_compare);
 		void* box42 = mem_box(42);
-		rbt_node_t* node1 = rbt_node_new(box42);
 		void* box88 = mem_box(88);
+		rbt_t* tree = rbt_new(test_compare);
+		rbt_node_t* node1 = rbt_node_new(box42);
 		rbt_node_t* node2 = rbt_node_new(box88);
 		tree->root = node1;
 		node1->color = BLACK;
@@ -79,13 +79,16 @@ TEST_SUITE(RB) {
 		CHECK(OUT_OF_ORDER == rbt_check_status(tree));
 		mem_release(tree);
 	}
-	/*
 	TEST(Verify_tree_is_valid_fails_when_nodes_not_sorted_four_nodes){
+		void* box42 = mem_box(42);
+		void* box88 = mem_box(88);
+		void* box25 = mem_box(25);
+		void* box99 = mem_box(99);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_node_new(42);
-		rbt_node_t* node2 = rbt_node_new(88);
-		rbt_node_t* node3 = rbt_node_new(25);
-		rbt_node_t* node4 = rbt_node_new(99);
+		rbt_node_t* node1 = rbt_node_new(box42);
+		rbt_node_t* node2 = rbt_node_new(box88);
+		rbt_node_t* node3 = rbt_node_new(box25);
+		rbt_node_t* node4 = rbt_node_new(box99);
 		tree->root = node1;
 		node1->color = BLACK;
 		node1->parent = NULL;
@@ -113,9 +116,11 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_tree_is_valid_fails_when_black_nodes_are_unbalanced_two_nodes){
+		void* box42 = mem_box(42);
+		void* box88 = mem_box(88);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_node_new(42);
-		rbt_node_t* node2 = rbt_node_new(88);
+		rbt_node_t* node1 = rbt_node_new(box42);
+		rbt_node_t* node2 = rbt_node_new(box88);
 		tree->root = node1;
 		node1->color = BLACK;
 		node1->parent = NULL;
@@ -131,10 +136,13 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_tree_is_valid_fails_when_black_nodes_are_unbalanced_three_nodes){
+		void* box42 = mem_box(42);
+		void* box22 = mem_box(22);
+		void* box88 = mem_box(88);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_node_new(42);
-		rbt_node_t* node2 = rbt_node_new(22);
-		rbt_node_t* node3 = rbt_node_new(88);
+		rbt_node_t* node1 = rbt_node_new(box42);
+		rbt_node_t* node2 = rbt_node_new(box22);
+		rbt_node_t* node3 = rbt_node_new(box88);
 		tree->root = node1;
 		node1->color = BLACK;
 		node1->parent = NULL;
@@ -161,11 +169,15 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_tree_is_valid_fails_when_black_nodes_are_unbalanced_four_nodes){
+		void* box42 = mem_box(42);
+		void* box22 = mem_box(22);
+		void* box88 = mem_box(88);
+		void* box33 = mem_box(33);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_node_new(42);
-		rbt_node_t* node2 = rbt_node_new(22);
-		rbt_node_t* node3 = rbt_node_new(88);
-		rbt_node_t* node4 = rbt_node_new(33);
+		rbt_node_t* node1 = rbt_node_new(box42);
+		rbt_node_t* node2 = rbt_node_new(box22);
+		rbt_node_t* node3 = rbt_node_new(box88);
+		rbt_node_t* node4 = rbt_node_new(box33);
 		tree->root = node1;
 		node1->color = BLACK;
 		node1->parent = NULL;
@@ -198,9 +210,11 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_tree_is_valid_fails_when_node_is_unvalid_color){
+		void* box42 = mem_box(42);
+		void* box88 = mem_box(88);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_node_new(42);
-		rbt_node_t* node2 = rbt_node_new(88);
+		rbt_node_t* node1 = rbt_node_new(box42);
+		rbt_node_t* node2 = rbt_node_new(box88);
 		tree->root = node1;
 		node1->color = BLACK;
 		node1->parent = NULL;
@@ -216,9 +230,11 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_tree_is_valid_fails_when_root_parent_pointer_is_not_null){
+		void* box42 = mem_box(42);
+		void* box88 = mem_box(88);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_node_new(42);
-		rbt_node_t* node2 = rbt_node_new(88);
+		rbt_node_t* node1 = rbt_node_new(box42);
+		rbt_node_t* node2 = rbt_node_new(box88);
 		tree->root = node1;
 		node1->color = BLACK;
 		node1->parent = node2;
@@ -234,10 +250,13 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_tree_is_valid_fails_when_node_parent_poitners_are_wrong_two_nodes){
+		void* box42 = mem_box(42);
+		void* box88 = mem_box(88);
+		void* box99 = mem_box(99);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_node_new(42);
-		rbt_node_t* node2 = rbt_node_new(88);
-		rbt_node_t* node3 = rbt_node_new(99);
+		rbt_node_t* node1 = rbt_node_new(box42);
+		rbt_node_t* node2 = rbt_node_new(box88);
+		rbt_node_t* node3 = rbt_node_new(box99);
 		tree->root = node1;
 		node1->color = BLACK;
 		node1->parent = NULL;
@@ -258,11 +277,15 @@ TEST_SUITE(RB) {
 		mem_release(node3);
 	}
 	TEST(Verify_tree_is_valid_fails_when_node_parent_poitners_are_wrong_four_nodes){
+		void* box42 = mem_box(42);
+		void* box22 = mem_box(22);
+		void* box88 = mem_box(88);
+		void* box33 = mem_box(33);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_node_new(42);
-		rbt_node_t* node2 = rbt_node_new(22);
-		rbt_node_t* node3 = rbt_node_new(88);
-		rbt_node_t* node4 = rbt_node_new(33);
+		rbt_node_t* node1 = rbt_node_new(box42);
+		rbt_node_t* node2 = rbt_node_new(box22);
+		rbt_node_t* node3 = rbt_node_new(box88);
+		rbt_node_t* node4 = rbt_node_new(box33);
 		tree->root = node1;
 		node1->color = BLACK;
 		node1->parent = NULL;
@@ -292,11 +315,15 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_tree_is_valid_fails_when_node_points_to_itself){
+		void* box42 = mem_box(42);
+		void* box22 = mem_box(22);
+		void* box88 = mem_box(88);
+		void* box33 = mem_box(33);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_node_new(42);
-		rbt_node_t* node2 = rbt_node_new(22);
-		rbt_node_t* node3 = rbt_node_new(88);
-		rbt_node_t* node4 = rbt_node_new(33);
+		rbt_node_t* node1 = rbt_node_new(box42);
+		rbt_node_t* node2 = rbt_node_new(box22);
+		rbt_node_t* node3 = rbt_node_new(box88);
+		rbt_node_t* node4 = rbt_node_new(box33);
 		tree->root = node1;
 		node1->color = BLACK;
 		node1->parent = NULL;
@@ -335,11 +362,12 @@ TEST_SUITE(RB) {
 	// Test insert functions
 	//-------------------------------------------------------------------------
 	TEST(Verify_rbt_insert_to_an_empty_list_assigns_root){
+		void* box42 = mem_box(42);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node = rbt_insert(tree, 42);
+		rbt_node_t* node = rbt_insert(tree, box42);
 		CHECK(NULL != node);
 		CHECK(tree->root == node);
-		CHECK(42 == node->contents);
+		CHECK(box42 == node->contents);
 		CHECK(NULL == node->left);
 		CHECK(NULL == node->right);
 		CHECK(NULL == node->parent);
@@ -347,14 +375,16 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_rbt_insert_node_to_root_left_works){
+		void* box42 = mem_box(42);
+		void* box31 = mem_box(31);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* root = rbt_insert(tree, 42);
-		rbt_node_t* node1 = rbt_insert(tree, 31);
+		rbt_node_t* root = rbt_insert(tree, box42);
+		rbt_node_t* node1 = rbt_insert(tree, box31);
 		CHECK(NULL != root);
 		CHECK(NULL != node1);
 		CHECK(tree->root == root);
 		CHECK(root == node1->parent);
-		CHECK(31 == node1->contents);
+		CHECK(box31 == node1->contents);
 		CHECK(node1 == root->left);
 		CHECK(NULL == root->right);
 		CHECK(RED == node1->color);
@@ -362,14 +392,16 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_rbt_insert_node_to_root_right_works){
+		void* box42 = mem_box(42);
+		void* box64 = mem_box(64);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* root = rbt_insert(tree, 42);
-		rbt_node_t* node2 = rbt_insert(tree, 64);
+		rbt_node_t* root = rbt_insert(tree, box42);
+		rbt_node_t* node2 = rbt_insert(tree, box64);
 		CHECK(NULL != root);
 		CHECK(NULL != node2);
 		CHECK(tree->root == root);
 		CHECK(root == node2->parent);
-		CHECK(64 == node2->contents);
+		CHECK(box64 == node2->contents);
 		CHECK(node2 == root->right);
 		CHECK(NULL == root->left);
 		CHECK(RED == node2->color);
@@ -377,18 +409,21 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_rbt_insert_first_level_works){
+		void* box42 = mem_box(42);
+		void* box31 = mem_box(31);
+		void* box64 = mem_box(64);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* root = rbt_insert(tree, 42);
-		rbt_node_t* node1 = rbt_insert(tree, 31);
-		rbt_node_t* node2 = rbt_insert(tree, 64);
+		rbt_node_t* root = rbt_insert(tree, box42);
+		rbt_node_t* node1 = rbt_insert(tree, box31);
+		rbt_node_t* node2 = rbt_insert(tree, box64);
 		CHECK(NULL != root);
 		CHECK(NULL != node1);
 		CHECK(NULL != node2);
 		CHECK(tree->root == root);
 		CHECK(root == node1->parent);
 		CHECK(root == node2->parent);
-		CHECK(31 == node1->contents);
-		CHECK(64 == node2->contents);
+		CHECK(box31 == node1->contents);
+		CHECK(box64 == node2->contents);
 		CHECK(node1 == root->left);
 		CHECK(node2 == root->right);
 		CHECK(RED == node1->color);
@@ -397,13 +432,17 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_rbt_insert_below_full_first_level_works){
+		void* box42 = mem_box(42);
+		void* box31 = mem_box(31);
+		void* box64 = mem_box(64);
+		void* box15 = mem_box(15);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* root = rbt_insert(tree, 42);
-		rbt_node_t* node1 = rbt_insert(tree, 31);
-		rbt_node_t* node2 = rbt_insert(tree, 64);
-		rbt_node_t* node3 = rbt_insert(tree, 15);
+		rbt_node_t* root = rbt_insert(tree, box42);
+		rbt_node_t* node1 = rbt_insert(tree, box31);
+		rbt_node_t* node2 = rbt_insert(tree, box64);
+		rbt_node_t* node3 = rbt_insert(tree, box15);
 		CHECK(NULL != node3);
-		CHECK(15 == node3->contents);
+		CHECK(box15 == node3->contents);
 		CHECK(node1->left == node3);
 		CHECK(NULL == node3->left);
 		CHECK(NULL == node3->right);
@@ -415,15 +454,18 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_rbt_insert_parent_uncle_mismatch_outside_left){
+		void* box42 = mem_box(42);
+		void* box32 = mem_box(32);
+		void* box15 = mem_box(15);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 42);
-		rbt_node_t* node2 = rbt_insert(tree, 32);
+		rbt_node_t* node1 = rbt_insert(tree, box42);
+		rbt_node_t* node2 = rbt_insert(tree, box32);
 		CHECK(node1 == tree->root);
 		CHECK(node2 == tree->root->left);
 		CHECK(NULL == tree->root->right);
 		CHECK(RED == node2->color);
 		//tree->root->right == NULL ; black implicitly
-		rbt_node_t* node3 = rbt_insert(tree, 15);
+		rbt_node_t* node3 = rbt_insert(tree, box15);
 		CHECK(NULL != node3);
 		CHECK(node2 == tree->root);
 		//check node2 fields 
@@ -431,31 +473,34 @@ TEST_SUITE(RB) {
 		CHECK(node1 == node2->right);
 		CHECK(NULL == node2->parent);
 		CHECK(BLACK == node2->color);
-		CHECK(32 == node2->contents);
+		CHECK(box32 == node2->contents);
 		//check node1 fields
 		CHECK(NULL == node1->left);
 		CHECK(NULL == node1->right);
 		CHECK(node2 == node1->parent);
 		CHECK(RED == node1->color);
-		CHECK(42 == node1->contents);
+		CHECK(box42 == node1->contents);
 		//check node3 fields
 		CHECK(NULL == node3->left);
 		CHECK(NULL == node3->right);
 		CHECK(node2 == node3->parent);
 		CHECK(RED == node3->color);
-		CHECK(15 == node3->contents);
+		CHECK(box15 == node3->contents);
 		CHECK(OK == rbt_check_status(tree));
 		mem_release(tree);
 	}
 	TEST(Verify_rbt_insert_parent_uncle_mismatch_outside_right){
+		void* box42 = mem_box(42);
+		void* box53 = mem_box(53);
+		void* box99 = mem_box(99);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 42);
-		rbt_node_t* node2 = rbt_insert(tree, 53);
+		rbt_node_t* node1 = rbt_insert(tree, box42);
+		rbt_node_t* node2 = rbt_insert(tree, box53);
 		CHECK(node1 == tree->root);
 		CHECK(node2 == tree->root->right);
 		CHECK(NULL == tree->root->left);
 		CHECK(RED == node2->color);
-		rbt_node_t* node3 = rbt_insert(tree, 99);
+		rbt_node_t* node3 = rbt_insert(tree, box99);
 		CHECK(NULL != node3);
 		CHECK(node2 == tree->root);
 		//check node2 fields
@@ -463,31 +508,34 @@ TEST_SUITE(RB) {
 		CHECK(node1 == node2->left);
 		CHECK(NULL == node2->parent);
 		CHECK(BLACK == node2->color);
-		CHECK(53 == node2->contents);
+		CHECK(box53 == node2->contents);
 		//check node1 fields
 		CHECK(NULL == node1->left);
 		CHECK(NULL == node1->right);
 		CHECK(node2 == node1->parent);
 		CHECK(RED == node1->color);
-		CHECK(42 == node1->contents);
+		CHECK(box42 == node1->contents);
 		//check node3 fields
 		CHECK(NULL == node3->left);
 		CHECK(NULL == node3->right);
 		CHECK(node2 == node3->parent);
 		CHECK(RED == node3->color);
-		CHECK(99 == node3->contents);
+		CHECK(box99 == node3->contents);
 		CHECK(OK == rbt_check_status(tree));
 		mem_release(tree);
 	}
 	TEST(Verify_rbt_insert_parent_uncle_mismatch_inside_left){
+		void* box42 = mem_box(42);
+		void* box20 = mem_box(20);
+		void* box33 = mem_box(33);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 42);
-		rbt_node_t* node2 = rbt_insert(tree, 20);
+		rbt_node_t* node1 = rbt_insert(tree, box42);
+		rbt_node_t* node2 = rbt_insert(tree, box20);
 		CHECK(node1 == tree->root);
 		CHECK(node2 == tree->root->left);
 		CHECK(NULL == tree->root->right);
 		CHECK(RED == node2->color);
-		rbt_node_t* node3 = rbt_insert(tree, 33);
+		rbt_node_t* node3 = rbt_insert(tree, box33);
 		CHECK(NULL != node3);
 		CHECK(node3 == tree->root);
 		//check node3 fields
@@ -495,31 +543,34 @@ TEST_SUITE(RB) {
 		CHECK(node1 == node3->right);
 		CHECK(NULL == node3->parent);
 		CHECK(BLACK == node3->color);
-		CHECK(33 == node3->contents);
+		CHECK(box33 == node3->contents);
 		//check node2 fields
 		CHECK(NULL == node2->left);
 		CHECK(NULL == node2->right);
 		CHECK(node3 == node2->parent);
 		CHECK(RED == node2->color);
-		CHECK(20 == node2->contents);
+		CHECK(box20 == node2->contents);
 		//check node1 fields
 		CHECK(NULL == node1->left);
 		CHECK(NULL == node1->right);
 		CHECK(node3 == node1->parent);
 		CHECK(RED == node1->color);
-		CHECK(42 == node1->contents);
+		CHECK(box42 == node1->contents);
 		CHECK(OK == rbt_check_status(tree));
 		mem_release(tree);
 	}
 	TEST(Verify_rbt_insert_parent_uncle_mismatch_inside_right){
+		void* box42 = mem_box(42);
+		void* box99 = mem_box(99);
+		void* box88 = mem_box(88);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 42);
-		rbt_node_t* node2 = rbt_insert(tree, 99);
+		rbt_node_t* node1 = rbt_insert(tree, box42);
+		rbt_node_t* node2 = rbt_insert(tree, box99);
 		CHECK(node1 == tree->root);
 		CHECK(node2 == tree->root->right);
 		CHECK(NULL == tree->root->left);
 		CHECK(RED == node2->color);
-		rbt_node_t* node3 = rbt_insert(tree, 88);
+		rbt_node_t* node3 = rbt_insert(tree, box88);
 		CHECK(NULL != node3);
 		CHECK(node3 == tree->root);
 		//check node3 fields
@@ -527,19 +578,19 @@ TEST_SUITE(RB) {
 		CHECK(node2 == node3->right);
 		CHECK(NULL == node3->parent);
 		CHECK(BLACK == node3->color);
-		CHECK(88 == node3->contents);
+		CHECK(box88 == node3->contents);
 		//check node2 fields
 		CHECK(NULL == node2->left);
 		CHECK(NULL == node2->right);
 		CHECK(node3 == node2->parent);
 		CHECK(RED == node2->color);
-		CHECK(99 == node2->contents);
+		CHECK(box99 == node2->contents);
 		//check node1 fields
 		CHECK(NULL == node1->left);
 		CHECK(NULL == node1->right);
 		CHECK(node3 == node1->parent);
 		CHECK(RED == node1->color);
-		CHECK(42 == node1->contents);
+		CHECK(box42 == node1->contents);
 		CHECK(OK == rbt_check_status(tree));
 		mem_release(tree);
 	}
@@ -548,32 +599,42 @@ TEST_SUITE(RB) {
 	// Test lookup function
 	//-------------------------------------------------------------------------
 	TEST(Verify_rbt_lookup_returns_null_if_not_found){
+		void* box42 = mem_box(42);
+		void* box33 = mem_box(33);
+		void* box88 = mem_box(88);
+		void* box15 = mem_box(15);
+		void* box78 = mem_box(78);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_insert(tree, 42);
-		rbt_insert(tree, 33);
-		rbt_insert(tree, 88);
-		rbt_insert(tree, 15);
-		CHECK(NULL == rbt_lookup(tree, 78));
+		rbt_insert(tree, box42);
+		rbt_insert(tree, box33);
+		rbt_insert(tree, box88);
+		rbt_insert(tree, box15);
+		CHECK(NULL == rbt_lookup(tree, box78));
 		mem_release(tree);
+		mem_release(box78);
 	}
 	TEST(Verify_rbt_lookup_returns_correct_node){
+		void* box42 = mem_box(42);
+		void* box33 = mem_box(33);
+		void* box88 = mem_box(88);
+		void* box15 = mem_box(15);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 42);
-		rbt_node_t* node2 = rbt_insert(tree, 33);
-		rbt_node_t* node3 = rbt_insert(tree, 88);
-		rbt_node_t* node4 = rbt_insert(tree, 15);
+		rbt_node_t* node1 = rbt_insert(tree, box42);
+		rbt_node_t* node2 = rbt_insert(tree, box33);
+		rbt_node_t* node3 = rbt_insert(tree, box88);
+		rbt_node_t* node4 = rbt_insert(tree, box15);
 		CHECK(node1 == tree->root);
 		CHECK(node2 == node1->left);
 		CHECK(node3 == node1->right);
 		CHECK(node4 == node2->left);
-		CHECK(42 == node1->contents);
-		CHECK(33 == node2->contents);
-		CHECK(88 == node3->contents);
-		CHECK(15 == node4->contents);
-		CHECK(node1 == rbt_lookup(tree, 42));
-		CHECK(node2 == rbt_lookup(tree, 33));
-		CHECK(node3 == rbt_lookup(tree, 88));
-		CHECK(node4 == rbt_lookup(tree, 15));
+		CHECK(box42 == node1->contents);
+		CHECK(box33 == node2->contents);
+		CHECK(box88 == node3->contents);
+		CHECK(box15 == node4->contents);
+		CHECK(node1 == rbt_lookup(tree, box42));
+		CHECK(node2 == rbt_lookup(tree, box33));
+		CHECK(node3 == rbt_lookup(tree, box88));
+		CHECK(node4 == rbt_lookup(tree, box15));
 		mem_release(tree);
 	}
 
@@ -585,14 +646,18 @@ TEST_SUITE(RB) {
 	//properties of rbt prevent red node w/ only one non-leaf black child.
 	//node w/ two non-leaf black children handled by second class.
 	TEST(Verify_rbt_delete_red_node_without_children){
+		void* box42 = mem_box(42);
+		void* box33 = mem_box(33);
+		void* box88 = mem_box(88);
+		void* box15 = mem_box(15);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 42);
-		rbt_node_t* node2 = rbt_insert(tree, 33);
-		rbt_node_t* node3 = rbt_insert(tree, 88);
-		rbt_node_t* node4 = rbt_insert(tree, 15);
+		rbt_node_t* node1 = rbt_insert(tree, box42);
+		rbt_node_t* node2 = rbt_insert(tree, box33);
+		rbt_node_t* node3 = rbt_insert(tree, box88);
+		rbt_node_t* node4 = rbt_insert(tree, box15);
 		mem_retain(node4);
 		//delete node 4
-		rbt_delete(tree, 15);
+		rbt_delete(tree, box15);
 		CHECK(1 == mem_num_references(node4));
 		//check node4 no longer in tree
 		CHECK(NULL == node2->left);
@@ -612,14 +677,18 @@ TEST_SUITE(RB) {
 	}
 	//case 2: black node, one red child
 	TEST(Verify_rbt_delete_left_black_node_with_single_red_left_child){
+		void* box42 = mem_box(42);
+		void* box33 = mem_box(33);
+		void* box88 = mem_box(88);
+		void* box15 = mem_box(15);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 42);
-		rbt_node_t* node2 = rbt_insert(tree, 33);
-		rbt_node_t* node3 = rbt_insert(tree, 88);
-		rbt_node_t* node4 = rbt_insert(tree, 15);
+		rbt_node_t* node1 = rbt_insert(tree, box42);
+		rbt_node_t* node2 = rbt_insert(tree, box33);
+		rbt_node_t* node3 = rbt_insert(tree, box88);
+		rbt_node_t* node4 = rbt_insert(tree, box15);
 		mem_retain(node2);
 		//delete node 2
-		rbt_delete(tree, 33);
+		rbt_delete(tree, box33);
 		CHECK(1 == mem_num_references(node2));
 		CHECK(node1 == tree->root);
 		CHECK(node4 == node1->left);
@@ -639,14 +708,18 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_rbt_delete_left_black_node_with_single_red_right_child){
+		void* box42 = mem_box(42);
+		void* box33 = mem_box(33);
+		void* box88 = mem_box(88);
+		void* box38 = mem_box(38);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 42);
-		rbt_node_t* node2 = rbt_insert(tree, 33);
-		rbt_node_t* node3 = rbt_insert(tree, 88);
-		rbt_node_t* node4 = rbt_insert(tree, 38);
+		rbt_node_t* node1 = rbt_insert(tree, box42);
+		rbt_node_t* node2 = rbt_insert(tree, box33);
+		rbt_node_t* node3 = rbt_insert(tree, box88);
+		rbt_node_t* node4 = rbt_insert(tree, box38);
 		mem_retain(node2);
 		//delete node 2
-		rbt_delete(tree, 33);
+		rbt_delete(tree, box33);
 		CHECK(1 == mem_num_references(node2));
 		CHECK(node1 == tree->root);
 		CHECK(node4 == node1->left);
@@ -666,14 +739,18 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_rbt_delete_right_black_node_with_single_red_right_child){
+		void* box42 = mem_box(42);
+		void* box33 = mem_box(33);
+		void* box88 = mem_box(88);
+		void* box98 = mem_box(98);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 42);
-		rbt_node_t* node2 = rbt_insert(tree, 33);
-		rbt_node_t* node3 = rbt_insert(tree, 88);
-		rbt_node_t* node4 = rbt_insert(tree, 98);
+		rbt_node_t* node1 = rbt_insert(tree, box42);
+		rbt_node_t* node2 = rbt_insert(tree, box33);
+		rbt_node_t* node3 = rbt_insert(tree, box88);
+		rbt_node_t* node4 = rbt_insert(tree, box98);
 		mem_retain(node3);
 		//delete node 3
-		rbt_delete(tree, 88);
+		rbt_delete(tree, box88);
 		CHECK(1 == mem_num_references(node3));
 		CHECK(node1 == tree->root);
 		CHECK(node2 == node1->left);
@@ -693,14 +770,18 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_rbt_delete_right_black_node_with_single_red_left_child){
+		void* box42 = mem_box(42);
+		void* box33 = mem_box(33);
+		void* box88 = mem_box(88);
+		void* box68 = mem_box(68);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 42);
-		rbt_node_t* node2 = rbt_insert(tree, 33);
-		rbt_node_t* node3 = rbt_insert(tree, 88);
-		rbt_node_t* node4 = rbt_insert(tree, 68);
+		rbt_node_t* node1 = rbt_insert(tree, box42);
+		rbt_node_t* node2 = rbt_insert(tree, box33);
+		rbt_node_t* node3 = rbt_insert(tree, box88);
+		rbt_node_t* node4 = rbt_insert(tree, box68);
 		mem_retain(node3);
 		//delete node 3
-		rbt_delete(tree, 88);
+		rbt_delete(tree, box88);
 		CHECK(1 == mem_num_references(node3));
 		CHECK(node1 == tree->root);
 		CHECK(node2 == node1->left);
@@ -725,13 +806,17 @@ TEST_SUITE(RB) {
 	//3.1: sibbling has no children
 	//3.1.1: test when node being deleted is parent->right and parent is grandparent->right
 	TEST(Verify_rbt_delete_black_node_from_red_parent_sib_no_children_right){
-		int target = 99;
+		void* target = mem_box(99);
 		//create tree w/ several nodes
+		void* box42 = mem_box(42);
+		void* box22 = mem_box(22);
+		void* box88 = mem_box(88);
+		void* box77 = mem_box(77);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 42); //root
-		rbt_node_t* node2 = rbt_insert(tree, 22); //untouched
-		rbt_node_t* node3 = rbt_insert(tree, 88); //parent
-		rbt_node_t* node4 = rbt_insert(tree, 77); //sibbling
+		rbt_node_t* node1 = rbt_insert(tree, box42); //root
+		rbt_node_t* node2 = rbt_insert(tree, box22); //untouched
+		rbt_node_t* node3 = rbt_insert(tree, box88); //parent
+		rbt_node_t* node4 = rbt_insert(tree, box77); //sibbling
 		rbt_node_t* node5 = rbt_insert(tree, target); //target
 		//force colors to match scenario we're testing
 		(void)node1;
@@ -762,13 +847,17 @@ TEST_SUITE(RB) {
 	}
 	//3.1.2: test when node being deleted is parent->left and parent is grandparent->left
 	TEST(Verify_rbt_delete_black_node_from_red_parent_sib_no_children_left){
-		int target = 15;
+		void* target = mem_box(15);
 		//create tree w/ several nodes
+		void* box88 = mem_box(88);
+		void* box99 = mem_box(99);
+		void* box42 = mem_box(42);
+		void* box55 = mem_box(55);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 88); //root
-		rbt_node_t* node2 = rbt_insert(tree, 99); //untouched
-		rbt_node_t* node3 = rbt_insert(tree, 42); //parent
-		rbt_node_t* node4 = rbt_insert(tree, 55); //sibbling
+		rbt_node_t* node1 = rbt_insert(tree, box88); //root
+		rbt_node_t* node2 = rbt_insert(tree, box99); //untouched
+		rbt_node_t* node3 = rbt_insert(tree, box42); //parent
+		rbt_node_t* node4 = rbt_insert(tree, box55); //sibbling
 		rbt_node_t* node5 = rbt_insert(tree, target); //target
 		//force colors to match scenario we're testing
 		(void)node1;
@@ -800,15 +889,20 @@ TEST_SUITE(RB) {
 	//3.2: sibbling has outside child
 	//3.2.1: test when node being deleted is parent->right and parent is grandparent->right
 	TEST(Verify_rbt_delete_black_node_from_red_parent_sib_has_outside_child_right){
-		int target = 99;
+		void* target = mem_box(99);
 		//create tree w/ several nodes
+		void* box42 = mem_box(42);
+		void* box22 = mem_box(22);
+		void* box88 = mem_box(88);
+		void* box77 = mem_box(77);
+		void* box70 = mem_box(70);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 42); //root
-		rbt_node_t* node2 = rbt_insert(tree, 22); //untouched
-		rbt_node_t* node3 = rbt_insert(tree, 88); //parent
-		rbt_node_t* node4 = rbt_insert(tree, 77); //sibbling
+		rbt_node_t* node1 = rbt_insert(tree, box42); //root
+		rbt_node_t* node2 = rbt_insert(tree, box22); //untouched
+		rbt_node_t* node3 = rbt_insert(tree, box88); //parent
+		rbt_node_t* node4 = rbt_insert(tree, box77); //sibbling
 		rbt_node_t* node5 = rbt_insert(tree, target); //target
-		rbt_node_t* node6 = rbt_insert(tree, 70); //sib child
+		rbt_node_t* node6 = rbt_insert(tree, box70); //sib child
 		//force colors to match scenario being tested
 		(void)node1;
 		node2->color = BLACK;
@@ -840,15 +934,20 @@ TEST_SUITE(RB) {
 	}
 	//3.2.2: test when node being deleted is parent->left and parent is grandparent->left
 	TEST(Verify_rbt_delete_black_node_from_red_parent_sib_has_outside_child_left){
-		int target = 12;
+		void* target = mem_box(12);
 		//create tree w/ several nodes
+		void* box88 = mem_box(88);
+		void* box99 = mem_box(99);
+		void* box42 = mem_box(42);
+		void* box55 = mem_box(55);
+		void* box64 = mem_box(64);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 88); //root
-		rbt_node_t* node2 = rbt_insert(tree, 99); //untouched
-		rbt_node_t* node3 = rbt_insert(tree, 42); //parent
-		rbt_node_t* node4 = rbt_insert(tree, 55); //sibbling
+		rbt_node_t* node1 = rbt_insert(tree, box88); //root
+		rbt_node_t* node2 = rbt_insert(tree, box99); //untouched
+		rbt_node_t* node3 = rbt_insert(tree, box42); //parent
+		rbt_node_t* node4 = rbt_insert(tree, box55); //sibbling
 		rbt_node_t* node5 = rbt_insert(tree, target); //target
-		rbt_node_t* node6 = rbt_insert(tree, 64); //sib child
+		rbt_node_t* node6 = rbt_insert(tree, box64); //sib child
 		//force colors to match scenario being tested
 		(void)node1;
 		node2->color = BLACK;
@@ -881,15 +980,20 @@ TEST_SUITE(RB) {
 	//3.3: sibbling has inside child
 	//3.3.1: test when node being deleted is parent->right and parent is grandparent->right
 	TEST(Verify_rbt_delete_black_node_from_red_parent_sib_has_inside_child_right){
-		int target = 99;
+		void* target = mem_box(99);
 		//create tree w/ several nodes
+		void* box42 = mem_box(42);
+		void* box22 = mem_box(22);
+		void* box88 = mem_box(88);
+		void* box70 = mem_box(70);
+		void* box78 = mem_box(78);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 42); //root
-		rbt_node_t* node2 = rbt_insert(tree, 22); //untouched
-		rbt_node_t* node3 = rbt_insert(tree, 88); //parent
-		rbt_node_t* node4 = rbt_insert(tree, 70); //sibbling
+		rbt_node_t* node1 = rbt_insert(tree, box42); //root
+		rbt_node_t* node2 = rbt_insert(tree, box22); //untouched
+		rbt_node_t* node3 = rbt_insert(tree, box88); //parent
+		rbt_node_t* node4 = rbt_insert(tree, box70); //sibbling
 		rbt_node_t* node5 = rbt_insert(tree, target); //target
-		rbt_node_t* node6 = rbt_insert(tree, 78); //sib child
+		rbt_node_t* node6 = rbt_insert(tree, box78); //sib child
 		//force colors to match scenario being tested
 		(void)node1;
 		node2->color = BLACK;
@@ -921,15 +1025,20 @@ TEST_SUITE(RB) {
 	}
 	//3.3.2: test when node being deleted is parent->left and parent is grandparent->left
 	TEST(Verify_rbt_delete_black_node_from_red_parent_sib_has_inside_child_left){
-		int target = 15;
+		void* target = mem_box(15);
 		//create tree w/ several nodes
+		void* box88 = mem_box(88);
+		void* box99 = mem_box(99);
+		void* box42 = mem_box(42);
+		void* box55 = mem_box(55);
+		void* box48 = mem_box(48);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 88); //root
-		rbt_node_t* node2 = rbt_insert(tree, 99); //untouched
-		rbt_node_t* node3 = rbt_insert(tree, 42); //parent
-		rbt_node_t* node4 = rbt_insert(tree, 55); //sibbling
+		rbt_node_t* node1 = rbt_insert(tree, box88); //root
+		rbt_node_t* node2 = rbt_insert(tree, box99); //untouched
+		rbt_node_t* node3 = rbt_insert(tree, box42); //parent
+		rbt_node_t* node4 = rbt_insert(tree, box55); //sibbling
 		rbt_node_t* node5 = rbt_insert(tree, target); //target
-		rbt_node_t* node6 = rbt_insert(tree, 48); //sib child
+		rbt_node_t* node6 = rbt_insert(tree, box48); //sib child
 		//force colors to match scenario being tested
 		(void)node1;
 		node2->color = BLACK;
@@ -962,16 +1071,22 @@ TEST_SUITE(RB) {
 	//3.4: sibbling has no children
 	//3.4.1: test when node being deleted is parent->right and parent is grandparent->right
 	TEST(Verify_rbt_delete_black_node_from_red_parent_sib_has_two_children_right){
-		int target = 99;
+		void* target = mem_box(99);
 		//create tree w/ several nodes
+		void* box42 = mem_box(42);
+		void* box22 = mem_box(22);
+		void* box88 = mem_box(88);
+		void* box70 = mem_box(70);
+		void* box78 = mem_box(78);
+		void* box64 = mem_box(64);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 42); //root
-		rbt_node_t* node2 = rbt_insert(tree, 22); //untouched
-		rbt_node_t* node3 = rbt_insert(tree, 88); //parent
-		rbt_node_t* node4 = rbt_insert(tree, 70); //sibbling
+		rbt_node_t* node1 = rbt_insert(tree, box42); //root
+		rbt_node_t* node2 = rbt_insert(tree, box22); //untouched
+		rbt_node_t* node3 = rbt_insert(tree, box88); //parent
+		rbt_node_t* node4 = rbt_insert(tree, box70); //sibbling
 		rbt_node_t* node5 = rbt_insert(tree, target); //target
-		rbt_node_t* node6 = rbt_insert(tree, 78); //sib child 1
-		rbt_node_t* node7 = rbt_insert(tree, 64); //sib child 2
+		rbt_node_t* node6 = rbt_insert(tree, box78); //sib child 1
+		rbt_node_t* node7 = rbt_insert(tree, box64); //sib child 2
 		//force colors to match scenario being tested
 		(void)node1;
 		node2->color = BLACK;
@@ -1005,16 +1120,22 @@ TEST_SUITE(RB) {
 	}
 	//3.4.2: test when node being deleted is parent->left and parent is grandparent->left
 	TEST(Verify_rbt_delete_black_node_from_red_parent_sib_has_two_children_left){
-		int target = 15;
+		void* target = mem_box(15);
 		//create tree w/ several nodes
+		void* box88 = mem_box(88);
+		void* box99 = mem_box(99);
+		void* box42 = mem_box(42);
+		void* box55 = mem_box(55);
+		void* box48 = mem_box(48);
+		void* box64 = mem_box(64);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 88); //root
-		rbt_node_t* node2 = rbt_insert(tree, 99); //untouched
-		rbt_node_t* node3 = rbt_insert(tree, 42); //parent
-		rbt_node_t* node4 = rbt_insert(tree, 55); //sibbling
+		rbt_node_t* node1 = rbt_insert(tree, box88); //root
+		rbt_node_t* node2 = rbt_insert(tree, box99); //untouched
+		rbt_node_t* node3 = rbt_insert(tree, box42); //parent
+		rbt_node_t* node4 = rbt_insert(tree, box55); //sibbling
 		rbt_node_t* node5 = rbt_insert(tree, target); //target
-		rbt_node_t* node6 = rbt_insert(tree, 48); //sib child 1
-		rbt_node_t* node7 = rbt_insert(tree, 64); //sib child 2
+		rbt_node_t* node6 = rbt_insert(tree, box48); //sib child 1
+		rbt_node_t* node7 = rbt_insert(tree, box64); //sib child 2
 		//force colors to match scenario being tested
 		(void)node1;
 		node2->color = BLACK;
@@ -1051,12 +1172,14 @@ TEST_SUITE(RB) {
 	//five subcases
 	//4.1: sibbling is black, no children //TODO
 	TEST(Verify_rbt_delete_black_node_from_black_parent_sib_has_no_children_right){
-		int target = 99;
+		void* target = mem_box(99);
 		//create tree w/ several nodes
+		void* box88 = mem_box(88);
+		void* box42 = mem_box(42);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 88); //root
+		rbt_node_t* node1 = rbt_insert(tree, box88); //root
 		rbt_node_t* node2 = rbt_insert(tree, target); //target
-		rbt_node_t* node3 = rbt_insert(tree, 42); //sibbling
+		rbt_node_t* node3 = rbt_insert(tree, box42); //sibbling
 		//force colors to match scenario being tested
 		(void)node1;
 		node2->color = BLACK;
@@ -1082,12 +1205,14 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_rbt_delete_black_node_from_black_parent_sib_has_no_children_left){
-		int target = 22;
+		void* target = mem_box(22);
 		//create tree w/ several nodes
+		void* box42 = mem_box(42);
+		void* box88 = mem_box(88);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 42); //root
+		rbt_node_t* node1 = rbt_insert(tree, box42); //root
 		rbt_node_t* node2 = rbt_insert(tree, target); //target
-		rbt_node_t* node3 = rbt_insert(tree, 88); //sibbling
+		rbt_node_t* node3 = rbt_insert(tree, box88); //sibbling
 		//force colors to match scenario being tested
 		(void)node1;
 		node2->color = BLACK;
@@ -1116,18 +1241,28 @@ TEST_SUITE(RB) {
 	//trivial case: parent is tree->root (tested above) ; no action required
 	//A: rebalance node w/ red sibbling (rotation moves to have black sibbling to fall in one of the following cases)
 	TEST(Verify_rbt_delete_rebalance_red_sibbling_left){
-		int target = 15;
+		void* target = mem_box(15);
+		void* box42 = mem_box(42);
+		void* box22 = mem_box(22);
+		void* box70 = mem_box(70);
+		void* box88 = mem_box(88);
+		void* box90 = mem_box(90);
+		void* box99 = mem_box(99);
+		void* box89 = mem_box(89);
+		void* box80 = mem_box(80);
+		void* box60 = mem_box(60);
+		void* box33 = mem_box(33);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node01 = rbt_insert(tree, 42);
-		rbt_node_t* node02 = rbt_insert(tree, 22);
-		rbt_node_t* node03 = rbt_insert(tree, 70);
-		rbt_node_t* node04 = rbt_insert(tree, 88);
-		rbt_node_t* node05 = rbt_insert(tree, 90);
-		rbt_node_t* node06 = rbt_insert(tree, 99);
-		rbt_node_t* node07 = rbt_insert(tree, 89);
-		rbt_node_t* node08 = rbt_insert(tree, 80);
-		rbt_node_t* node09 = rbt_insert(tree, 60);
-		rbt_node_t* node10 = rbt_insert(tree, 33);
+		rbt_node_t* node01 = rbt_insert(tree, box42);
+		rbt_node_t* node02 = rbt_insert(tree, box22);
+		rbt_node_t* node03 = rbt_insert(tree, box70);
+		rbt_node_t* node04 = rbt_insert(tree, box88);
+		rbt_node_t* node05 = rbt_insert(tree, box90);
+		rbt_node_t* node06 = rbt_insert(tree, box99);
+		rbt_node_t* node07 = rbt_insert(tree, box89);
+		rbt_node_t* node08 = rbt_insert(tree, box80);
+		rbt_node_t* node09 = rbt_insert(tree, box60);
+		rbt_node_t* node10 = rbt_insert(tree, box33);
 		rbt_node_t* node11 = rbt_insert(tree, target);
 		//force colors to match scenario being tested
 		//note, expecting a rotation after inserting node5
@@ -1170,19 +1305,29 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_rbt_delete_rebalance_red_sibbling_right){
-		int target = 88;
+		void* target = mem_box(88);
+		void* box42 = mem_box(42);
+		void* box66 = mem_box(66);
+		void* box22 = mem_box(22);
+		void* box18 = mem_box(18);
+		void* box15 = mem_box(15);
+		void* box54 = mem_box(54);
+		void* box33 = mem_box(33);
+		void* box20 = mem_box(20);
+		void* box16 = mem_box(16);
+		void* box11 = mem_box(11);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node01 = rbt_insert(tree, 42);
-		rbt_node_t* node02 = rbt_insert(tree, 66);
-		rbt_node_t* node03 = rbt_insert(tree, 22);
-		rbt_node_t* node04 = rbt_insert(tree, 18);
-		rbt_node_t* node05 = rbt_insert(tree, 15);
+		rbt_node_t* node01 = rbt_insert(tree, box42);
+		rbt_node_t* node02 = rbt_insert(tree, box66);
+		rbt_node_t* node03 = rbt_insert(tree, box22);
+		rbt_node_t* node04 = rbt_insert(tree, box18);
+		rbt_node_t* node05 = rbt_insert(tree, box15);
 		rbt_node_t* node06 = rbt_insert(tree, target);
-		rbt_node_t* node07 = rbt_insert(tree, 54);
-		rbt_node_t* node08 = rbt_insert(tree, 33);
-		rbt_node_t* node09 = rbt_insert(tree, 20);
-		rbt_node_t* node10 = rbt_insert(tree, 16);
-		rbt_node_t* node11 = rbt_insert(tree, 11);
+		rbt_node_t* node07 = rbt_insert(tree, box54);
+		rbt_node_t* node08 = rbt_insert(tree, box33);
+		rbt_node_t* node09 = rbt_insert(tree, box20);
+		rbt_node_t* node10 = rbt_insert(tree, box16);
+		rbt_node_t* node11 = rbt_insert(tree, box11);
 		//force colors to match scenario being tested
 		//note, expecting a rotation after inserting node5
 		(void)node01;
@@ -1225,14 +1370,20 @@ TEST_SUITE(RB) {
 	}
 	//B: rebalance w/ black parent, black sibbling w/ black children
 	TEST(Verify_rbt_delete_rebalance_black_parent_black_sib_with_black_children_left){
-		int target = 15;
+		void* target = mem_box(15);
+		void* box42 = mem_box(42);
+		void* box22 = mem_box(22);
+		void* box88 = mem_box(88);
+		void* box99 = mem_box(99);
+		void* box75 = mem_box(75);
+		void* box33 = mem_box(33);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 42);
-		rbt_node_t* node2 = rbt_insert(tree, 22);
-		rbt_node_t* node3 = rbt_insert(tree, 88);
-		rbt_node_t* node4 = rbt_insert(tree, 99);
-		rbt_node_t* node5 = rbt_insert(tree, 75);
-		rbt_node_t* node6 = rbt_insert(tree, 33);
+		rbt_node_t* node1 = rbt_insert(tree, box42);
+		rbt_node_t* node2 = rbt_insert(tree, box22);
+		rbt_node_t* node3 = rbt_insert(tree, box88);
+		rbt_node_t* node4 = rbt_insert(tree, box99);
+		rbt_node_t* node5 = rbt_insert(tree, box75);
+		rbt_node_t* node6 = rbt_insert(tree, box33);
 		rbt_node_t* node7 = rbt_insert(tree, target);
 		//force colors to match scenario being tested
 		(void)node1;
@@ -1266,15 +1417,21 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_rbt_delete_rebalance_black_parent_black_sib_with_black_children_right){
-		int target = 75;
+		void* target = mem_box(75);
+		void* box42 = mem_box(42);
+		void* box22 = mem_box(22);
+		void* box88 = mem_box(88);
+		void* box99 = mem_box(99);
+		void* box33 = mem_box(33);
+		void* box15 = mem_box(15);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 42);
-		rbt_node_t* node2 = rbt_insert(tree, 22);
-		rbt_node_t* node3 = rbt_insert(tree, 88);
-		rbt_node_t* node4 = rbt_insert(tree, 99);
+		rbt_node_t* node1 = rbt_insert(tree, box42);
+		rbt_node_t* node2 = rbt_insert(tree, box22);
+		rbt_node_t* node3 = rbt_insert(tree, box88);
+		rbt_node_t* node4 = rbt_insert(tree, box99);
 		rbt_node_t* node5 = rbt_insert(tree, target);
-		rbt_node_t* node6 = rbt_insert(tree, 33);
-		rbt_node_t* node7 = rbt_insert(tree, 15);
+		rbt_node_t* node6 = rbt_insert(tree, box33);
+		rbt_node_t* node7 = rbt_insert(tree, box15);
 		//force colors to match scenario being tested
 		(void)node1;
 		node2->color = BLACK;
@@ -1308,18 +1465,28 @@ TEST_SUITE(RB) {
 	}
 	//C: rebalance w/ red parent, red sibbling w/ black children
 	TEST(Verify_rbt_delete_rebalance_red_parent_black_sib_with_black_children_left){
-		int target = 11;
+		void* target = mem_box(11);
+		void* box42 = mem_box(42);
+		void* box66 = mem_box(66);
+		void* box22 = mem_box(22);
+		void* box18 = mem_box(18);
+		void* box15 = mem_box(15);
+		void* box88 = mem_box(88);
+		void* box54 = mem_box(54);
+		void* box33 = mem_box(33);
+		void* box20 = mem_box(20);
+		void* box16 = mem_box(16);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node01 = rbt_insert(tree, 42);
-		rbt_node_t* node02 = rbt_insert(tree, 66);
-		rbt_node_t* node03 = rbt_insert(tree, 22);
-		rbt_node_t* node04 = rbt_insert(tree, 18);
-		rbt_node_t* node05 = rbt_insert(tree, 15);
-		rbt_node_t* node06 = rbt_insert(tree, 88);
-		rbt_node_t* node07 = rbt_insert(tree, 54);
-		rbt_node_t* node08 = rbt_insert(tree, 33);
-		rbt_node_t* node09 = rbt_insert(tree, 20);
-		rbt_node_t* node10 = rbt_insert(tree, 16);
+		rbt_node_t* node01 = rbt_insert(tree, box42);
+		rbt_node_t* node02 = rbt_insert(tree, box66);
+		rbt_node_t* node03 = rbt_insert(tree, box22);
+		rbt_node_t* node04 = rbt_insert(tree, box18);
+		rbt_node_t* node05 = rbt_insert(tree, box15);
+		rbt_node_t* node06 = rbt_insert(tree, box88);
+		rbt_node_t* node07 = rbt_insert(tree, box54);
+		rbt_node_t* node08 = rbt_insert(tree, box33);
+		rbt_node_t* node09 = rbt_insert(tree, box20);
+		rbt_node_t* node10 = rbt_insert(tree, box16);
 		rbt_node_t* node11 = rbt_insert(tree, target);
 		//force colors to match scenario being tested
 		//note, expecting a rotation after inserting node5
@@ -1362,19 +1529,29 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_rbt_delete_rebalance_red_parent_black_sib_with_black_children_right){
-		int target = 99;
+		void* target = mem_box(99);
+		void* box42 = mem_box(42);
+		void* box22 = mem_box(22);
+		void* box70 = mem_box(70);
+		void* box88 = mem_box(88);
+		void* box90 = mem_box(90);
+		void* box89 = mem_box(89);
+		void* box80 = mem_box(80);
+		void* box60 = mem_box(60);
+		void* box33 = mem_box(33);
+		void* box15 = mem_box(15);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node01 = rbt_insert(tree, 42);
-		rbt_node_t* node02 = rbt_insert(tree, 22);
-		rbt_node_t* node03 = rbt_insert(tree, 70);
-		rbt_node_t* node04 = rbt_insert(tree, 88);
-		rbt_node_t* node05 = rbt_insert(tree, 90);
+		rbt_node_t* node01 = rbt_insert(tree, box42);
+		rbt_node_t* node02 = rbt_insert(tree, box22);
+		rbt_node_t* node03 = rbt_insert(tree, box70);
+		rbt_node_t* node04 = rbt_insert(tree, box88);
+		rbt_node_t* node05 = rbt_insert(tree, box90);
 		rbt_node_t* node06 = rbt_insert(tree, target);
-		rbt_node_t* node07 = rbt_insert(tree, 89);
-		rbt_node_t* node08 = rbt_insert(tree, 80);
-		rbt_node_t* node09 = rbt_insert(tree, 60);
-		rbt_node_t* node10 = rbt_insert(tree, 33);
-		rbt_node_t* node11 = rbt_insert(tree, 15);
+		rbt_node_t* node07 = rbt_insert(tree, box89);
+		rbt_node_t* node08 = rbt_insert(tree, box80);
+		rbt_node_t* node09 = rbt_insert(tree, box60);
+		rbt_node_t* node10 = rbt_insert(tree, box33);
+		rbt_node_t* node11 = rbt_insert(tree, box15);
 		//force colors to match scenario being tested
 		//note, expecting a rotation after inserting node5
 		(void)node01;
@@ -1417,17 +1594,25 @@ TEST_SUITE(RB) {
 	}
 	//D: rebalance for sibbling w/ outside red child
 	TEST(Verify_rbt_delete_rebalance_sib_with_red_child_outside_left){
-		int target = 11;
+		void* target = mem_box(11);
+		void* box42 = mem_box(42);
+		void* box22 = mem_box(22);
+		void* box55 = mem_box(55);
+		void* box88 = mem_box(88);
+		void* box90 = mem_box(90);
+		void* box30 = mem_box(30);
+		void* box89 = mem_box(89);
+		void* box95 = mem_box(95);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node01 = rbt_insert(tree, 42);
-		rbt_node_t* node02 = rbt_insert(tree, 22);
-		rbt_node_t* node03 = rbt_insert(tree, 55);
-		rbt_node_t* node04 = rbt_insert(tree, 88);
-		rbt_node_t* node05 = rbt_insert(tree, 90);
+		rbt_node_t* node01 = rbt_insert(tree, box42);
+		rbt_node_t* node02 = rbt_insert(tree, box22);
+		rbt_node_t* node03 = rbt_insert(tree, box55);
+		rbt_node_t* node04 = rbt_insert(tree, box88);
+		rbt_node_t* node05 = rbt_insert(tree, box90);
 		rbt_node_t* node06 = rbt_insert(tree, target);
-		rbt_node_t* node07 = rbt_insert(tree, 30);
-		rbt_node_t* node08 = rbt_insert(tree, 89);
-		rbt_node_t* node09 = rbt_insert(tree, 95);
+		rbt_node_t* node07 = rbt_insert(tree, box30);
+		rbt_node_t* node08 = rbt_insert(tree, box89);
+		rbt_node_t* node09 = rbt_insert(tree, box95);
 		//force colors to match scenario being tested
 		(void)node01;
 		node02->color = BLACK;
@@ -1464,17 +1649,25 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_rbt_delete_rebalance_sib_with_red_child_outside_right){
-		int target = 88;
+		void* target = mem_box(88);
+		void* box42 = mem_box(42);
+		void* box55 = mem_box(55);
+		void* box33 = mem_box(33);
+		void* box22 = mem_box(22);
+		void* box15 = mem_box(15);
+		void* box50 = mem_box(50);
+		void* box17 = mem_box(17);
+		void* box11 = mem_box(11);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node01 = rbt_insert(tree, 42);
-		rbt_node_t* node02 = rbt_insert(tree, 55);
-		rbt_node_t* node03 = rbt_insert(tree, 33);
-		rbt_node_t* node04 = rbt_insert(tree, 22);
-		rbt_node_t* node05 = rbt_insert(tree, 15);
+		rbt_node_t* node01 = rbt_insert(tree, box42);
+		rbt_node_t* node02 = rbt_insert(tree, box55);
+		rbt_node_t* node03 = rbt_insert(tree, box33);
+		rbt_node_t* node04 = rbt_insert(tree, box22);
+		rbt_node_t* node05 = rbt_insert(tree, box15);
 		rbt_node_t* node06 = rbt_insert(tree, target);
-		rbt_node_t* node07 = rbt_insert(tree, 50);
-		rbt_node_t* node08 = rbt_insert(tree, 17);
-		rbt_node_t* node09 = rbt_insert(tree, 11);
+		rbt_node_t* node07 = rbt_insert(tree, box50);
+		rbt_node_t* node08 = rbt_insert(tree, box17);
+		rbt_node_t* node09 = rbt_insert(tree, box11);
 		//force colors to match scenario being tested
 		(void)node01;
 		node02->color = BLACK;
@@ -1512,17 +1705,25 @@ TEST_SUITE(RB) {
 	}
 	//E: rebalance for sibbling w/ inside red child
 	TEST(Verify_rbt_delete_rebalance_sib_with_red_child_inside_left){
-		int target = 11;
+		void* target = mem_box(11);
+		void* box42 = mem_box(42);
+		void* box22 = mem_box(22);
+		void* box55 = mem_box(55);
+		void* box88 = mem_box(88);
+		void* box90 = mem_box(90);
+		void* box30 = mem_box(30);
+		void* box50 = mem_box(50);
+		void* box65 = mem_box(65);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node01 = rbt_insert(tree, 42);
-		rbt_node_t* node02 = rbt_insert(tree, 22);
-		rbt_node_t* node03 = rbt_insert(tree, 55);
-		rbt_node_t* node04 = rbt_insert(tree, 88);
-		rbt_node_t* node05 = rbt_insert(tree, 90);
+		rbt_node_t* node01 = rbt_insert(tree, box42);
+		rbt_node_t* node02 = rbt_insert(tree, box22);
+		rbt_node_t* node03 = rbt_insert(tree, box55);
+		rbt_node_t* node04 = rbt_insert(tree, box88);
+		rbt_node_t* node05 = rbt_insert(tree, box90);
 		rbt_node_t* node06 = rbt_insert(tree, target);
-		rbt_node_t* node07 = rbt_insert(tree, 30);
-		rbt_node_t* node08 = rbt_insert(tree, 50);
-		rbt_node_t* node09 = rbt_insert(tree, 65);
+		rbt_node_t* node07 = rbt_insert(tree, box30);
+		rbt_node_t* node08 = rbt_insert(tree, box50);
+		rbt_node_t* node09 = rbt_insert(tree, box65);
 		//force colors to match scenario being tested
 		(void)node01;
 		node02->color = BLACK;
@@ -1559,17 +1760,25 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_rbt_delete_rebalance_sib_with_red_child_inside_right){
-		int target = 88;
+		void* target = mem_box(88);
+		void* box42 = mem_box(42);
+		void* box55 = mem_box(55);
+		void* box33 = mem_box(33);
+		void* box22 = mem_box(22);
+		void* box15 = mem_box(15);
+		void* box50 = mem_box(50);
+		void* box37 = mem_box(37);
+		void* box28 = mem_box(28);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node01 = rbt_insert(tree, 42);
-		rbt_node_t* node02 = rbt_insert(tree, 55);
-		rbt_node_t* node03 = rbt_insert(tree, 33);
-		rbt_node_t* node04 = rbt_insert(tree, 22);
-		rbt_node_t* node05 = rbt_insert(tree, 15);
+		rbt_node_t* node01 = rbt_insert(tree, box42);
+		rbt_node_t* node02 = rbt_insert(tree, box55);
+		rbt_node_t* node03 = rbt_insert(tree, box33);
+		rbt_node_t* node04 = rbt_insert(tree, box22);
+		rbt_node_t* node05 = rbt_insert(tree, box15);
 		rbt_node_t* node06 = rbt_insert(tree, target);
-		rbt_node_t* node07 = rbt_insert(tree, 50);
-		rbt_node_t* node08 = rbt_insert(tree, 37);
-		rbt_node_t* node09 = rbt_insert(tree, 28);
+		rbt_node_t* node07 = rbt_insert(tree, box50);
+		rbt_node_t* node08 = rbt_insert(tree, box37);
+		rbt_node_t* node09 = rbt_insert(tree, box28);
 		//force colors to match scenario being tested
 		(void)node01;
 		node02->color = BLACK;
@@ -1607,19 +1816,29 @@ TEST_SUITE(RB) {
 	}
 	//F: rebalance for sibbling with two red children
 	TEST(Verify_rbt_delete_rebalance_sib_with_two_red_children_left){
-		int target = 11;
+		void* target = mem_box(11);
+		void* box42 = mem_box(42);
+		void* box22 = mem_box(22);
+		void* box55 = mem_box(55);
+		void* box88 = mem_box(88);
+		void* box90 = mem_box(90);
+		void* box30 = mem_box(30);
+		void* box50 = mem_box(50);
+		void* box65 = mem_box(65);
+		void* box89 = mem_box(89);
+		void* box99 = mem_box(99);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node01 = rbt_insert(tree, 42);
-		rbt_node_t* node02 = rbt_insert(tree, 22);
-		rbt_node_t* node03 = rbt_insert(tree, 55);
-		rbt_node_t* node04 = rbt_insert(tree, 88);
-		rbt_node_t* node05 = rbt_insert(tree, 90);
+		rbt_node_t* node01 = rbt_insert(tree, box42);
+		rbt_node_t* node02 = rbt_insert(tree, box22);
+		rbt_node_t* node03 = rbt_insert(tree, box55);
+		rbt_node_t* node04 = rbt_insert(tree, box88);
+		rbt_node_t* node05 = rbt_insert(tree, box90);
 		rbt_node_t* node06 = rbt_insert(tree, target);
-		rbt_node_t* node07 = rbt_insert(tree, 30);
-		rbt_node_t* node08 = rbt_insert(tree, 50);
-		rbt_node_t* node09 = rbt_insert(tree, 65);
-		rbt_node_t* node10 = rbt_insert(tree, 89);
-		rbt_node_t* node11 = rbt_insert(tree, 99);
+		rbt_node_t* node07 = rbt_insert(tree, box30);
+		rbt_node_t* node08 = rbt_insert(tree, box50);
+		rbt_node_t* node09 = rbt_insert(tree, box65);
+		rbt_node_t* node10 = rbt_insert(tree, box89);
+		rbt_node_t* node11 = rbt_insert(tree, box99);
 		//force colors to match scenario being tested
 		(void)node01;
 		node02->color = BLACK;
@@ -1660,19 +1879,29 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_rbt_delete_rebalance_sib_with_two_red_children_right){
-		int target = 88;
+		void* target = mem_box(88);
+		void* box42 = mem_box(42);
+		void* box55 = mem_box(55);
+		void* box33 = mem_box(33);
+		void* box22 = mem_box(22);
+		void* box15 = mem_box(15);
+		void* box50 = mem_box(50);
+		void* box37 = mem_box(37);
+		void* box28 = mem_box(28);
+		void* box17 = mem_box(17);
+		void* box11 = mem_box(11);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node01 = rbt_insert(tree, 42);
-		rbt_node_t* node02 = rbt_insert(tree, 55);
-		rbt_node_t* node03 = rbt_insert(tree, 33);
-		rbt_node_t* node04 = rbt_insert(tree, 22);
-		rbt_node_t* node05 = rbt_insert(tree, 15);
+		rbt_node_t* node01 = rbt_insert(tree, box42);
+		rbt_node_t* node02 = rbt_insert(tree, box55);
+		rbt_node_t* node03 = rbt_insert(tree, box33);
+		rbt_node_t* node04 = rbt_insert(tree, box22);
+		rbt_node_t* node05 = rbt_insert(tree, box15);
 		rbt_node_t* node06 = rbt_insert(tree, target);
-		rbt_node_t* node07 = rbt_insert(tree, 50);
-		rbt_node_t* node08 = rbt_insert(tree, 37);
-		rbt_node_t* node09 = rbt_insert(tree, 28);
-		rbt_node_t* node10 = rbt_insert(tree, 17);
-		rbt_node_t* node11 = rbt_insert(tree, 11);
+		rbt_node_t* node07 = rbt_insert(tree, box50);
+		rbt_node_t* node08 = rbt_insert(tree, box37);
+		rbt_node_t* node09 = rbt_insert(tree, box28);
+		rbt_node_t* node10 = rbt_insert(tree, box17);
+		rbt_node_t* node11 = rbt_insert(tree, box11);
 		//force colors to match scenario being tested
 		(void)node01;
 		node02->color = BLACK;
@@ -1714,13 +1943,16 @@ TEST_SUITE(RB) {
 	}
 	//4.2: sibbling is black, outside red child
 	TEST(Verify_rbt_delete_black_node_from_black_parent_sib_has_outside_red_child_right){
-		int target = 99;
+		void* target = mem_box(99);
 		//create tree w/ several nodes
+		void* box88 = mem_box(88);
+		void* box42 = mem_box(42);
+		void* box22 = mem_box(22);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 88); //root
+		rbt_node_t* node1 = rbt_insert(tree, box88); //root
 		rbt_node_t* node2 = rbt_insert(tree, target); //target
-		rbt_node_t* node3 = rbt_insert(tree, 42); //sibbling
-		rbt_node_t* node4 = rbt_insert(tree, 22); //sib child
+		rbt_node_t* node3 = rbt_insert(tree, box42); //sibbling
+		rbt_node_t* node4 = rbt_insert(tree, box22); //sib child
 		//force colors to match scenario being tested
 		(void)node1;
 		node2->color = BLACK;
@@ -1748,13 +1980,16 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_rbt_delete_black_node_from_black_parent_sib_has_outside_red_child_left){
-		int target = 8;
+		void* target = mem_box(8);
 		//create tree w/ several nodes
+		void* box42 = mem_box(42);
+		void* box88 = mem_box(88);
+		void* box123 = mem_box(123);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 42); //root
+		rbt_node_t* node1 = rbt_insert(tree, box42); //root
 		rbt_node_t* node2 = rbt_insert(tree, target); //target
-		rbt_node_t* node3 = rbt_insert(tree, 88); //sibbling
-		rbt_node_t* node4 = rbt_insert(tree, 123); //sib child
+		rbt_node_t* node3 = rbt_insert(tree, box88); //sibbling
+		rbt_node_t* node4 = rbt_insert(tree, box123); //sib child
 		//force colors to match scenario being tested
 		(void)node1;
 		node2->color = BLACK;
@@ -1783,13 +2018,16 @@ TEST_SUITE(RB) {
 	}
 	//4.3: sibbling is black, inside red child
 	TEST(Verify_rbt_delete_black_node_from_black_parent_sib_has_inside_red_child_right){
-		int target = 99;
+		void* target = mem_box(99);
 		//create tree w/ several nodes
+		void* box88 = mem_box(88);
+		void* box42 = mem_box(42);
+		void* box55 = mem_box(55);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 88); //root
+		rbt_node_t* node1 = rbt_insert(tree, box88); //root
 		rbt_node_t* node2 = rbt_insert(tree, target); //target
-		rbt_node_t* node3 = rbt_insert(tree, 42); //sibbling
-		rbt_node_t* node4 = rbt_insert(tree, 55); //sib child
+		rbt_node_t* node3 = rbt_insert(tree, box42); //sibbling
+		rbt_node_t* node4 = rbt_insert(tree, box55); //sib child
 		//force colors to match scenario being tested
 		(void)node1;
 		node2->color = BLACK;
@@ -1817,13 +2055,16 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_rbt_delete_black_node_from_black_parent_sib_has_inside_red_child_left){
-		int target = 8;
+		void* target = mem_box(8);
 		//create tree w/ several nodes
+		void* box42 = mem_box(42);
+		void* box88 = mem_box(88);
+		void* box70 = mem_box(70);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 42); //root
+		rbt_node_t* node1 = rbt_insert(tree, box42); //root
 		rbt_node_t* node2 = rbt_insert(tree, target); //target
-		rbt_node_t* node3 = rbt_insert(tree, 88); //sibbling
-		rbt_node_t* node4 = rbt_insert(tree, 70); //sib child
+		rbt_node_t* node3 = rbt_insert(tree, box88); //sibbling
+		rbt_node_t* node4 = rbt_insert(tree, box70); //sib child
 		//force colors to match scenario being tested
 		(void)node1;
 		node2->color = BLACK;
@@ -1852,14 +2093,18 @@ TEST_SUITE(RB) {
 	}
 	//4.4: sibbling is black, two red children
 	TEST(Verify_rbt_delete_black_node_from_black_parent_sib_has_two_children_right){
-		int target = 99;
+		void* target = mem_box(99);
 		//create tree w/ several nodes
+		void* box88 = mem_box(88);
+		void* box42 = mem_box(42);
+		void* box22 = mem_box(22);
+		void* box55 = mem_box(55);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 88); //root
+		rbt_node_t* node1 = rbt_insert(tree, box88); //root
 		rbt_node_t* node2 = rbt_insert(tree, target); //target
-		rbt_node_t* node3 = rbt_insert(tree, 42); //sibbling
-		rbt_node_t* node4 = rbt_insert(tree, 22); //sib child 1
-		rbt_node_t* node5 = rbt_insert(tree, 55); //sib child 2
+		rbt_node_t* node3 = rbt_insert(tree, box42); //sibbling
+		rbt_node_t* node4 = rbt_insert(tree, box22); //sib child 1
+		rbt_node_t* node5 = rbt_insert(tree, box55); //sib child 2
 		//force colors to match scenario being tested
 		(void)node1;
 		node2->color = BLACK;
@@ -1889,14 +2134,18 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_rbt_delete_black_node_from_black_parent_sib_has_two_children_left){
-		int target = 8;
+		void* target = mem_box(8);
 		//create tree w/ several nodes
+		void* box42 = mem_box(42);
+		void* box88 = mem_box(88);
+		void* box70 = mem_box(70);
+		void* box123 = mem_box(123);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 42); //root
+		rbt_node_t* node1 = rbt_insert(tree, box42); //root
 		rbt_node_t* node2 = rbt_insert(tree, target); //target
-		rbt_node_t* node3 = rbt_insert(tree, 88); //sibbling
-		rbt_node_t* node4 = rbt_insert(tree, 70); //sib child 1
-		rbt_node_t* node5 = rbt_insert(tree, 123); //sib child 2
+		rbt_node_t* node3 = rbt_insert(tree, box88); //sibbling
+		rbt_node_t* node4 = rbt_insert(tree, box70); //sib child 1
+		rbt_node_t* node5 = rbt_insert(tree, box123); //sib child 2
 		//force colors to match scenario being tested
 		(void)node1;
 		node2->color = BLACK;
@@ -1927,14 +2176,18 @@ TEST_SUITE(RB) {
 	}
 	//4.5: sibbling is red, two black children
 	TEST(Verify_rbt_delete_black_node_from_black_parent_red_sib_right){
-		int target = 99;
+		void* target = mem_box(99);
 		//create tree w/ several nodes
+		void* box88 = mem_box(88);
+		void* box42 = mem_box(42);
+		void* box22 = mem_box(22);
+		void* box55 = mem_box(55);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 88); //root
+		rbt_node_t* node1 = rbt_insert(tree, box88); //root
 		rbt_node_t* node2 = rbt_insert(tree, target); //target
-		rbt_node_t* node3 = rbt_insert(tree, 42); //sibbling
-		rbt_node_t* node4 = rbt_insert(tree, 22); //sib child 1
-		rbt_node_t* node5 = rbt_insert(tree, 55); //sib child 2
+		rbt_node_t* node3 = rbt_insert(tree, box42); //sibbling
+		rbt_node_t* node4 = rbt_insert(tree, box22); //sib child 1
+		rbt_node_t* node5 = rbt_insert(tree, box55); //sib child 2
 		//force colors to match scenario being tested
 		(void)node1;
 		node2->color = BLACK;
@@ -1964,14 +2217,18 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_rbt_delete_black_node_from_black_parent_red_sib_left){
-		int target = 8;
+		void* target = mem_box(8);
 		//create tree w/ several nodes
+		void* box42 = mem_box(42);
+		void* box88 = mem_box(88);
+		void* box70 = mem_box(70);
+		void* box123 = mem_box(123);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 42); //root
+		rbt_node_t* node1 = rbt_insert(tree, box42); //root
 		rbt_node_t* node2 = rbt_insert(tree, target); //target
-		rbt_node_t* node3 = rbt_insert(tree, 88); //sibbling
-		rbt_node_t* node4 = rbt_insert(tree, 70); //sib child 1
-		rbt_node_t* node5 = rbt_insert(tree, 123); //sib child 2
+		rbt_node_t* node3 = rbt_insert(tree, box88); //sibbling
+		rbt_node_t* node4 = rbt_insert(tree, box70); //sib child 1
+		rbt_node_t* node5 = rbt_insert(tree, box123); //sib child 2
 		//force colors to match scenario being tested
 		(void)node1;
 		node2->color = BLACK;
@@ -2002,13 +2259,17 @@ TEST_SUITE(RB) {
 	}
 	//second class: deleting nodes that have two children
 	TEST(Verify_rbt_delete_node_with_two_children_successor_is_left){
-		int target = 22;
+		void* target = mem_box(22);
+		void* box42 = mem_box(42);
+		void* box88 = mem_box(88);
+		void* box33 = mem_box(33);
+		void* box15 = mem_box(15);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_insert(tree, 42);
-		rbt_insert(tree, 88);
+		rbt_insert(tree, box42);
+		rbt_insert(tree, box88);
 		rbt_node_t* doomed = rbt_insert(tree, target);
-		rbt_insert(tree, 33);
-		rbt_insert(tree, 15);
+		rbt_insert(tree, box33);
+		rbt_insert(tree, box15);
 		CHECK(NULL != doomed->left);
 		CHECK(NULL != doomed->right);
 		CHECK(NULL == doomed->left->right);
@@ -2026,20 +2287,31 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_rbt_delete_node_with_two_children){
-		int target = 42;
+		void* target = mem_box(42);
+		void* box88 = mem_box(88);
+		void* box22 = mem_box(22);
+		void* box96 = mem_box(96);
+		void* box11 = mem_box(11);
+		void* box35 = mem_box(35);
+		void* box5 = mem_box(5);
+		void* box18 = mem_box(18);
+		void* box12 = mem_box(12);
+		void* box25 = mem_box(25);
+		void* box55 = mem_box(55);
+		void* box99 = mem_box(99);
 		rbt_t* tree = rbt_new(test_compare);
 		rbt_node_t* doomed = rbt_insert(tree, target);
-		rbt_insert(tree, 88);
-		rbt_insert(tree, 22);
-		rbt_insert(tree, 96);
-		rbt_insert(tree, 11);
-		rbt_insert(tree, 35);
-		rbt_insert(tree, 5);
-		rbt_insert(tree, 18);
-		rbt_insert(tree, 12);
-		rbt_insert(tree, 25);
-		rbt_insert(tree, 55);
-		rbt_insert(tree, 99);
+		rbt_insert(tree, box88);
+		rbt_insert(tree, box22);
+		rbt_insert(tree, box96);
+		rbt_insert(tree, box11);
+		rbt_insert(tree, box35);
+		rbt_insert(tree, box5);
+		rbt_insert(tree, box18);
+		rbt_insert(tree, box12);
+		rbt_insert(tree, box25);
+		rbt_insert(tree, box55);
+		rbt_insert(tree, box99);
 		CHECK(OK == rbt_check_status(tree));
 		CHECK(doomed != tree->root);
 		CHECK(NULL != doomed->left);
@@ -2058,11 +2330,13 @@ TEST_SUITE(RB) {
 	}
 	//third class: special cases: deleting root
 	TEST(Verify_rbt_delete_root_node_with_single_red_left_child){
+		void* box88 = mem_box(88);
+		void* box42 = mem_box(42);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 88);
-		rbt_node_t* node2 = rbt_insert(tree, 42);
+		rbt_node_t* node1 = rbt_insert(tree, box88);
+		rbt_node_t* node2 = rbt_insert(tree, box42);
 		mem_retain(node1);
-		rbt_delete(tree, 88);
+		rbt_delete(tree, box88);
 		CHECK(1 == mem_num_references(node1));
 		CHECK(node2 == tree->root);
 		CHECK(NULL == node2->left);
@@ -2077,11 +2351,13 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_rbt_delete_root_node_with_single_red_right_child){
+		void* box42 = mem_box(42);
+		void* box88 = mem_box(88);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 42);
-		rbt_node_t* node2 = rbt_insert(tree, 88);
+		rbt_node_t* node1 = rbt_insert(tree, box42);
+		rbt_node_t* node2 = rbt_insert(tree, box88);
 		mem_retain(node1);
-		rbt_delete(tree, 42);
+		rbt_delete(tree, box42);
 		CHECK(1 == mem_num_references(node1));
 		CHECK(node2 == tree->root);
 		CHECK(NULL == node2->left);
@@ -2096,10 +2372,11 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_rbt_delete_root_node_with_no_children){
+		void* box88 = mem_box(88);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_node_t* node1 = rbt_insert(tree, 88);
+		rbt_node_t* node1 = rbt_insert(tree, box88);
 		mem_retain(node1);
-		rbt_delete(tree, 88);
+		rbt_delete(tree, box88);
 		CHECK(1 == mem_num_references(node1));
 		CHECK(NULL == tree->root);
 		CHECK(NULL == node1->left);
@@ -2110,20 +2387,31 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_rbt_delete_root_node_with_two_children){
-		int target = 22;
+		void* target = mem_box(22);
+		void* box42 = mem_box(42);
+		void* box88 = mem_box(88);
+		void* box96 = mem_box(96);
+		void* box11 = mem_box(11);
+		void* box35 = mem_box(35);
+		void* box5 = mem_box(5);
+		void* box18 = mem_box(18);
+		void* box12 = mem_box(12);
+		void* box25 = mem_box(25);
+		void* box55 = mem_box(55);
+		void* box99 = mem_box(99);
 		rbt_t* tree = rbt_new(test_compare);
-		rbt_insert(tree, 42);
-		rbt_insert(tree, 88);
+		rbt_insert(tree, box42);
+		rbt_insert(tree, box88);
 		rbt_node_t* doomed = rbt_insert(tree, target);
-		rbt_insert(tree, 96);
-		rbt_insert(tree, 11);
-		rbt_insert(tree, 35);
-		rbt_insert(tree, 5);
-		rbt_insert(tree, 18);
-		rbt_insert(tree, 12);
-		rbt_insert(tree, 25);
-		rbt_insert(tree, 55);
-		rbt_insert(tree, 99);
+		rbt_insert(tree, box96);
+		rbt_insert(tree, box11);
+		rbt_insert(tree, box35);
+		rbt_insert(tree, box5);
+		rbt_insert(tree, box18);
+		rbt_insert(tree, box12);
+		rbt_insert(tree, box25);
+		rbt_insert(tree, box55);
+		rbt_insert(tree, box99);
 		CHECK(OK == rbt_check_status(tree));
 		CHECK(doomed == tree->root);
 		CHECK(NULL != doomed->left);
@@ -2141,12 +2429,15 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	TEST(Verify_rbt_delete_node_with_four_nodes){
-		int target = 42;
+		void* target = mem_box(42);
+		void* box88 = mem_box(88);
+		void* box22 = mem_box(22);
+		void* box33 = mem_box(33);
 		rbt_t* tree = rbt_new(test_compare);
 		rbt_node_t* doomed = rbt_insert(tree, target);
-		rbt_insert(tree, 88);
-		rbt_insert(tree, 22);
-		rbt_insert(tree, 33);
+		rbt_insert(tree, box88);
+		rbt_insert(tree, box22);
+		rbt_insert(tree, box33);
 		CHECK(OK == rbt_check_status(tree));
 		CHECK(doomed == tree->root);
 		CHECK(NULL != doomed->left);
@@ -2163,6 +2454,5 @@ TEST_SUITE(RB) {
 		mem_release(doomed);
 		mem_release(tree);
 	}
-	*/
 }
 
