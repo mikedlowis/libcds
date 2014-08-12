@@ -10,7 +10,7 @@ extern "C" {
 typedef enum {
 	RED = 0,
 	BLACK
-} rb_color_t;
+} rbt_color_t;
 
 typedef enum {
 	OK = 0,
@@ -21,32 +21,32 @@ typedef enum {
 	RED_WITH_RED_CHILD,
 	BAD_PARENT_POINTER,
 	SELF_REFERENCE,
-} rb_status_t;
+} rbt_status_t;
 
-typedef struct rb_node_t {
-	struct rb_node_t* left;
-	struct rb_node_t* right;
-	struct rb_node_t* parent;
-	rb_color_t color;
+typedef struct rbt_node_t {
+	struct rbt_node_t* left;
+	struct rbt_node_t* right;
+	struct rbt_node_t* parent;
+	rbt_color_t color;
 	int contents; /* int for development; TODO: make this a void* */
-} rb_node_t;
+} rbt_node_t;
 
 typedef struct {
-	rb_node_t* root;
-} rb_tree_t;
+	rbt_node_t* root;
+} rbt_t;
 
 
-rb_node_t* rb_node_new(int contents);
-rb_tree_t* rb_tree_new();
+rbt_node_t* rbt_node_new(int contents);
+rbt_t* rbt_new();
 //returns a pointer to the new node
-rb_node_t* rb_tree_insert(rb_tree_t* tree, int value);
-void rb_tree_delete(rb_tree_t* tree, int value);
+rbt_node_t* rbt_insert(rbt_t* tree, int value);
+void rbt_delete(rbt_t* tree, int value);
 //look up a node in the tree with the given value
-rb_node_t* rb_tree_lookup(rb_tree_t* tree, int value);
+rbt_node_t* rbt_lookup(rbt_t* tree, int value);
 
 //TEST FUNCTIONS:
-rb_status_t rb_tree_is_valid(rb_tree_t* tree);
-rb_status_t rb_node_is_valid(rb_node_t* node, int min_val, int max_val);
+rbt_status_t rbt_check_status(rbt_t* tree);
+rbt_status_t rbt_check_node(rbt_node_t* node, int min_val, int max_val);
 
 #ifdef __cplusplus
 }
