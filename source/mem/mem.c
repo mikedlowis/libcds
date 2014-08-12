@@ -1,6 +1,6 @@
 #include "mem.h"
 #include <stdlib.h>
-#if (defined(LEAK_DETECTION) && !defined(NDEBUG))
+#ifdef LEAK_DETECTION
 #include <stdbool.h>
 #include <stdio.h>
 #endif
@@ -14,11 +14,10 @@ typedef struct {
     intptr_t val;
 } box_t;
 
-
 /* If LEAK_DETECTION is turned on then we need to disable the mem_allocate macro
  * for the duration of this file. This allows us to use the original
  * mem_allocate function without modification in mem_allocate_ld */
-#if (defined(LEAK_DETECTION) && !defined(NDEBUG))
+#ifdef LEAK_DETECTION
 #undef mem_allocate
 #endif
 
@@ -30,7 +29,7 @@ void* mem_allocate(size_t size, destructor_t p_destruct_fn)
     return (void*)(p_obj+1);
 }
 
-#if (defined(LEAK_DETECTION) && !defined(NDEBUG))
+#ifdef LEAK_DETECTION
 typedef struct block_t {
     void* p_obj;
     const char* p_file;
@@ -49,8 +48,8 @@ static void print_live_objects(void) {
     while (NULL != p_curr)
     {
         block_t* to_be_freed = p_curr;
-        printf("%#x %s (line %d): %d references to object\n",
-               (unsigned int)p_curr->p_obj,
+        printf("%p %s (line %d): %d references to object\n",
+               p_curr->p_obj,
                p_curr->p_file,
                p_curr->line,
                mem_num_references(p_curr->p_obj));
@@ -90,7 +89,7 @@ void mem_retain(void* p_obj)
     p_hdr->refcount += 1;
 }
 
-#if (defined(LEAK_DETECTION) && !defined(NDEBUG))
+#ifdef LEAK_DETECTION
 static void deregister_block(void* p_obj)
 {
     block_t* p_prev = NULL;
@@ -126,7 +125,7 @@ void mem_release(void* p_obj)
     p_hdr->refcount -= 1;
     if(p_hdr->refcount < 1)
     {
-        #if (defined(LEAK_DETECTION) && !defined(NDEBUG))
+        #ifdef LEAK_DETECTION
         deregister_block(p_obj);
         #endif
         if(p_hdr->p_finalize)

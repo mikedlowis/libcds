@@ -17,6 +17,11 @@ extern "C" {
 /** A function pointer for object destructors */
 typedef void (*destructor_t)(void* p_val);
 
+/* If debug is disabled, disable leak detection as well */
+#ifdef NDEBUG
+#undef LEAK_DETECTION
+#endif
+
 #ifndef LEAK_DETECTION
 /**
  * @brief Allocates a new reference counted object of the given size which will
