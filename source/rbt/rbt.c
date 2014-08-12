@@ -18,6 +18,10 @@ static void rbt_node_free(void* v_node){
 	}
 }
 
+static int rbt_default_comparitor(void* a, void* b){
+	return (a == b ? 0 : (a<b ? -1 : 1 ));
+}
+
 rbt_node_t* rbt_node_new(void* contents){
 	rbt_node_t* node = mem_allocate(sizeof(rbt_node_t), &rbt_node_free);
 	node->left = NULL;
@@ -31,7 +35,7 @@ rbt_node_t* rbt_node_new(void* contents){
 rbt_t* rbt_new(comparitor_t comparitor){
 	rbt_t* tree = mem_allocate(sizeof(rbt_t), &rbt_free);
 	tree->root = NULL;
-	tree->comp = comparitor;
+	tree->comp = comparitor ? comparitor : rbt_default_comparitor;
 	return tree;
 }
 
@@ -167,9 +171,6 @@ static rbt_node_t* rbt_lookup_node(rbt_t* tree, rbt_node_t* node, void* value){
 		if(c == 0) ret = node;
 		else if(c > 0) ret = rbt_lookup_node(tree, node->right, value);
 		else if(c < 0) ret = rbt_lookup_node(tree, node->left, value);
-		//if(value == node->contents) ret = node;
-		//else if(value > node->contents) ret = rbt_lookup_node(tree, node->right, value);
-		//else if(value < node->contents) ret = rbt_lookup_node(tree, node->left, value);
 	}
 	return ret;
 }
@@ -399,8 +400,6 @@ static rbt_status_t rbt_check_node(rbt_t* tree, rbt_node_t* node, void* min_val,
 		if(node->color != RED && node->color != BLACK) ret = UNKNOWN_COLOR;
 		else if(node->color == RED && (node_color(node->left) != BLACK && node_color(node->right) != BLACK))
 			ret = RED_WITH_RED_CHILD;
-		//else if(min_val > -1 && node->contents < min_val) ret = OUT_OF_ORDER;
-		//else if(max_val > -1 && node->contents > max_val) ret = OUT_OF_ORDER;
 		else if(tree->comp(min_val, neg1) > 0 && tree->comp(node->contents, min_val) < 0) ret = OUT_OF_ORDER;
 		else if(tree->comp(max_val, neg1) > 0 && tree->comp(node->contents, max_val) > 0) ret = OUT_OF_ORDER;
 		else if(node->left == node || node->right == node) ret = SELF_REFERENCE;
