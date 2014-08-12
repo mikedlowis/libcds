@@ -171,6 +171,30 @@ rb_node_t* rb_tree_lookup(rb_tree_t* tree, int value){
 	return rb_lookup_node(tree->root, value);
 }
 
+//node has a count -1 of black nodes to leaves relative to the rest of the tree
+static void rb_tree_del_rebalance(rb_tree_t* tree, rb_node_t* node){
+	rb_node_t* parent = node->parent;
+	if(parent){
+		rb_node_t* sib = (node == parent->left ? parent->right : parent->left);
+		if(RED == node_color(sib)){
+			//if sibbling is red, rotate to make sibbling black
+			if(node == parent->left) rotate_left(tree, parent);
+			else rotate_right(tree, parent);
+			parent->color = RED;
+			sib->color = BLACK;
+			//recurse with new sibbling / parent
+			rb_tree_del_rebalance(tree, node);
+		}else if(BLACK == node_color(sib->left) && BLACK == node_color(sib->right)){
+			sib->color = RED;
+			if(RED == node_color(parent)) parent->color = BLACK;
+			//recurse to balance parent
+			else rb_tree_del_rebalance(tree, parent);
+		}
+	}else{
+		node->color = BLACK; //TODO: verify this is necessary
+	}
+}
+
 static void rb_tree_delete_node(rb_tree_t* tree, rb_node_t* node){
 	(void) tree;
 	if(node->left && node->right){
@@ -232,8 +256,9 @@ static void rb_tree_delete_node(rb_tree_t* tree, rb_node_t* node){
 				rotate_left(tree, parent);
 			}
 			mem_release(node);
-		} else if(node == parent->right){
+		} else if(node == parent->right && (parent->left->left || parent->left->right)){
 			//node is black. parent is black. node is parent's right child.
+			//sibbling has at least one non-leaf child
 			rb_node_t* sib = parent->left;
 			//remove/release the node
 			parent->right = NULL;
@@ -253,8 +278,9 @@ static void rb_tree_delete_node(rb_tree_t* tree, rb_node_t* node){
 			}
 			if(sib->left) sib->left->color = BLACK;
 			rotate_right(tree, parent);
-		} else {
+		} else if(node == parent->left && (parent->right->left || parent->right->right)){
 			//node is black. parent is black. node is parent's left child.
+			//sibbling has at least one non-leaf child
 			rb_node_t* sib = parent->right;
 			//remove/release the node
 			parent->left = NULL;
@@ -274,7 +300,26 @@ static void rb_tree_delete_node(rb_tree_t* tree, rb_node_t* node){
 			}
 			if(sib->right) sib->right->color = BLACK;
 			rotate_left(tree, parent);
-
+		} else if(node == parent->right){
+			//node is black, parent is black, sibbling has no children
+			rb_node_t* sib = parent->left;
+			//remove/release the node;
+			parent->right = NULL;
+			node->parent = NULL;
+			mem_release(node);
+			//rebalance the tree
+			sib->color = RED;
+			rb_tree_del_rebalance(tree, parent);
+		} else {
+			//node is black, parent is black, sibbling has no children
+			rb_node_t* sib = parent->right;
+			//remove/release the node;
+			parent->left = NULL;
+			node->parent = NULL;
+			mem_release(node);
+			//rebalance the tree
+			sib->color = RED;
+			rb_tree_del_rebalance(tree, parent);
 		}
 	}
 }
