@@ -1990,7 +1990,61 @@ TEST_SUITE(RB) {
 		mem_release(tree);
 	}
 	//second class: deleting nodes that have two children
-	//TODO
+	TEST(Verify_rb_delete_node_with_two_children_successor_is_left){
+		int target = 22;
+		rb_tree_t* tree = rb_tree_new();
+		rb_tree_insert(tree, 42);
+		rb_tree_insert(tree, 88);
+		rb_node_t* doomed = rb_tree_insert(tree, target);
+		rb_tree_insert(tree, 33);
+		rb_tree_insert(tree, 15);
+		CHECK(NULL != doomed->left);
+		CHECK(NULL != doomed->right);
+		CHECK(NULL == doomed->left->right);
+		CHECK(OK == rb_tree_is_valid(tree));
+		CHECK(doomed == rb_tree_lookup(tree, target));
+		mem_retain(doomed);
+		rb_tree_delete(tree, target);
+		CHECK(1 == mem_num_references(doomed));
+		CHECK(NULL == rb_tree_lookup(tree, target));
+		CHECK(NULL == doomed->parent);
+		CHECK(NULL == doomed->left);
+		CHECK(NULL == doomed->right);
+		CHECK(OK == rb_tree_is_valid(tree));
+		mem_release(doomed);
+		mem_release(tree);
+	}
+	TEST(Verify_rb_delete_node_with_two_children){
+		int target = 42;
+		rb_tree_t* tree = rb_tree_new();
+		rb_node_t* doomed = rb_tree_insert(tree, target);
+		rb_tree_insert(tree, 88);
+		rb_tree_insert(tree, 22);
+		rb_tree_insert(tree, 96);
+		rb_tree_insert(tree, 11);
+		rb_tree_insert(tree, 35);
+		rb_tree_insert(tree, 5);
+		rb_tree_insert(tree, 18);
+		rb_tree_insert(tree, 12);
+		rb_tree_insert(tree, 25);
+		rb_tree_insert(tree, 55);
+		rb_tree_insert(tree, 99);
+		CHECK(OK == rb_tree_is_valid(tree));
+		CHECK(doomed != tree->root);
+		CHECK(NULL != doomed->left);
+		CHECK(NULL != doomed->right);
+		CHECK(doomed == rb_tree_lookup(tree, target));
+		mem_retain(doomed);
+		rb_tree_delete(tree, target);
+		CHECK(1 == mem_num_references(doomed));
+		CHECK(NULL == rb_tree_lookup(tree, target));
+		CHECK(NULL == doomed->parent);
+		CHECK(NULL == doomed->left);
+		CHECK(NULL == doomed->right);
+		CHECK(OK == rb_tree_is_valid(tree));
+		mem_release(doomed);
+		mem_release(tree);
+	}
 	//third class: special cases: deleting root
 	TEST(Verify_rb_delete_root_node_with_single_red_left_child){
 		rb_tree_t* tree = rb_tree_new();
@@ -2042,6 +2096,60 @@ TEST_SUITE(RB) {
 		CHECK(NULL == node1->parent);
 		CHECK(OK == rb_tree_is_valid(tree));
 		mem_release(node1);
+		mem_release(tree);
+	}
+	TEST(Verify_rb_delete_root_node_with_two_children){
+		int target = 22;
+		rb_tree_t* tree = rb_tree_new();
+		rb_tree_insert(tree, 42);
+		rb_tree_insert(tree, 88);
+		rb_node_t* doomed = rb_tree_insert(tree, target);
+		rb_tree_insert(tree, 96);
+		rb_tree_insert(tree, 11);
+		rb_tree_insert(tree, 35);
+		rb_tree_insert(tree, 5);
+		rb_tree_insert(tree, 18);
+		rb_tree_insert(tree, 12);
+		rb_tree_insert(tree, 25);
+		rb_tree_insert(tree, 55);
+		rb_tree_insert(tree, 99);
+		CHECK(OK == rb_tree_is_valid(tree));
+		CHECK(doomed == tree->root);
+		CHECK(NULL != doomed->left);
+		CHECK(NULL != doomed->right);
+		CHECK(doomed == rb_tree_lookup(tree, target));
+		mem_retain(doomed);
+		rb_tree_delete(tree, target);
+		CHECK(1 == mem_num_references(doomed));
+		CHECK(NULL == rb_tree_lookup(tree, target));
+		CHECK(NULL == doomed->parent);
+		CHECK(NULL == doomed->left);
+		CHECK(NULL == doomed->right);
+		CHECK(OK == rb_tree_is_valid(tree));
+		mem_release(doomed);
+		mem_release(tree);
+	}
+	TEST(Verify_rb_delete_node_with_four_nodes){
+		int target = 42;
+		rb_tree_t* tree = rb_tree_new();
+		rb_node_t* doomed = rb_tree_insert(tree, target);
+		rb_tree_insert(tree, 88);
+		rb_tree_insert(tree, 22);
+		rb_tree_insert(tree, 33);
+		CHECK(OK == rb_tree_is_valid(tree));
+		CHECK(doomed == tree->root);
+		CHECK(NULL != doomed->left);
+		CHECK(NULL != doomed->right);
+		CHECK(doomed == rb_tree_lookup(tree, target));
+		mem_retain(doomed);
+		rb_tree_delete(tree, target);
+		CHECK(1 == mem_num_references(doomed));
+		CHECK(NULL == rb_tree_lookup(tree, target));
+		CHECK(NULL == doomed->parent);
+		CHECK(NULL == doomed->left);
+		CHECK(NULL == doomed->right);
+		CHECK(OK == rb_tree_is_valid(tree));
+		mem_release(doomed);
 		mem_release(tree);
 	}
 }

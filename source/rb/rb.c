@@ -217,10 +217,30 @@ static void rb_tree_del_rebalance(rb_tree_t* tree, rb_node_t* node){
 	}
 }
 
+static rb_node_t* rightmost_descendent(rb_node_t* node){
+	return (node->right) ? rightmost_descendent(node->right) : node;
+}
+
 static void rb_tree_delete_node(rb_tree_t* tree, rb_node_t* node){
 	(void) tree;
 	if(node->left && node->right){
-		//has two children. TODO
+		rb_node_t* parent = node->parent;
+		rb_node_t* replacement = rightmost_descendent(node->left);
+		mem_retain(replacement);
+		rb_tree_delete_node(tree, replacement);
+		if(node->left) node->left->parent = replacement;
+		if(node->right) node->right->parent = replacement;
+		replacement->left = node->left;
+		replacement->right = node->right;
+		replacement->parent = node->parent;
+		replacement->color = node->color;
+		if(NULL == parent) tree->root = replacement;
+		else if(node == parent->left) parent->left = replacement;
+		else parent->right = replacement;
+		node->left = NULL;
+		node->right = NULL;
+		node->parent = NULL;
+		mem_release(node);
 	}else{
 		//node has at most one non-leaf child
 		rb_node_t* parent = node->parent;
