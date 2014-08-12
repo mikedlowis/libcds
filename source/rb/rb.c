@@ -189,6 +189,28 @@ static void rb_tree_del_rebalance(rb_tree_t* tree, rb_node_t* node){
 			if(RED == node_color(parent)) parent->color = BLACK;
 			//recurse to balance parent
 			else rb_tree_del_rebalance(tree, parent);
+		}else if(node == parent->left && BLACK == node_color(sib->right)){
+			//convert "inside" case to "outside" case
+			sib->left->color = BLACK;
+			sib->color = RED;
+			rotate_right(tree, sib);
+			rb_tree_del_rebalance(tree, node);
+		}else if(node == parent->left && RED == node_color(sib->right)){
+			rotate_left(tree, parent);
+			sib->color = parent->color;
+			parent->color = BLACK;
+			sib->right->color = BLACK;
+		}else if(node == parent->right && BLACK == node_color(sib->left)){
+			//convert "inside" case to "outside" case
+			sib->right->color = BLACK;
+			sib->color = RED;
+			rotate_left(tree, sib);
+			rb_tree_del_rebalance(tree, node);
+		}else{
+			rotate_right(tree, parent);
+			sib->color = parent->color;
+			parent->color = BLACK;
+			sib->left->color = BLACK;
 		}
 	}else{
 		node->color = BLACK; //TODO: verify this is necessary
