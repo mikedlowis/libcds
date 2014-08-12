@@ -22,31 +22,34 @@ typedef enum {
 	BAD_PARENT_POINTER,
 	SELF_REFERENCE,
 } rbt_status_t;
+ 
+typedef int (*comparitor_t)(void* p_a, void* p_b);
 
 typedef struct rbt_node_t {
 	struct rbt_node_t* left;
 	struct rbt_node_t* right;
 	struct rbt_node_t* parent;
 	rbt_color_t color;
-	int contents; /* int for development; TODO: make this a void* */
+	void* contents;
 } rbt_node_t;
 
 typedef struct {
 	rbt_node_t* root;
+	comparitor_t comp;
 } rbt_t;
 
 
-rbt_node_t* rbt_node_new(int contents);
-rbt_t* rbt_new();
+rbt_node_t* rbt_node_new(void* contents);
+rbt_t* rbt_new(comparitor_t comparitor);
 //returns a pointer to the new node
-rbt_node_t* rbt_insert(rbt_t* tree, int value);
-void rbt_delete(rbt_t* tree, int value);
+rbt_node_t* rbt_insert(rbt_t* tree, void* value);
+void rbt_delete(rbt_t* tree, void* value);
 //look up a node in the tree with the given value
-rbt_node_t* rbt_lookup(rbt_t* tree, int value);
+rbt_node_t* rbt_lookup(rbt_t* tree, void* value);
 
 //TEST FUNCTIONS:
 rbt_status_t rbt_check_status(rbt_t* tree);
-rbt_status_t rbt_check_node(rbt_node_t* node, int min_val, int max_val);
+//rbt_status_t rbt_check_node(rbt_node_t* node, void* min_val, void* max_val);
 
 #ifdef __cplusplus
 }

@@ -12,12 +12,13 @@ static void rbt_free(void* v_tree){
 static void rbt_node_free(void* v_node){
 	rbt_node_t* node = (rbt_node_t*) v_node;
 	if(node){
+		mem_release(node->contents);
 		if(node->left) mem_release(node->left);
 		if(node->right) mem_release(node->right);
 	}
 }
 
-rbt_node_t* rbt_node_new(int contents){
+rbt_node_t* rbt_node_new(void* contents){
 	rbt_node_t* node = mem_allocate(sizeof(rbt_node_t), &rbt_node_free);
 	node->left = NULL;
 	node->right = NULL;
@@ -27,9 +28,10 @@ rbt_node_t* rbt_node_new(int contents){
 	return node;
 }
 
-rbt_t* rbt_new(){
+rbt_t* rbt_new(comparitor_t comparitor){
 	rbt_t* tree = mem_allocate(sizeof(rbt_t), &rbt_free);
 	tree->root = NULL;
+	tree->comp = comparitor;
 	return tree;
 }
 
@@ -42,7 +44,7 @@ static void rotate_right(rbt_t* tree, rbt_node_t* node){
 	rbt_node_t* edon = node->left;
 	if(edon) {
 		//attach edon in node's place:
-		if(node->parent == NULL) tree->root = edon;
+		if(NULL == node->parent) tree->root = edon;
 		else if(node->parent->left == node) node->parent->left = edon;
 		else node->parent->right = edon;
 		edon->parent = node->parent;
@@ -60,7 +62,7 @@ static void rotate_left(rbt_t* tree, rbt_node_t* node){
 	rbt_node_t* edon = node->right;
 	if(edon) {
 		//attach edon in node's place:
-		if(node->parent == NULL) tree->root = edon;
+		if(NULL == node->parent) tree->root = edon;
 		else if(node->parent->left == node) node->parent->left = edon;
 		else node->parent->right = edon;
 		edon->parent = node->parent;
@@ -131,7 +133,8 @@ static void rbt_insert_node(rbt_t* tree, rbt_node_t* node, rbt_node_t* parent){
 	if(NULL == parent){ /* inserting root of the tree */
 		tree->root = node;
 		rbt_ins_recolor(tree, node);
-	}else if(node->contents < parent->contents){
+	//}else if(node->contents < parent->contents){
+	}else if(tree->comp(node->contents, parent->contents) < 0){
 		if(parent->left){
 			rbt_insert_node(tree, node, parent->left);
 		}else{
@@ -150,25 +153,29 @@ static void rbt_insert_node(rbt_t* tree, rbt_node_t* node, rbt_node_t* parent){
 	}
 }
 
-rbt_node_t* rbt_insert(rbt_t* tree, int value){
+rbt_node_t* rbt_insert(rbt_t* tree, void* value){
 	rbt_node_t* new_node = rbt_node_new(value);
 	rbt_insert_node(tree, new_node, tree->root);
 	return new_node;
 }
 
 
-static rbt_node_t* rbt_lookup_node(rbt_node_t* node, int value){
+static rbt_node_t* rbt_lookup_node(rbt_t* tree, rbt_node_t* node, void* value){
 	rbt_node_t* ret = NULL;
 	if(node){
-		if(value == node->contents) ret = node;
-		else if(value > node->contents) ret = rbt_lookup_node(node->right, value);
-		else if(value < node->contents) ret = rbt_lookup_node(node->left, value);
+		int c = tree->comp(value, node->contents);
+		if(c == 0) ret = node;
+		else if(c > 0) ret = rbt_lookup_node(tree, node->right, value);
+		else if(c < 0) ret = rbt_lookup_node(tree, node->left, value);
+		//if(value == node->contents) ret = node;
+		//else if(value > node->contents) ret = rbt_lookup_node(tree, node->right, value);
+		//else if(value < node->contents) ret = rbt_lookup_node(tree, node->left, value);
 	}
 	return ret;
 }
 
-rbt_node_t* rbt_lookup(rbt_t* tree, int value){
-	return rbt_lookup_node(tree->root, value);
+rbt_node_t* rbt_lookup(rbt_t* tree, void* value){
+	return rbt_lookup_node(tree, tree->root, value);
 }
 
 //node has a count -1 of black nodes to leaves relative to the rest of the tree
@@ -365,7 +372,7 @@ static void rbt_delete_node(rbt_t* tree, rbt_node_t* node){
 		}
 	}
 }
-void rbt_delete(rbt_t* tree, int value){
+void rbt_delete(rbt_t* tree, void* value){
 	rbt_node_t* doomed = rbt_lookup(tree, value);
 	if(doomed) rbt_delete_node(tree, doomed);
 }
@@ -385,32 +392,38 @@ int count_black_nodes_to_leaf(rbt_node_t* node){
 	return ret;
 }
 
-rbt_status_t rbt_check_node(rbt_node_t* node, int min_val, int max_val){
+static rbt_status_t rbt_check_node(rbt_t* tree, rbt_node_t* node, void* min_val, void* max_val){
 	rbt_status_t ret = OK;
+	void* neg1 = mem_box(-1);
 	if(node){
 		if(node->color != RED && node->color != BLACK) ret = UNKNOWN_COLOR;
 		else if(node->color == RED && (node_color(node->left) != BLACK && node_color(node->right) != BLACK))
 			ret = RED_WITH_RED_CHILD;
-		else if(min_val > -1 && node->contents < min_val) ret = OUT_OF_ORDER;
-		else if(max_val > -1 && node->contents > max_val) ret = OUT_OF_ORDER;
+		//else if(min_val > -1 && node->contents < min_val) ret = OUT_OF_ORDER;
+		//else if(max_val > -1 && node->contents > max_val) ret = OUT_OF_ORDER;
+		else if(tree->comp(min_val, neg1) > 0 && tree->comp(node->contents, min_val) < 0) ret = OUT_OF_ORDER;
+		else if(tree->comp(max_val, neg1) > 0 && tree->comp(node->contents, max_val) > 0) ret = OUT_OF_ORDER;
 		else if(node->left == node || node->right == node) ret = SELF_REFERENCE;
 		else if(node->left && node->left->parent != node) ret = BAD_PARENT_POINTER;
 		else if(node->right && node->right->parent != node) ret = BAD_PARENT_POINTER;
-		if(ret == OK) ret = rbt_check_node(node->left, min_val, node->contents);
-		if(ret == OK) ret = rbt_check_node(node->right, node->contents, max_val);
+		if(ret == OK) ret = rbt_check_node(tree, node->left, min_val, node->contents);
+		if(ret == OK) ret = rbt_check_node(tree, node->right, node->contents, max_val);
 	}
+	mem_release(neg1);
 	return ret;
 }
 
 //check the contents of the given tree/node as valid
 rbt_status_t rbt_check_status(rbt_t* tree){
 	rbt_status_t ret = OK;
+	void* neg1 = mem_box(-1);
 	if(tree){
-		ret = rbt_check_node(tree->root, -1, -1);
+		ret = rbt_check_node(tree, tree->root, neg1, neg1);
 		if(ret == OK && tree->root && tree->root->parent) ret = BAD_PARENT_POINTER;
 		if(ret == OK && node_color(tree->root) != BLACK) ret = BAD_ROOT_COLOR;
 		if(ret == OK && count_black_nodes_to_leaf(tree->root) == -1) ret = BLACK_NODES_UNBALANCED;
 	}
+	mem_release(neg1);
 	return ret;
 }
 
