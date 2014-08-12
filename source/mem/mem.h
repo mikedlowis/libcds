@@ -17,7 +17,7 @@ extern "C" {
 /** A function pointer for object destructors */
 typedef void (*destructor_t)(void* p_val);
 
-#ifdef NDEBUG
+#ifndef LEAK_DETECTION
 /**
  * @brief Allocates a new reference counted object of the given size which will
  *        be destructed with the given function before it's memory is reclaimed.

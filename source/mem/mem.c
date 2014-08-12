@@ -1,6 +1,9 @@
 #include "mem.h"
 #include <stdlib.h>
+#if (defined(LEAK_DETECTION) && !defined(NDEBUG))
 #include <stdbool.h>
+#include <stdio.h>
+#endif
 
 typedef struct {
     int refcount;
@@ -11,7 +14,11 @@ typedef struct {
     intptr_t val;
 } box_t;
 
-#ifndef NDEBUG
+
+/* If LEAK_DETECTION is turned on then we need to disable the mem_allocate macro
+ * for the duration of this file. This allows us to use the original
+ * mem_allocate function without modification in mem_allocate_ld */
+#if (defined(LEAK_DETECTION) && !defined(NDEBUG))
 #undef mem_allocate
 #endif
 
@@ -23,7 +30,7 @@ void* mem_allocate(size_t size, destructor_t p_destruct_fn)
     return (void*)(p_obj+1);
 }
 
-#ifndef NDEBUG
+#if (defined(LEAK_DETECTION) && !defined(NDEBUG))
 typedef struct block_t {
     void* p_obj;
     const char* p_file;
@@ -32,12 +39,13 @@ typedef struct block_t {
 } block_t;
 
 block_t* Live_Blocks = NULL;
+
 bool Handler_Registered = false;
 
-#include <stdio.h>
 static void print_live_objects(void) {
     bool leak_detected = false;
     block_t* p_curr = Live_Blocks;
+    /* Print out all the live blocks and where they were allocated from */
     while (NULL != p_curr)
     {
         block_t* to_be_freed = p_curr;
@@ -56,13 +64,17 @@ static void print_live_objects(void) {
 
 void* mem_allocate_ld(size_t size, destructor_t p_destruct_fn, const char* p_file, int line)
 {
+    /* Allocate the object through the ordinary method */
     void* p_obj = mem_allocate(size, p_destruct_fn);
+    /* Create a metadata block for it to track it's usage. */
     block_t* p_block = (block_t*)malloc(sizeof(block_t));
     p_block->p_obj  = p_obj;
     p_block->p_file = p_file;
     p_block->line   = line;
     p_block->p_next = Live_Blocks;
     Live_Blocks     = p_block;
+    /* If we haven't already, register an exit handler that will printout the
+     * unfreed objects before the program quits */
     if(!Handler_Registered)
     {
         atexit(print_live_objects);
@@ -78,7 +90,7 @@ void mem_retain(void* p_obj)
     p_hdr->refcount += 1;
 }
 
-#ifndef NDEBUG
+#if (defined(LEAK_DETECTION) && !defined(NDEBUG))
 static void deregister_block(void* p_obj)
 {
     block_t* p_prev = NULL;
@@ -114,7 +126,7 @@ void mem_release(void* p_obj)
     p_hdr->refcount -= 1;
     if(p_hdr->refcount < 1)
     {
-        #ifndef NDEBUG
+        #if (defined(LEAK_DETECTION) && !defined(NDEBUG))
         deregister_block(p_obj);
         #endif
         if(p_hdr->p_finalize)
