@@ -178,6 +178,7 @@ TEST_SUITE(String) {
         str_t* p_str2 = str_erase(p_str1,0,1);
         CHECK(p_str1 != p_str2);
         CHECK(0 == strcmp(str_cstr(p_str2), "bc"));
+        CHECK(2 == str_size(p_str2));
         mem_release(p_str1);
         mem_release(p_str2);
     }
@@ -188,6 +189,7 @@ TEST_SUITE(String) {
         str_t* p_str2 = str_erase(p_str1,1,2);
         CHECK(p_str1 != p_str2);
         CHECK(0 == strcmp(str_cstr(p_str2), "ac"));
+        CHECK(2 == str_size(p_str2));
         mem_release(p_str1);
         mem_release(p_str2);
     }
@@ -198,6 +200,7 @@ TEST_SUITE(String) {
         str_t* p_str2 = str_erase(p_str1,2,3);
         CHECK(p_str1 != p_str2);
         CHECK(0 == strcmp(str_cstr(p_str2), "ab"));
+        CHECK(2 == str_size(p_str2));
         mem_release(p_str1);
         mem_release(p_str2);
     }
@@ -208,6 +211,7 @@ TEST_SUITE(String) {
         str_t* p_str2 = str_erase(p_str1,3,4);
         CHECK(p_str1 != p_str2);
         CHECK(0 == strcmp(str_cstr(p_str2), "abc"));
+        CHECK(3 == str_size(p_str2));
         mem_release(p_str1);
         mem_release(p_str2);
     }
@@ -218,6 +222,7 @@ TEST_SUITE(String) {
         str_t* p_str2 = str_erase(p_str1,1,1);
         CHECK(p_str1 != p_str2);
         CHECK(0 == strcmp(str_cstr(p_str2), "abc"));
+        CHECK(3 == str_size(p_str2));
         mem_release(p_str1);
         mem_release(p_str2);
     }
@@ -228,6 +233,7 @@ TEST_SUITE(String) {
         str_t* p_str2 = str_erase(p_str1, 0, str_size(p_str1));
         CHECK(p_str1 != p_str2);
         CHECK(0 == strcmp(str_cstr(p_str2), ""));
+        CHECK(0 == str_size(p_str2));
         mem_release(p_str1);
         mem_release(p_str2);
     }
