@@ -170,8 +170,67 @@ TEST_SUITE(String) {
     }
 
     //-------------------------------------------------------------------------
-    // Test str_ function
+    // Test str_erase function
     //-------------------------------------------------------------------------
+    TEST(Verify_str_erase_should_erase_first_char)
+    {
+        str_t* p_str1 = str_new("abc");
+        str_t* p_str2 = str_erase(p_str1,0,1);
+        CHECK(p_str1 != p_str2);
+        CHECK(0 == strcmp(str_cstr(p_str2), "bc"));
+        mem_release(p_str1);
+        mem_release(p_str2);
+    }
+
+    TEST(Verify_str_erase_should_erase_second_char)
+    {
+        str_t* p_str1 = str_new("abc");
+        str_t* p_str2 = str_erase(p_str1,1,2);
+        CHECK(p_str1 != p_str2);
+        CHECK(0 == strcmp(str_cstr(p_str2), "ac"));
+        mem_release(p_str1);
+        mem_release(p_str2);
+    }
+
+    TEST(Verify_str_erase_should_erase_last)
+    {
+        str_t* p_str1 = str_new("abc");
+        str_t* p_str2 = str_erase(p_str1,2,3);
+        CHECK(p_str1 != p_str2);
+        CHECK(0 == strcmp(str_cstr(p_str2), "ab"));
+        mem_release(p_str1);
+        mem_release(p_str2);
+    }
+
+    TEST(Verify_str_erase_nothing_when_out_of_bounds)
+    {
+        str_t* p_str1 = str_new("abc");
+        str_t* p_str2 = str_erase(p_str1,3,4);
+        CHECK(p_str1 != p_str2);
+        CHECK(0 == strcmp(str_cstr(p_str2), "abc"));
+        mem_release(p_str1);
+        mem_release(p_str2);
+    }
+
+    TEST(Verify_str_erase_nothing_when_range_is_of_length_0)
+    {
+        str_t* p_str1 = str_new("abc");
+        str_t* p_str2 = str_erase(p_str1,1,1);
+        CHECK(p_str1 != p_str2);
+        CHECK(0 == strcmp(str_cstr(p_str2), "abc"));
+        mem_release(p_str1);
+        mem_release(p_str2);
+    }
+
+    TEST(Verify_str_erase_everything)
+    {
+        str_t* p_str1 = str_new("abc");
+        str_t* p_str2 = str_erase(p_str1, 0, str_size(p_str1));
+        CHECK(p_str1 != p_str2);
+        CHECK(0 == strcmp(str_cstr(p_str2), ""));
+        mem_release(p_str1);
+        mem_release(p_str2);
+    }
 
     //-------------------------------------------------------------------------
     // Test str_ function

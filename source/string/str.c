@@ -89,12 +89,22 @@ str_t* str_insert(str_t* p_str1, size_t index, str_t* p_str2)
     return p_newstr;
 }
 
+#include <stdio.h>
+
 str_t* str_erase(str_t* p_str, size_t start, size_t end)
 {
-    (void)p_str;
-    (void)start;
-    (void)end;
-    return NULL;
+    str_t* p_newstr = NULL;
+    size_t newsize  = 0;
+    size_t endbytes = 0;
+    assert(NULL != p_str);
+    assert(start <= end);
+    endbytes = (end >= p_str->size) ? 0 : (p_str->size - end);
+    newsize = start + endbytes;
+    p_newstr = (str_t*)mem_allocate(sizeof(str_t) + newsize, NULL);
+    memcpy(&(p_newstr->data[0]),     p_str->data,         start);
+    memcpy(&(p_newstr->data[start]), &(p_str->data[end]), endbytes);
+    p_newstr->data[newsize] = '\0';
+    return p_newstr;
 }
 
 str_t* str_substr(str_t* p_str, size_t start, size_t end)
