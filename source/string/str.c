@@ -67,15 +67,9 @@ str_t* str_set(str_t* p_str, size_t index, char val)
 
 str_t* str_concat(str_t* p_str1, str_t* p_str2)
 {
-    str_t* p_newstr = NULL;
-    size_t newsize;
     assert(NULL != p_str1);
     assert(NULL != p_str2);
-    newsize = sizeof(str_t) + p_str1->size + p_str2->size + 1;
-    p_newstr = (str_t*)mem_allocate(newsize, NULL);
-    memcpy(&(p_newstr->data[0]), p_str1->data, p_str1->size);
-    memcpy(&(p_newstr->data[p_str1->size]), p_str2->data, p_str2->size);
-    return p_newstr;
+    return str_insert(p_str1, p_str1->size, p_str2);
 }
 
 str_t* str_insert(str_t* p_str1, size_t index, str_t* p_str2)
