@@ -18,7 +18,7 @@ static void rbt_node_free(void* v_node){
 	}
 }
 
-static int rbt_default_comparitor(void* a, void* b){
+static int rbt_default_comparator(void* a, void* b){
 	return (a == b ? 0 : (a<b ? -1 : 1 ));
 }
 
@@ -32,10 +32,10 @@ rbt_node_t* rbt_node_new(void* contents){
 	return node;
 }
 
-rbt_t* rbt_new(comparitor_t comparitor){
+rbt_t* rbt_new(comparator_t comparator){
 	rbt_t* tree = mem_allocate(sizeof(rbt_t), &rbt_free);
 	tree->root = NULL;
-	tree->comp = comparitor ? comparitor : rbt_default_comparitor;
+	tree->comp = comparator ? comparator : rbt_default_comparator;
 	return tree;
 }
 

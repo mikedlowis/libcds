@@ -23,7 +23,7 @@ typedef enum {
 	SELF_REFERENCE,
 } rbt_status_t;
  
-typedef int (*comparitor_t)(void* p_a, void* p_b);
+typedef int (*comparator_t)(void* p_a, void* p_b);
 
 typedef struct rbt_node_t {
 	struct rbt_node_t* left;
@@ -35,12 +35,12 @@ typedef struct rbt_node_t {
 
 typedef struct {
 	rbt_node_t* root;
-	comparitor_t comp;
+	comparator_t comp;
 } rbt_t;
 
 
 rbt_node_t* rbt_node_new(void* contents);
-rbt_t* rbt_new(comparitor_t comparitor);
+rbt_t* rbt_new(comparator_t comparator);
 //returns a pointer to the new node
 rbt_node_t* rbt_insert(rbt_t* tree, void* value);
 void rbt_delete(rbt_t* tree, void* value);
