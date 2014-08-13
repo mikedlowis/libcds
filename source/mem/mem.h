@@ -17,6 +17,12 @@ extern "C" {
 /** A function pointer for object destructors */
 typedef void (*destructor_t)(void* p_val);
 
+/* If debug is disabled, disable leak detection as well */
+#ifdef NDEBUG
+#undef LEAK_DETECTION
+#endif
+
+#ifndef LEAK_DETECTION
 /**
  * @brief Allocates a new reference counted object of the given size which will
  *        be destructed with the given function before it's memory is reclaimed.
@@ -27,6 +33,21 @@ typedef void (*destructor_t)(void* p_val);
  * @return Pointer to the newly allocated object
  */
 void* mem_allocate(size_t size, destructor_t p_destruct_fn);
+#else
+#define mem_allocate(size,destructor) \
+    mem_allocate_ld(size, destructor, __FILE__, __LINE__)
+
+void* mem_allocate_ld(size_t size, destructor_t p_destruct_fn, const char* p_file, int line);
+#endif
+
+/**
+ * @brief Returns the reference count for the given object.
+ *
+ * @param p_obj The object whose reference count should be returned.
+ *
+ * @return Number of references.
+ */
+int mem_num_references(void* p_obj);
 
 /**
  * @brief Increments the reference count for the given object.
