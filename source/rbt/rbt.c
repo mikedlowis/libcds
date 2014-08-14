@@ -37,7 +37,7 @@ rbt_t* rbt_new(comparator_t comparator){
 }
 
 //leaves are NULL and black implicitly
-static rbt_color_t node_color(rbt_node_t* node){
+rbt_color_t rbt_node_color(rbt_node_t* node){
 	return (node ? node->color : BLACK);
 }
 
@@ -80,9 +80,9 @@ static void rbt_ins_recolor(rbt_t* tree, rbt_node_t* node){
 	rbt_node_t* uncle = (grandparent ? (parent == grandparent->left ? grandparent->right : grandparent->left) : NULL);
 	if(NULL == parent){
 		node->color = BLACK;
-	}else if(BLACK == node_color(parent)){
+	}else if(BLACK == rbt_node_color(parent)){
 		/* dont need to do anything */
-	}else if(node_color(uncle) == RED){
+	}else if(rbt_node_color(uncle) == RED){
 		//parent and uncle are both red. both can be painted black
 		grandparent->color = RED;
 		parent->color = BLACK;
@@ -152,18 +152,18 @@ static void rbt_del_rebalance(rbt_t* tree, rbt_node_t* node){
 		rbt_node_t* sib = (node_side == LEFT ? parent->right : parent->left);
 		rbt_node_t* inside_nibling = sib ? (node_side == LEFT ? sib->left : sib->right) : NULL;
 		rbt_node_t* outside_nibling = sib ? (node_side == LEFT ? sib->right : sib->left) : NULL;
-		if(RED == node_color(sib)){
+		if(RED == rbt_node_color(sib)){
 			//rotate so sib is black & recurse w/ new scenario
 			rotate(tree, parent, node_side);
 			parent->color = RED;
 			sib->color = BLACK;
 			rbt_del_rebalance(tree, node);
-		}else if(BLACK == node_color(inside_nibling) && BLACK == node_color(outside_nibling)){
+		}else if(BLACK == rbt_node_color(inside_nibling) && BLACK == rbt_node_color(outside_nibling)){
 			//both niblings are black ; can paint sib red & rebalance on parent
 			sib->color = RED;
-			if(RED == node_color(parent)) parent->color = BLACK;
+			if(RED == rbt_node_color(parent)) parent->color = BLACK;
 			else rbt_del_rebalance(tree, parent);
-		}else if(BLACK == node_color(outside_nibling)){
+		}else if(BLACK == rbt_node_color(outside_nibling)){
 			//convert "inside" case to "outside" case & recurse w/ new scenario
 			rotate(tree, sib, (node_side == LEFT ? RIGHT : LEFT));
 			sib->color = RED;
@@ -202,11 +202,11 @@ static void rbt_delete_node(rbt_t* tree, rbt_node_t* node){
 	}else{
 		//node has at most one non-leaf child
 		rbt_node_t* child = NULL;
-		if(RED == node_color(node)){
+		if(RED == rbt_node_color(node)){
 			//node cannot have children
 			if(node == parent->left) parent->left = NULL;
 			else parent->right = NULL;
-		} else if(RED == node_color(node->left) || RED == node_color(node->right)){
+		} else if(RED == rbt_node_color(node->left) || RED == rbt_node_color(node->right)){
 			child = node->left ? node->left : node->right;
 			child->color = BLACK;
 		} else {
@@ -228,53 +228,5 @@ static void rbt_delete_node(rbt_t* tree, rbt_node_t* node){
 void rbt_delete(rbt_t* tree, void* value){
 	rbt_node_t* doomed = rbt_lookup(tree, value);
 	if(doomed) rbt_delete_node(tree, doomed);
-}
-
-/* THE FOLLOWING FUNCTIONS (TO EOF) ARE USED FOR TESTING PURPOSES ONLY */
-
-//if path to the left != path to the right, return -1 (invalid)
-int count_black_nodes_to_leaf(rbt_node_t* node){
-	int ret = 0;
-	if(node){
-		int leftcount = count_black_nodes_to_leaf(node->left);
-		int rightcount = count_black_nodes_to_leaf(node->right);
-		if(leftcount != rightcount) ret = -1;
-		else if(node->color == BLACK) ret = leftcount+1;
-		else ret = leftcount;
-	}
-	return ret;
-}
-
-static rbt_status_t rbt_check_node(rbt_t* tree, rbt_node_t* node, void* min_val, void* max_val){
-	rbt_status_t ret = OK;
-	void* neg1 = mem_box(-1);
-	if(node){
-		if(node->color != RED && node->color != BLACK) ret = UNKNOWN_COLOR;
-		else if(node->color == RED && (node_color(node->left) != BLACK && node_color(node->right) != BLACK))
-			ret = RED_WITH_RED_CHILD;
-		else if(tree->comp(min_val, neg1) > 0 && tree->comp(node->contents, min_val) < 0) ret = OUT_OF_ORDER;
-		else if(tree->comp(max_val, neg1) > 0 && tree->comp(node->contents, max_val) > 0) ret = OUT_OF_ORDER;
-		else if(node->left == node || node->right == node) ret = SELF_REFERENCE;
-		else if(node->left && node->left->parent != node) ret = BAD_PARENT_POINTER;
-		else if(node->right && node->right->parent != node) ret = BAD_PARENT_POINTER;
-		if(ret == OK) ret = rbt_check_node(tree, node->left, min_val, node->contents);
-		if(ret == OK) ret = rbt_check_node(tree, node->right, node->contents, max_val);
-	}
-	mem_release(neg1);
-	return ret;
-}
-
-//check the contents of the given tree/node as valid
-rbt_status_t rbt_check_status(rbt_t* tree){
-	rbt_status_t ret = OK;
-	void* neg1 = mem_box(-1);
-	if(tree){
-		ret = rbt_check_node(tree, tree->root, neg1, neg1);
-		if(ret == OK && tree->root && tree->root->parent) ret = BAD_PARENT_POINTER;
-		if(ret == OK && node_color(tree->root) != BLACK) ret = BAD_ROOT_COLOR;
-		if(ret == OK && count_black_nodes_to_leaf(tree->root) == -1) ret = BLACK_NODES_UNBALANCED;
-	}
-	mem_release(neg1);
-	return ret;
 }
 

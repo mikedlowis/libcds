@@ -13,6 +13,52 @@ static int test_compare(void* a, void* b){
 	return (ia == ib ? 0 : (ia<ib ? -1 : 1 ));
 }
 
+//if path to the left != path to the right, return -1 (invalid)
+static int count_black_nodes_to_leaf(rbt_node_t* node){
+	int ret = 0;
+	if(node){
+		int leftcount = count_black_nodes_to_leaf(node->left);
+		int rightcount = count_black_nodes_to_leaf(node->right);
+		if(leftcount != rightcount) ret = -1;
+		else if(node->color == BLACK) ret = leftcount+1;
+		else ret = leftcount;
+	}
+	return ret;
+}
+
+static rbt_status_t rbt_check_node(rbt_t* tree, rbt_node_t* node, void* min_val, void* max_val){
+	rbt_status_t ret = OK;
+	void* neg1 = mem_box(-1);
+	if(node){
+		if(node->color != RED && node->color != BLACK) ret = UNKNOWN_COLOR;
+		else if(node->color == RED && (rbt_node_color(node->left) != BLACK && rbt_node_color(node->right) != BLACK))
+			ret = RED_WITH_RED_CHILD;
+		else if(tree->comp(min_val, neg1) > 0 && tree->comp(node->contents, min_val) < 0) ret = OUT_OF_ORDER;
+		else if(tree->comp(max_val, neg1) > 0 && tree->comp(node->contents, max_val) > 0) ret = OUT_OF_ORDER;
+		else if(node->left == node || node->right == node) ret = SELF_REFERENCE;
+		else if(node->left && node->left->parent != node) ret = BAD_PARENT_POINTER;
+		else if(node->right && node->right->parent != node) ret = BAD_PARENT_POINTER;
+		if(ret == OK) ret = rbt_check_node(tree, node->left, min_val, node->contents);
+		if(ret == OK) ret = rbt_check_node(tree, node->right, node->contents, max_val);
+	}
+	mem_release(neg1);
+	return ret;
+}
+
+//check the contents of the given tree/node as valid
+static rbt_status_t rbt_check_status(rbt_t* tree){
+	rbt_status_t ret = OK;
+	void* neg1 = mem_box(-1);
+	if(tree){
+		ret = rbt_check_node(tree, tree->root, neg1, neg1);
+		if(ret == OK && tree->root && tree->root->parent) ret = BAD_PARENT_POINTER;
+		if(ret == OK && rbt_node_color(tree->root) != BLACK) ret = BAD_ROOT_COLOR;
+		if(ret == OK && count_black_nodes_to_leaf(tree->root) == -1) ret = BLACK_NODES_UNBALANCED;
+	}
+	mem_release(neg1);
+	return ret;
+}
+
 static void test_setup(void) { }
 //-----------------------------------------------------------------------------
 // Begin Unit Tests

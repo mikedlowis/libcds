@@ -44,10 +44,7 @@ rbt_node_t* rbt_insert(rbt_t* tree, void* value);
 void rbt_delete(rbt_t* tree, void* value);
 //look up a node in the tree with the given value
 rbt_node_t* rbt_lookup(rbt_t* tree, void* value);
-
-//TEST FUNCTIONS:
-rbt_status_t rbt_check_status(rbt_t* tree);
-//rbt_status_t rbt_check_node(rbt_node_t* node, void* min_val, void* max_val);
+rbt_color_t rbt_node_color(rbt_node_t* ndoe);
 
 #ifdef __cplusplus
 }
