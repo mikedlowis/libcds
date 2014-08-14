@@ -151,42 +151,32 @@ rbt_node_t* rbt_lookup(rbt_t* tree, void* value){
 static void rbt_del_rebalance(rbt_t* tree, rbt_node_t* node){
 	rbt_node_t* parent = node->parent;
 	if(parent){
-		rbt_node_t* sib = (node == parent->left ? parent->right : parent->left);
+		direction_t node_side = (node == parent->left ? LEFT : RIGHT);
+		rbt_node_t* sib = (node_side == LEFT ? parent->right : parent->left);
+		rbt_node_t* inside_nibling = sib ? (node_side == LEFT ? sib->left : sib->right) : NULL;
+		rbt_node_t* outside_nibling = sib ? (node_side == LEFT ? sib->right : sib->left) : NULL;
 		if(RED == node_color(sib)){
-			//if sibbling is red, rotate to make sibbling black
-			if(node == parent->left) rotate(tree, parent, LEFT);
-			else rotate(tree, parent, RIGHT);
+			//rotate so sib is black & recurse w/ new scenario
+			rotate(tree, parent, node_side);
 			parent->color = RED;
 			sib->color = BLACK;
-			//recurse with new sibbling / parent
 			rbt_del_rebalance(tree, node);
-		}else if(BLACK == node_color(sib->left) && BLACK == node_color(sib->right)){
+		}else if(BLACK == node_color(inside_nibling) && BLACK == node_color(outside_nibling)){
+			//both niblings are black ; can paint sib red & rebalance on parent
 			sib->color = RED;
 			if(RED == node_color(parent)) parent->color = BLACK;
-			//recurse to balance parent
 			else rbt_del_rebalance(tree, parent);
-		}else if(node == parent->left && BLACK == node_color(sib->right)){
-			//convert "inside" case to "outside" case
-			sib->left->color = BLACK;
+		}else if(BLACK == node_color(outside_nibling)){
+			//convert "inside" case to "outside" case & recurse w/ new scenario
+			rotate(tree, sib, (node_side == LEFT ? RIGHT : LEFT));
 			sib->color = RED;
-			rotate(tree, sib, RIGHT);
-			rbt_del_rebalance(tree, node);
-		}else if(node == parent->left && RED == node_color(sib->right)){
-			rotate(tree, parent, LEFT);
-			sib->color = parent->color;
-			parent->color = BLACK;
-			sib->right->color = BLACK;
-		}else if(node == parent->right && BLACK == node_color(sib->left)){
-			//convert "inside" case to "outside" case
-			sib->right->color = BLACK;
-			sib->color = RED;
-			rotate(tree, sib, LEFT);
+			inside_nibling->color = BLACK;
 			rbt_del_rebalance(tree, node);
 		}else{
-			rotate(tree, parent, RIGHT);
+			rotate(tree, parent, node_side);
 			sib->color = parent->color;
 			parent->color = BLACK;
-			sib->left->color = BLACK;
+			outside_nibling->color = BLACK;
 		}
 	}else{
 		node->color = BLACK; //TODO: verify this is necessary
