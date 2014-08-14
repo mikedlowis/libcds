@@ -203,35 +203,26 @@ static rbt_node_t* rightmost_descendent(rbt_node_t* node){
 }
 
 static void rbt_delete_node(rbt_t* tree, rbt_node_t* node){
-	rbt_node_t* parent = node->parent;
+	rbt_node_t* descendant = NULL;
 	if(node->left && node->right){
-		rbt_node_t* replacement = rightmost_descendent(node->left);
-		mem_retain(replacement);
-		rbt_delete_node(tree, replacement);
-		if(node->left) node->left->parent = replacement;
-		if(node->right) node->right->parent = replacement;
-		replacement->left = node->left;
-		replacement->right = node->right;
-		replacement->color = node->color;
-		rbt_node_replace(tree, node, replacement);
-	}else{
-		//node has at most one non-leaf child
-		rbt_node_t* child = NULL;
-		if(RED == rbt_node_color(node)){
-			//node cannot have children
-			if(node == parent->left) parent->left = NULL;
-			else parent->right = NULL;
-		} else if(RED == rbt_node_color(node->left) || RED == rbt_node_color(node->right)){
-			child = node->left ? node->left : node->right;
-			child->color = BLACK;
+		descendant = rightmost_descendent(node->left);
+		mem_retain(descendant);
+		rbt_delete_node(tree, descendant);
+		if(node->left) node->left->parent = descendant;
+		if(node->right) node->right->parent = descendant;
+		descendant->left = node->left;
+		descendant->right = node->right;
+		descendant->color = node->color;
+	}else if(BLACK == rbt_node_color(node)){
+		//black node with at most one non-leaf child
+		if(RED == rbt_node_color(node->left) || RED == rbt_node_color(node->right)){
+			descendant = node->left ? node->left : node->right;
+			descendant->color = BLACK;
 		} else {
 			rbt_del_rebalance(tree, node);
-			//reset child/parent after rebalance; tree may have been rotated
-			parent = node->parent;
-			child = node->left ? node->left : node->right;
 		}
-		rbt_node_replace(tree, node, child);
 	}
+	rbt_node_replace(tree, node, descendant);
 	node->left = NULL;
 	node->right = NULL;
 	node->parent = NULL;
