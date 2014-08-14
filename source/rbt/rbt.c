@@ -138,20 +138,14 @@ static void rbt_insert_node(rbt_t* tree, rbt_node_t* node, rbt_node_t* parent){
 	if(NULL == parent){ /* inserting root of the tree */
 		tree->root = node;
 		rbt_ins_recolor(tree, node);
-	}else if(tree->comp(node->contents, parent->contents) < 0){
-		if(parent->left){
-			rbt_insert_node(tree, node, parent->left);
-		}else{
-			node->parent = parent;
-			parent->left = node;
-			rbt_ins_recolor(tree, node);
-		}
 	}else{
-		if(parent->right){
-			rbt_insert_node(tree, node, parent->right);
+		int c = tree->comp(node->contents, parent->contents);
+		rbt_node_t** relevant_child = (c<0 ? &(parent->left) : &(parent->right));
+		if(*relevant_child){
+			rbt_insert_node(tree, node, *relevant_child);
 		}else{
 			node->parent = parent;
-			parent->right = node;
+			*relevant_child = node;
 			rbt_ins_recolor(tree, node);
 		}
 	}
