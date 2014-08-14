@@ -44,46 +44,34 @@ static rbt_color_t node_color(rbt_node_t* node){
 	return (node ? node->color : BLACK);
 }
 
-static void rotate_right(rbt_t* tree, rbt_node_t* node){
-	rbt_node_t* edon = node->left;
-	if(edon) {
-		//attach edon in node's place:
-		if(NULL == node->parent) tree->root = edon;
-		else if(node->parent->left == node) node->parent->left = edon;
-		else node->parent->right = edon;
-		edon->parent = node->parent;
-		//reattach edon's right to node's left
-		//safe to overwrite node->left : is edon
-		node->left = edon->right;
-		if(edon->right) edon->right->parent = node;
-		//attach node to edon
-		edon->right = node;
-		node->parent = edon;
-	} /* else something went wrong... */
-}
+typedef enum {
+	LEFT = 0, RIGHT
+} direction_t;
 
-static void rotate_left(rbt_t* tree, rbt_node_t* node){
-	rbt_node_t* edon = node->right;
-	if(edon) {
-		//attach edon in node's place:
+static void rotate(rbt_t* tree, rbt_node_t* node, direction_t direction){
+	rbt_node_t* edon = (direction == LEFT) ? node->right : node->left;
+	if(edon){
 		if(NULL == node->parent) tree->root = edon;
 		else if(node->parent->left == node) node->parent->left = edon;
 		else node->parent->right = edon;
 		edon->parent = node->parent;
-		//reattach edon's left to node's right
-		//safe to overwrite node->right : is edon
-		node->right = edon->left;
-		if(edon->left) edon->left->parent = node;
-		//attach node to edon
-		edon->left = node;
+		if(direction == LEFT){
+			node->right = edon->left; //safe to overwrite node->right : is edon
+			if(edon->left) edon->left->parent = node;
+			edon->left = node;
+		} else { //mirror of above
+			node->left = edon->right; //safe to overwrite node->left : is edon
+			if(edon->right) edon->right->parent = node;
+			edon->right = node;
+		}
 		node->parent = edon;
-	} /* else something went wrong... */
+	} /* else rotation isn't allowed */
 }
 
 static void rbt_rotate_outside_left(rbt_t* tree, rbt_node_t* node){
 	rbt_node_t* parent = node->parent;
 	rbt_node_t* grandparent = (parent ? parent->parent : NULL);
-	rotate_right(tree, grandparent);
+	rotate(tree, grandparent, RIGHT);
 	parent->color = BLACK;
 	grandparent->color = RED;
 }
@@ -92,7 +80,7 @@ static void rbt_rotate_outside_left(rbt_t* tree, rbt_node_t* node){
 static void rbt_rotate_outside_right(rbt_t* tree, rbt_node_t* node){
 	rbt_node_t* parent = node->parent;
 	rbt_node_t* grandparent = (parent ? parent->parent : NULL);
-	rotate_left(tree, grandparent);
+	rotate(tree, grandparent, LEFT);
 	parent->color = BLACK;
 	grandparent->color = RED;
 }
@@ -115,13 +103,13 @@ static void rbt_ins_recolor(rbt_t* tree, rbt_node_t* node){
 	}else if(node == parent->right && parent == grandparent->left){
 		//parent is red, uncle is black, "inside left" case
 		//first rotate node and parent
-		rotate_left(tree, parent);
+		rotate(tree, parent, LEFT);
 		//tree now transformed to an "outside left" case
 		rbt_rotate_outside_left(tree, parent);
 	}else if(node == parent->left && parent == grandparent->right){
 		//parent is red, uncle is black, "inside right" case
 		//first rotate node and parent
-		rotate_right(tree, parent);
+		rotate(tree, parent, RIGHT);
 		//tree now transformed to an "outside right" case
 		rbt_rotate_outside_right(tree, parent);
 	}else if(node == parent->left && parent == grandparent->left){
@@ -186,8 +174,8 @@ static void rbt_del_rebalance(rbt_t* tree, rbt_node_t* node){
 		rbt_node_t* sib = (node == parent->left ? parent->right : parent->left);
 		if(RED == node_color(sib)){
 			//if sibbling is red, rotate to make sibbling black
-			if(node == parent->left) rotate_left(tree, parent);
-			else rotate_right(tree, parent);
+			if(node == parent->left) rotate(tree, parent, LEFT);
+			else rotate(tree, parent, RIGHT);
 			parent->color = RED;
 			sib->color = BLACK;
 			//recurse with new sibbling / parent
@@ -201,10 +189,10 @@ static void rbt_del_rebalance(rbt_t* tree, rbt_node_t* node){
 			//convert "inside" case to "outside" case
 			sib->left->color = BLACK;
 			sib->color = RED;
-			rotate_right(tree, sib);
+			rotate(tree, sib, RIGHT);
 			rbt_del_rebalance(tree, node);
 		}else if(node == parent->left && RED == node_color(sib->right)){
-			rotate_left(tree, parent);
+			rotate(tree, parent, LEFT);
 			sib->color = parent->color;
 			parent->color = BLACK;
 			sib->right->color = BLACK;
@@ -212,10 +200,10 @@ static void rbt_del_rebalance(rbt_t* tree, rbt_node_t* node){
 			//convert "inside" case to "outside" case
 			sib->right->color = BLACK;
 			sib->color = RED;
-			rotate_left(tree, sib);
+			rotate(tree, sib, LEFT);
 			rbt_del_rebalance(tree, node);
 		}else{
-			rotate_right(tree, parent);
+			rotate(tree, parent, RIGHT);
 			sib->color = parent->color;
 			parent->color = BLACK;
 			sib->left->color = BLACK;
