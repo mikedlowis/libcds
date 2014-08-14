@@ -112,7 +112,6 @@ static void rbt_ins_rebalance(rbt_t* tree, rbt_node_t* node, direction_t heavy_s
 	grandparent->color = RED;
 }
 
-//NODE:the node to be inserted
 static void rbt_ins_recolor(rbt_t* tree, rbt_node_t* node){
 	rbt_node_t* parent = node->parent;
 	rbt_node_t* grandparent = (parent ? parent->parent : NULL);
