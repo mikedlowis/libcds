@@ -9,17 +9,6 @@ typedef enum {
 	RED = 0,
 	BLACK
 } rbt_color_t;
-
-typedef enum {
-	OK = 0,
-	OUT_OF_ORDER,
-	BAD_ROOT_COLOR,
-	BLACK_NODES_UNBALANCED,
-	UNKNOWN_COLOR,
-	RED_WITH_RED_CHILD,
-	BAD_PARENT_POINTER,
-	SELF_REFERENCE,
-} rbt_status_t;
  
 typedef int (*comparator_t)(void* p_a, void* p_b);
 
@@ -36,15 +25,14 @@ typedef struct {
 	comparator_t comp;
 } rbt_t;
 
-
-rbt_node_t* rbt_node_new(void* contents);
 rbt_t* rbt_new(comparator_t comparator);
+rbt_node_t* rbt_node_new(void* contents);
+rbt_color_t rbt_node_color(rbt_node_t* ndoe);
+rbt_node_t* rbt_lookup(rbt_t* tree, void* value);
 //returns a pointer to the new node
 rbt_node_t* rbt_insert(rbt_t* tree, void* value);
 void rbt_delete(rbt_t* tree, void* value);
 //look up a node in the tree with the given value
-rbt_node_t* rbt_lookup(rbt_t* tree, void* value);
-rbt_color_t rbt_node_color(rbt_node_t* ndoe);
 
 #ifdef __cplusplus
 }

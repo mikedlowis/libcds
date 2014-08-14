@@ -1,11 +1,28 @@
 #include "mem.h"
 #include "rbt.h"
 
+//nodes are compared by memory address by default
+static int rbt_default_comparator(void* a, void* b){
+	return (a == b ? 0 : (a<b ? -1 : 1 ));
+}
+
+/* -------------------------------- */
+/*    destructors / constructors    */
+/* -------------------------------- */
+
+/* rbt_t */
 static void rbt_free(void* v_tree){
 	rbt_t* tree = (rbt_t*) v_tree;
 	if(tree && tree->root) mem_release(tree->root);
 }
+rbt_t* rbt_new(comparator_t comparator){
+	rbt_t* tree = mem_allocate(sizeof(rbt_t), &rbt_free);
+	tree->root = NULL;
+	tree->comp = comparator ? comparator : rbt_default_comparator;
+	return tree;
+}
 
+/* rbt_node_t */
 static void rbt_node_free(void* v_node){
 	rbt_node_t* node = (rbt_node_t*) v_node;
 	if(node){
@@ -14,11 +31,6 @@ static void rbt_node_free(void* v_node){
 		if(node->right) mem_release(node->right);
 	}
 }
-
-static int rbt_default_comparator(void* a, void* b){
-	return (a == b ? 0 : (a<b ? -1 : 1 ));
-}
-
 rbt_node_t* rbt_node_new(void* contents){
 	rbt_node_t* node = mem_allocate(sizeof(rbt_node_t), &rbt_node_free);
 	node->left = NULL;
@@ -29,17 +41,35 @@ rbt_node_t* rbt_node_new(void* contents){
 	return node;
 }
 
-rbt_t* rbt_new(comparator_t comparator){
-	rbt_t* tree = mem_allocate(sizeof(rbt_t), &rbt_free);
-	tree->root = NULL;
-	tree->comp = comparator ? comparator : rbt_default_comparator;
-	return tree;
-}
 
-//leaves are NULL and black implicitly
+/* ---------------------------------------- */
+/*    informational / querying functions    */
+/* ---------------------------------------- */
+
 rbt_color_t rbt_node_color(rbt_node_t* node){
+	//leaves are NULL and black implicitly
 	return (node ? node->color : BLACK);
 }
+
+static rbt_node_t* rbt_lookup_node(rbt_t* tree, rbt_node_t* node, void* value){
+	rbt_node_t* ret = NULL;
+	if(node){
+		int c = tree->comp(value, node->contents);
+		if(c == 0) ret = node;
+		else if(c > 0) ret = rbt_lookup_node(tree, node->right, value);
+		else if(c < 0) ret = rbt_lookup_node(tree, node->left, value);
+	}
+	return ret;
+}
+
+rbt_node_t* rbt_lookup(rbt_t* tree, void* value){
+	return rbt_lookup_node(tree, tree->root, value);
+}
+
+
+/* ----------------------------------------- */
+/*    generally helpful tree manipulation    */
+/* ----------------------------------------- */
 
 typedef enum {
 	LEFT = 0, RIGHT
@@ -64,6 +94,11 @@ static void rotate(rbt_t* tree, rbt_node_t* node, direction_t direction){
 		node->parent = edon;
 	} /* else rotation isn't allowed */
 }
+
+
+/* -------------------- */
+/*    insertion code    */
+/* -------------------- */
 
 static void rbt_ins_rebalance(rbt_t* tree, rbt_node_t* node, direction_t heavy_side){
 	rbt_node_t* parent = node->parent;
@@ -129,20 +164,9 @@ rbt_node_t* rbt_insert(rbt_t* tree, void* value){
 }
 
 
-static rbt_node_t* rbt_lookup_node(rbt_t* tree, rbt_node_t* node, void* value){
-	rbt_node_t* ret = NULL;
-	if(node){
-		int c = tree->comp(value, node->contents);
-		if(c == 0) ret = node;
-		else if(c > 0) ret = rbt_lookup_node(tree, node->right, value);
-		else if(c < 0) ret = rbt_lookup_node(tree, node->left, value);
-	}
-	return ret;
-}
-
-rbt_node_t* rbt_lookup(rbt_t* tree, void* value){
-	return rbt_lookup_node(tree, tree->root, value);
-}
+/* ------------------- */
+/*    removal  code    */
+/* ------------------- */
 
 //node has a count -1 of black nodes to leaves relative to the rest of the tree
 static void rbt_del_rebalance(rbt_t* tree, rbt_node_t* node){
@@ -225,6 +249,7 @@ static void rbt_delete_node(rbt_t* tree, rbt_node_t* node){
 	node->parent = NULL;
 	mem_release(node);
 }
+
 void rbt_delete(rbt_t* tree, void* value){
 	rbt_node_t* doomed = rbt_lookup(tree, value);
 	if(doomed) rbt_delete_node(tree, doomed);

@@ -13,6 +13,17 @@ static int test_compare(void* a, void* b){
 	return (ia == ib ? 0 : (ia<ib ? -1 : 1 ));
 }
 
+typedef enum {
+	OK = 0,
+	OUT_OF_ORDER,
+	BAD_ROOT_COLOR,
+	BLACK_NODES_UNBALANCED,
+	UNKNOWN_COLOR,
+	RED_WITH_RED_CHILD,
+	BAD_PARENT_POINTER,
+	SELF_REFERENCE,
+} rbt_status_t;
+
 //if path to the left != path to the right, return -1 (invalid)
 static int count_black_nodes_to_leaf(rbt_node_t* node){
 	int ret = 0;
