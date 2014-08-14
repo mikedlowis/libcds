@@ -71,6 +71,13 @@ rbt_node_t* rbt_lookup(rbt_t* tree, void* value){
 /*    generally helpful tree manipulation    */
 /* ----------------------------------------- */
 
+static void rbt_node_replace(rbt_t* tree, rbt_node_t* target, rbt_node_t* replacement){
+	if(NULL == target->parent) tree->root = replacement;
+	else if(target == target->parent->left) target->parent->left = replacement;
+	else target->parent->right = replacement;
+	if(replacement) replacement->parent = target->parent;
+}
+
 typedef enum {
 	LEFT = 0, RIGHT
 } direction_t;
@@ -80,10 +87,7 @@ static void rotate(rbt_t* tree, rbt_node_t* node, direction_t direction){
 	if(edon){
 		rbt_node_t** edon_side = (direction == LEFT ? &(edon->left) : &(edon->right));
 		rbt_node_t** node_side = (direction == LEFT ? &(node->right) : &(node->left));
-		if(NULL == node->parent) tree->root = edon;
-		else if(node->parent->left == node) node->parent->left = edon;
-		else node->parent->right = edon;
-		edon->parent = node->parent;
+		rbt_node_replace(tree, node, edon);
 		*node_side = *edon_side; //safe to overwrite; points to edon
 		if(*edon_side) (*edon_side)->parent = node;
 		*edon_side = node;
@@ -208,11 +212,8 @@ static void rbt_delete_node(rbt_t* tree, rbt_node_t* node){
 		if(node->right) node->right->parent = replacement;
 		replacement->left = node->left;
 		replacement->right = node->right;
-		replacement->parent = node->parent;
 		replacement->color = node->color;
-		if(NULL == parent) tree->root = replacement;
-		else if(node == parent->left) parent->left = replacement;
-		else parent->right = replacement;
+		rbt_node_replace(tree, node, replacement);
 	}else{
 		//node has at most one non-leaf child
 		rbt_node_t* child = NULL;
@@ -229,10 +230,7 @@ static void rbt_delete_node(rbt_t* tree, rbt_node_t* node){
 			parent = node->parent;
 			child = node->left ? node->left : node->right;
 		}
-		if(child) child->parent = parent;
-		if(NULL == parent) tree->root = child;
-		else if(node == parent->right) parent->right = child;
-		else parent->left = child;
+		rbt_node_replace(tree, node, child);
 	}
 	node->left = NULL;
 	node->right = NULL;
