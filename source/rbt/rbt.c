@@ -78,19 +78,15 @@ typedef enum {
 static void rotate(rbt_t* tree, rbt_node_t* node, direction_t direction){
 	rbt_node_t* edon = (direction == LEFT) ? node->right : node->left;
 	if(edon){
+		rbt_node_t** edon_side = (direction == LEFT ? &(edon->left) : &(edon->right));
+		rbt_node_t** node_side = (direction == LEFT ? &(node->right) : &(node->left));
 		if(NULL == node->parent) tree->root = edon;
 		else if(node->parent->left == node) node->parent->left = edon;
 		else node->parent->right = edon;
 		edon->parent = node->parent;
-		if(direction == LEFT){
-			node->right = edon->left; //safe to overwrite node->right : is edon
-			if(edon->left) edon->left->parent = node;
-			edon->left = node;
-		} else { //mirror of above
-			node->left = edon->right; //safe to overwrite node->left : is edon
-			if(edon->right) edon->right->parent = node;
-			edon->right = node;
-		}
+		*node_side = *edon_side; //safe to overwrite; points to edon
+		if(*edon_side) (*edon_side)->parent = node;
+		*edon_side = node;
 		node->parent = edon;
 	} /* else rotation isn't allowed */
 }
