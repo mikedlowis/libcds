@@ -258,118 +258,32 @@ static void rbt_delete_node(rbt_t* tree, rbt_node_t* node){
 			else parent->right = NULL;
 			node->parent = NULL;
 			mem_release(node);
-		} else if(RED == node_color(node->left) && BLACK == node_color(node->right)){
-			//single red child, to the left
-			rbt_node_t* child = node->left;
+		} else if(RED == node_color(node->left) || RED == node_color(node->right)){
+			rbt_node_t* child = node->left ? node->left : node->right;
 			child->parent = parent;
 			if(NULL == parent) tree->root = child;
 			else if(parent->left == node) parent->left = child;
 			else parent->right = child;
-			//safe to destroy node->right ; it is a NULL leaf
 			child->color = BLACK;
 			node->left = NULL;
-			node->parent = NULL;
-			mem_release(node);
-		} else if(RED == node_color(node->right) && BLACK == node_color(node->left)){
-			//single red child, to the right
-			rbt_node_t* child = node->right;
-			child->parent = parent;
-			if(NULL == parent) tree->root = child;
-			else if(parent->left == node) parent->left = child;
-			else parent->right = child;
-			child->color = BLACK;
 			node->right = NULL;
 			node->parent = NULL;
 			mem_release(node);
-		} else if(node == tree->root){
-			//at most one child & no red children :: no children.
-			tree->root = NULL;
-			//pointers should already be null.
-			mem_release(node);
-		} else if(RED == node_color(node->parent)){
-			node->parent = NULL;
-			if(parent->right == node){
-				rbt_node_t* sib = parent->left;
-				parent->right = NULL;
-				if(sib->right && !sib->left){
-					rotate_left(tree, sib);
-					parent->color = BLACK;
-				}
-				rotate_right(tree, parent);
-			} else {
-				rbt_node_t* sib = parent->right;
-				parent->left = NULL;
-				if(sib->left && !sib->right){
-					rotate_right(tree, sib);
-					parent->color = BLACK;
-				}
-				rotate_left(tree, parent);
+		} else if(BLACK == node_color(node)){
+			rbt_del_rebalance(tree, node);
+			parent = node->parent;
+			rbt_node_t* child = node->left ? node->left : node->right;
+			if(!parent){
+				tree->root = child;
+				if(child) child->color = BLACK;
 			}
-			mem_release(node);
-		} else if(node == parent->right && (parent->left->left || parent->left->right)){
-			//node is black. parent is black. node is parent's right child.
-			//sibbling has at least one non-leaf child
-			rbt_node_t* sib = parent->left;
-			//remove/release the node
-			parent->right = NULL;
+			else if(node == parent->right) parent->right = child;
+			else parent->left = child;
+			if(child) child->parent = parent;
+			node->left = NULL;
+			node->right = NULL;
 			node->parent = NULL;
 			mem_release(node);
-			//rebalance the tree
-			//fix sibbling if red first
-			if(RED == node_color(sib)){
-				sib->color = BLACK;
-				sib->right->color = RED;
-				//sib->left->color = RED; //unnecessary; gets overwritten anyway.
-			}
-			//rotate "inside" case to "outside"
-			if(sib->right && !sib->left){
-				sib->right->color = BLACK;
-				rotate_left(tree, sib);
-			}
-			if(sib->left) sib->left->color = BLACK;
-			rotate_right(tree, parent);
-		} else if(node == parent->left && (parent->right->left || parent->right->right)){
-			//node is black. parent is black. node is parent's left child.
-			//sibbling has at least one non-leaf child
-			rbt_node_t* sib = parent->right;
-			//remove/release the node
-			parent->left = NULL;
-			node->parent = NULL;
-			mem_release(node);
-			//rebalance the tree
-			//fix sibbling if red first
-			if(RED == node_color(sib)){
-				sib->color = BLACK;
-				sib->left->color = RED;
-				//sib->right->color = RED; //unnecessary; gets overwritten anyway.
-			}
-			//rotate "inside" case to "outside"
-			if(sib->left && !sib->right){
-				sib->left->color = BLACK;
-				rotate_right(tree, sib);
-			}
-			if(sib->right) sib->right->color = BLACK;
-			rotate_left(tree, parent);
-		} else if(node == parent->right){
-			//node is black, parent is black, sibbling has no children
-			rbt_node_t* sib = parent->left;
-			//remove/release the node;
-			parent->right = NULL;
-			node->parent = NULL;
-			mem_release(node);
-			//rebalance the tree
-			sib->color = RED;
-			rbt_del_rebalance(tree, parent);
-		} else {
-			//node is black, parent is black, sibbling has no children
-			rbt_node_t* sib = parent->right;
-			//remove/release the node;
-			parent->left = NULL;
-			node->parent = NULL;
-			mem_release(node);
-			//rebalance the tree
-			sib->color = RED;
-			rbt_del_rebalance(tree, parent);
 		}
 	}
 }
