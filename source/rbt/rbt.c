@@ -66,6 +66,10 @@ rbt_node_t* rbt_lookup(rbt_t* tree, void* value){
 	return rbt_lookup_node(tree, tree->root, value);
 }
 
+static rbt_node_t* rightmost_descendent(rbt_node_t* node){
+	return (node->right) ? rightmost_descendent(node->right) : node;
+}
+
 
 /* ----------------------------------------- */
 /*    generally helpful tree manipulation    */
@@ -196,10 +200,6 @@ static void rbt_del_rebalance(rbt_t* tree, rbt_node_t* node){
 	}else{
 		node->color = BLACK; //TODO: verify this is necessary
 	}
-}
-
-static rbt_node_t* rightmost_descendent(rbt_node_t* node){
-	return (node->right) ? rightmost_descendent(node->right) : node;
 }
 
 static void rbt_delete_node(rbt_t* tree, rbt_node_t* node){
