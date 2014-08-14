@@ -82,7 +82,7 @@ typedef enum {
 	LEFT = 0, RIGHT
 } direction_t;
 
-static void rotate(rbt_t* tree, rbt_node_t* node, direction_t direction){
+static void rbt_rotate(rbt_t* tree, rbt_node_t* node, direction_t direction){
 	rbt_node_t* edon = (direction == LEFT) ? node->right : node->left;
 	if(edon){
 		rbt_node_t** edon_side = (direction == LEFT ? &(edon->left) : &(edon->right));
@@ -103,7 +103,7 @@ static void rotate(rbt_t* tree, rbt_node_t* node, direction_t direction){
 static void rbt_ins_rebalance(rbt_t* tree, rbt_node_t* node, direction_t heavy_side){
 	rbt_node_t* parent = node->parent;
 	rbt_node_t* grandparent = (parent ? parent->parent : NULL);
-	rotate(tree, grandparent, (heavy_side == LEFT ? RIGHT : LEFT));
+	rbt_rotate(tree, grandparent, (heavy_side == LEFT ? RIGHT : LEFT));
 	parent->color = BLACK;
 	grandparent->color = RED;
 }
@@ -127,7 +127,7 @@ static void rbt_ins_recolor(rbt_t* tree, rbt_node_t* node){
 		direction_t node_side = (node == parent->left ? LEFT : RIGHT);
 		direction_t parent_side = (parent == grandparent->left ? LEFT : RIGHT);
 		if(node_side != parent_side){ // "inside" case
-			rotate(tree, parent, parent_side); //transform to "outside" case
+			rbt_rotate(tree, parent, parent_side); //transform to "outside" case
 			node = parent; //parent now lowest node.
 		}
 		rbt_ins_rebalance(tree, node, parent_side);
@@ -172,7 +172,7 @@ static void rbt_del_rebalance(rbt_t* tree, rbt_node_t* node){
 		rbt_node_t* outside_nibling = sib ? (node_side == LEFT ? sib->right : sib->left) : NULL;
 		if(RED == rbt_node_color(sib)){
 			//rotate so sib is black & recurse w/ new scenario
-			rotate(tree, parent, node_side);
+			rbt_rotate(tree, parent, node_side);
 			parent->color = RED;
 			sib->color = BLACK;
 			rbt_del_rebalance(tree, node);
@@ -183,12 +183,12 @@ static void rbt_del_rebalance(rbt_t* tree, rbt_node_t* node){
 			else rbt_del_rebalance(tree, parent);
 		}else if(BLACK == rbt_node_color(outside_nibling)){
 			//convert "inside" case to "outside" case & recurse w/ new scenario
-			rotate(tree, sib, (node_side == LEFT ? RIGHT : LEFT));
+			rbt_rotate(tree, sib, (node_side == LEFT ? RIGHT : LEFT));
 			sib->color = RED;
 			inside_nibling->color = BLACK;
 			rbt_del_rebalance(tree, node);
 		}else{
-			rotate(tree, parent, node_side);
+			rbt_rotate(tree, parent, node_side);
 			sib->color = parent->color;
 			parent->color = BLACK;
 			outside_nibling->color = BLACK;
