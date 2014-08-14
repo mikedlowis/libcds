@@ -68,19 +68,10 @@ static void rotate(rbt_t* tree, rbt_node_t* node, direction_t direction){
 	} /* else rotation isn't allowed */
 }
 
-static void rbt_rotate_outside_left(rbt_t* tree, rbt_node_t* node){
+static void rbt_ins_rebalance(rbt_t* tree, rbt_node_t* node, direction_t heavy_side){
 	rbt_node_t* parent = node->parent;
 	rbt_node_t* grandparent = (parent ? parent->parent : NULL);
-	rotate(tree, grandparent, RIGHT);
-	parent->color = BLACK;
-	grandparent->color = RED;
-}
-
-//mirror of above:
-static void rbt_rotate_outside_right(rbt_t* tree, rbt_node_t* node){
-	rbt_node_t* parent = node->parent;
-	rbt_node_t* grandparent = (parent ? parent->parent : NULL);
-	rotate(tree, grandparent, LEFT);
+	rotate(tree, grandparent, (heavy_side == LEFT ? RIGHT : LEFT));
 	parent->color = BLACK;
 	grandparent->color = RED;
 }
@@ -102,22 +93,20 @@ static void rbt_ins_recolor(rbt_t* tree, rbt_node_t* node){
 		rbt_ins_recolor(tree, grandparent);
 	}else if(node == parent->right && parent == grandparent->left){
 		//parent is red, uncle is black, "inside left" case
-		//first rotate node and parent
+		//first rotate node and parent : transform to "outside" case
 		rotate(tree, parent, LEFT);
-		//tree now transformed to an "outside left" case
-		rbt_rotate_outside_left(tree, parent);
+		rbt_ins_rebalance(tree, parent, LEFT);
 	}else if(node == parent->left && parent == grandparent->right){
 		//parent is red, uncle is black, "inside right" case
-		//first rotate node and parent
+		//first rotate node and parent : transform to "outside" case
 		rotate(tree, parent, RIGHT);
-		//tree now transformed to an "outside right" case
-		rbt_rotate_outside_right(tree, parent);
+		rbt_ins_rebalance(tree, parent, RIGHT);
 	}else if(node == parent->left && parent == grandparent->left){
 		//parent is red, uncle is black, "outside left" case
-		rbt_rotate_outside_left(tree, node);
+		rbt_ins_rebalance(tree, node , LEFT);
 	}else if(node == parent->right && parent == grandparent->right){
 		//parent is red, uncle is black, "outside right" case
-		rbt_rotate_outside_right(tree, node);
+		rbt_ins_rebalance(tree, node, RIGHT);
 	}
 }
 
