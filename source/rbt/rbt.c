@@ -91,22 +91,14 @@ static void rbt_ins_recolor(rbt_t* tree, rbt_node_t* node){
 		parent->color = BLACK;
 		uncle->color = BLACK;
 		rbt_ins_recolor(tree, grandparent);
-	}else if(node == parent->right && parent == grandparent->left){
-		//parent is red, uncle is black, "inside left" case
-		//first rotate node and parent : transform to "outside" case
-		rotate(tree, parent, LEFT);
-		rbt_ins_rebalance(tree, parent, LEFT);
-	}else if(node == parent->left && parent == grandparent->right){
-		//parent is red, uncle is black, "inside right" case
-		//first rotate node and parent : transform to "outside" case
-		rotate(tree, parent, RIGHT);
-		rbt_ins_rebalance(tree, parent, RIGHT);
-	}else if(node == parent->left && parent == grandparent->left){
-		//parent is red, uncle is black, "outside left" case
-		rbt_ins_rebalance(tree, node , LEFT);
-	}else if(node == parent->right && parent == grandparent->right){
-		//parent is red, uncle is black, "outside right" case
-		rbt_ins_rebalance(tree, node, RIGHT);
+	}else{
+		direction_t node_side = (node == parent->left ? LEFT : RIGHT);
+		direction_t parent_side = (parent == grandparent->left ? LEFT : RIGHT);
+		if(node_side != parent_side){ // "inside" case
+			rotate(tree, parent, parent_side); //transform to "outside" case
+			node = parent; //parent now lowest node.
+		}
+		rbt_ins_rebalance(tree, node, parent_side);
 	}
 }
 
@@ -114,7 +106,6 @@ static void rbt_insert_node(rbt_t* tree, rbt_node_t* node, rbt_node_t* parent){
 	if(NULL == parent){ /* inserting root of the tree */
 		tree->root = node;
 		rbt_ins_recolor(tree, node);
-	//}else if(node->contents < parent->contents){
 	}else if(tree->comp(node->contents, parent->contents) < 0){
 		if(parent->left){
 			rbt_insert_node(tree, node, parent->left);
