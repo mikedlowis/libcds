@@ -66,8 +66,8 @@ rbt_node_t* rbt_lookup(rbt_t* tree, void* value){
 	return rbt_lookup_node(tree, tree->root, value);
 }
 
-static rbt_node_t* rightmost_descendent(rbt_node_t* node){
-	return (node->right) ? rightmost_descendent(node->right) : node;
+static rbt_node_t* rightmost_descendant(rbt_node_t* node){
+	return (node->right) ? rightmost_descendant(node->right) : node;
 }
 
 
@@ -205,7 +205,7 @@ static void rbt_del_rebalance(rbt_t* tree, rbt_node_t* node){
 static void rbt_delete_node(rbt_t* tree, rbt_node_t* node){
 	rbt_node_t* descendant = NULL;
 	if(node->left && node->right){
-		descendant = rightmost_descendent(node->left);
+		descendant = rightmost_descendant(node->left);
 		mem_retain(descendant);
 		rbt_delete_node(tree, descendant);
 		if(node->left) node->left->parent = descendant;
