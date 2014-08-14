@@ -170,6 +170,7 @@ static void rbt_del_rebalance(rbt_t* tree, rbt_node_t* node){
 	if(parent){
 		direction_t node_side = (node == parent->left ? LEFT : RIGHT);
 		rbt_node_t* sib = (node_side == LEFT ? parent->right : parent->left);
+		//nibling: gender neutral term for niece or nephew.
 		rbt_node_t* inside_nibling = sib ? (node_side == LEFT ? sib->left : sib->right) : NULL;
 		rbt_node_t* outside_nibling = sib ? (node_side == LEFT ? sib->right : sib->left) : NULL;
 		if(RED == rbt_node_color(sib)){
