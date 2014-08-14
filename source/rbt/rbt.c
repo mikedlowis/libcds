@@ -245,10 +245,6 @@ static void rbt_delete_node(rbt_t* tree, rbt_node_t* node){
 		if(NULL == parent) tree->root = replacement;
 		else if(node == parent->left) parent->left = replacement;
 		else parent->right = replacement;
-		node->left = NULL;
-		node->right = NULL;
-		node->parent = NULL;
-		mem_release(node);
 	}else{
 		//node has at most one non-leaf child
 		rbt_node_t* parent = node->parent;
@@ -256,8 +252,6 @@ static void rbt_delete_node(rbt_t* tree, rbt_node_t* node){
 			//node is red and has only leaf children or tree is invalid.
 			if(node == parent->left) parent->left = NULL;
 			else parent->right = NULL;
-			node->parent = NULL;
-			mem_release(node);
 		} else if(RED == node_color(node->left) || RED == node_color(node->right)){
 			rbt_node_t* child = node->left ? node->left : node->right;
 			child->parent = parent;
@@ -265,10 +259,6 @@ static void rbt_delete_node(rbt_t* tree, rbt_node_t* node){
 			else if(parent->left == node) parent->left = child;
 			else parent->right = child;
 			child->color = BLACK;
-			node->left = NULL;
-			node->right = NULL;
-			node->parent = NULL;
-			mem_release(node);
 		} else if(BLACK == node_color(node)){
 			rbt_del_rebalance(tree, node);
 			parent = node->parent;
@@ -280,12 +270,12 @@ static void rbt_delete_node(rbt_t* tree, rbt_node_t* node){
 			else if(node == parent->right) parent->right = child;
 			else parent->left = child;
 			if(child) child->parent = parent;
-			node->left = NULL;
-			node->right = NULL;
-			node->parent = NULL;
-			mem_release(node);
 		}
 	}
+	node->left = NULL;
+	node->right = NULL;
+	node->parent = NULL;
+	mem_release(node);
 }
 void rbt_delete(rbt_t* tree, void* value){
 	rbt_node_t* doomed = rbt_lookup(tree, value);
