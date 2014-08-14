@@ -119,22 +119,21 @@ static void rbt_ins_recolor(rbt_t* tree, rbt_node_t* node){
 	rbt_node_t* uncle = (grandparent ? (parent == grandparent->left ? grandparent->right : grandparent->left) : NULL);
 	if(NULL == parent){
 		node->color = BLACK;
-	}else if(BLACK == rbt_node_color(parent)){
-		/* dont need to do anything */
-	}else if(rbt_node_color(uncle) == RED){
-		//parent and uncle are both red. both can be painted black
-		grandparent->color = RED;
-		parent->color = BLACK;
-		uncle->color = BLACK;
-		rbt_ins_recolor(tree, grandparent);
-	}else{
-		direction_t node_side = (node == parent->left ? LEFT : RIGHT);
-		direction_t parent_side = (parent == grandparent->left ? LEFT : RIGHT);
-		if(node_side != parent_side){ // "inside" case
-			rbt_rotate(tree, parent, parent_side); //transform to "outside" case
-			node = parent; //parent now lowest node.
+	}else if(RED == rbt_node_color(parent)){
+		if(rbt_node_color(uncle) == RED){
+			grandparent->color = RED;
+			parent->color = BLACK;
+			uncle->color = BLACK;
+			rbt_ins_recolor(tree, grandparent);
+		}else{
+			direction_t node_side = (node == parent->left ? LEFT : RIGHT);
+			direction_t parent_side = (parent == grandparent->left ? LEFT : RIGHT);
+			if(node_side != parent_side){ // "inside" case
+				rbt_rotate(tree, parent, parent_side); //transform to "outside" case
+				node = parent; //parent now lowest node.
+			}
+			rbt_ins_rebalance(tree, node, parent_side);
 		}
-		rbt_ins_rebalance(tree, node, parent_side);
 	}
 }
 
