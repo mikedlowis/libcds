@@ -59,7 +59,7 @@ rbt_node_t* rbt_node_new(void* contents);
 /**
  * @brief get the color of a given node
  *
- * @param node the node to get the color of
+ * @param node the node on which to operate
  *
  * @return RED or BLACK. BLACK if node is NULL (a leaf)
  */
