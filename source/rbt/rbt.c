@@ -2,7 +2,7 @@
 #include "rbt.h"
 
 //nodes are compared by memory address by default
-int rbt_default_comparator(void* v_a, void* v_b){
+static int rbt_default_comparator(void* v_a, void* v_b){
 	uintptr_t a = (intptr_t)v_a;
 	uintptr_t b = (intptr_t)v_b;
 	return (a == b ? 0 : (a<b ? -1 : 1 ));

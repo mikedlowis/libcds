@@ -2587,11 +2587,5 @@ TEST_SUITE(RBT) {
 		mem_release(vals);
 		mem_release(tree);
 	}
-
-	TEST(Verify_default_comparator){
-		CHECK( 1 == rbt_default_comparator((void*)0x8888, (void*)0x4242));
-		CHECK( -1 == rbt_default_comparator((void*)0x2a2a, (void*)0x4242));
-		CHECK( 0 == rbt_default_comparator((void*)0x8888, (void*)0x8888));
-	}
 }
 
