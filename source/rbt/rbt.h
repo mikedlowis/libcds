@@ -67,7 +67,7 @@ rbt_color_t rbt_node_color(rbt_node_t* node);
 
 
 /**
- * @brief find a value in an red-black tree
+ * @brief find a value in a red-black tree
  *
  * @param tree  pointer to the tree on which to operate
  * @param value pointer to the data to find
@@ -77,6 +77,15 @@ rbt_color_t rbt_node_color(rbt_node_t* node);
  */
 rbt_node_t* rbt_lookup(rbt_t* tree, void* value);
 
+
+/**
+ * @brief count the number of nodes in a red-black tree
+ * 
+ * @param tree  pointer to the tree on which to operate
+ *
+ * @return the number of nodes present in the tree
+ */
+int rbt_count_nodes(rbt_t* tree);
 
 /**
  * @brief insert a value into a red-black tree
@@ -97,6 +106,16 @@ rbt_node_t* rbt_insert(rbt_t* tree, void* value);
  */
 void rbt_delete(rbt_t* tree, void* value);
 
+
+/**
+ * @brief default comparator
+ *
+ * @param v_a  pointer to thing being compared 
+ * @param v_b  thing to which v_a is being compared
+ *
+ * @return -1, 0, or 1 if v_a's address is <, ==, or > v_b's (respectively)
+ */
+int rbt_default_comparator(void* v_a, void* v_b);
 #ifdef __cplusplus
 }
 #endif

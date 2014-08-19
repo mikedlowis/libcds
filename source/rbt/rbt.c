@@ -2,7 +2,9 @@
 #include "rbt.h"
 
 //nodes are compared by memory address by default
-static int rbt_default_comparator(void* a, void* b){
+int rbt_default_comparator(void* v_a, void* v_b){
+	uintptr_t a = (intptr_t)v_a;
+	uintptr_t b = (intptr_t)v_b;
 	return (a == b ? 0 : (a<b ? -1 : 1 ));
 }
 
@@ -70,6 +72,12 @@ static rbt_node_t* rightmost_descendant(rbt_node_t* node){
 	return (node->right) ? rightmost_descendant(node->right) : node;
 }
 
+static int rbt_count(rbt_node_t* node){
+	return (!node ? 0 : (1 + rbt_count(node->left) + rbt_count(node->right)));
+}
+int rbt_count_nodes(rbt_t* tree){
+	return rbt_count(tree->root);
+}
 
 /* ----------------------------------------- */
 /*    generally helpful tree manipulation    */

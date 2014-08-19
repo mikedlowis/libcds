@@ -39,34 +39,30 @@ static int count_black_nodes_to_leaf(rbt_node_t* node){
 
 static rbt_status_t rbt_check_node(rbt_t* tree, rbt_node_t* node, void* min_val, void* max_val){
 	rbt_status_t ret = OK;
-	void* neg1 = mem_box(-1);
 	if(node){
 		if(node->color != RED && node->color != BLACK) ret = UNKNOWN_COLOR;
 		else if(node->color == RED && (rbt_node_color(node->left) != BLACK && rbt_node_color(node->right) != BLACK))
 			ret = RED_WITH_RED_CHILD;
-		else if(tree->comp(min_val, neg1) > 0 && tree->comp(node->contents, min_val) < 0) ret = OUT_OF_ORDER;
-		else if(tree->comp(max_val, neg1) > 0 && tree->comp(node->contents, max_val) > 0) ret = OUT_OF_ORDER;
+		else if(min_val && tree->comp(node->contents, min_val) < 0) ret = OUT_OF_ORDER;
+		else if(max_val && tree->comp(node->contents, max_val) > 0) ret = OUT_OF_ORDER;
 		else if(node->left == node || node->right == node) ret = SELF_REFERENCE;
 		else if(node->left && node->left->parent != node) ret = BAD_PARENT_POINTER;
 		else if(node->right && node->right->parent != node) ret = BAD_PARENT_POINTER;
 		if(ret == OK) ret = rbt_check_node(tree, node->left, min_val, node->contents);
 		if(ret == OK) ret = rbt_check_node(tree, node->right, node->contents, max_val);
 	}
-	mem_release(neg1);
 	return ret;
 }
 
 //check the contents of the given tree/node as valid
 static rbt_status_t rbt_check_status(rbt_t* tree){
 	rbt_status_t ret = OK;
-	void* neg1 = mem_box(-1);
 	if(tree){
-		ret = rbt_check_node(tree, tree->root, neg1, neg1);
+		ret = rbt_check_node(tree, tree->root, NULL, NULL);
 		if(ret == OK && tree->root && tree->root->parent) ret = BAD_PARENT_POINTER;
 		if(ret == OK && rbt_node_color(tree->root) != BLACK) ret = BAD_ROOT_COLOR;
 		if(ret == OK && count_black_nodes_to_leaf(tree->root) == -1) ret = BLACK_NODES_UNBALANCED;
 	}
-	mem_release(neg1);
 	return ret;
 }
 
@@ -415,6 +411,20 @@ TEST_SUITE(RBT) {
 		CHECK(SELF_REFERENCE == rbt_check_status(tree));
 		node3->left = NULL;
 		CHECK(OK == rbt_check_status(tree));
+		mem_release(tree);
+	}
+
+	//-------------------------------------------------------------------------
+	// Test node count function
+	//-------------------------------------------------------------------------
+	TEST(Verify_count_nodes_works){
+		int i=0;
+		rbt_t* tree = rbt_new(NULL);
+		CHECK(0 == rbt_count_nodes(tree));
+		for(i = 1; i < 10; i++){
+			rbt_insert(tree, mem_box(i));
+			CHECK(i == rbt_count_nodes(tree));
+		}
 		mem_release(tree);
 	}
 
@@ -1230,7 +1240,7 @@ TEST_SUITE(RBT) {
 	//case 4: black node, no non-null children, black parent
 	//properties of RBT imply node has a sibbling
 	//five subcases
-	//4.1: sibbling is black, no children //TODO
+	//4.1: sibbling is black, no children
 	TEST(Verify_rbt_delete_black_node_from_black_parent_sib_has_no_children_right){
 		void* target = mem_box(99);
 		//create tree w/ several nodes
@@ -2514,31 +2524,61 @@ TEST_SUITE(RBT) {
 		mem_release(doomed);
 		mem_release(tree);
 	}
+	//deleting node that is not present
+	TEST(Verify_rbt_delete_node_not_present_does_nothing){
+		void* target = mem_box(42);
+		void* box88 = mem_box(88);
+		void* box36 = mem_box(36);
+		void* box99 = mem_box(99);
+		rbt_t* tree = rbt_new(test_compare);
+		//rbt_t* tree = rbt_new(NULL);
+		rbt_delete(tree, target);
+		CHECK(OK == rbt_check_status(tree));
+		CHECK(0 == rbt_count_nodes(tree));
+		rbt_insert(tree, box88);
+		rbt_delete(tree, target);
+		CHECK(OK == rbt_check_status(tree));
+		CHECK(1 == rbt_count_nodes(tree));
+		rbt_insert(tree, box36);
+		rbt_delete(tree, target);
+		CHECK(OK == rbt_check_status(tree));
+		CHECK(2 == rbt_count_nodes(tree));
+		rbt_insert(tree, box99);
+		rbt_delete(tree, target);
+		CHECK(OK == rbt_check_status(tree));
+		CHECK(3 == rbt_count_nodes(tree));
+		mem_release(target);
+		mem_release(tree);
+	}
 
 	TEST(Ridiculous){
 		int test_val_count = 1024;
 		int i, j;
-		int list_size = 0;
+		int listsize = 0;
 		rbt_t* tree = rbt_new(NULL);
 		list_t* vals = list_new();
 		srand(time(NULL));
 		for(j = 0; j < 10; j++){
 			for(i = 0; i < test_val_count; i ++){
 				void* foo = mem_box(rand());
+				//printf("inserting %d\n", ((int)mem_unbox(foo)));
 				list_push_back(vals, foo);
 				mem_retain(foo);
 				rbt_insert(tree, foo);
-				list_size++;
+				listsize++;
+				CHECK(listsize == rbt_count_nodes(tree));
 			}
 			rbt_status_t status = rbt_check_status(tree);
 			//printf("status after inserts is %d\n", status);
 			CHECK(OK == status);
 			for(i = 0; i < test_val_count/2; i++){
-				int idx = rand()%list_size;
-				void* foo = list_at(vals, idx);
+				int idx = rand()%listsize;
+				void* foo = list_at(vals, idx)->contents;
+				//printf("removing %d\n", ((int)mem_unbox(foo)));
 				rbt_delete(tree, foo);
 				list_delete(vals, idx);
-				list_size--;
+				listsize--;
+				CHECK(listsize == rbt_count_nodes(tree));
 			}
 			status = rbt_check_status(tree);
 			//printf("status after deletes is %d\n", status);
@@ -2546,6 +2586,12 @@ TEST_SUITE(RBT) {
 		}
 		mem_release(vals);
 		mem_release(tree);
+	}
+
+	TEST(Verify_default_comparator){
+		CHECK( 1 == rbt_default_comparator((void*)0x8888, (void*)0x4242));
+		CHECK( -1 == rbt_default_comparator((void*)0x2a2a, (void*)0x4242));
+		CHECK( 0 == rbt_default_comparator((void*)0x8888, (void*)0x8888));
 	}
 }
 
