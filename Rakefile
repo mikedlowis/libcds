@@ -13,10 +13,6 @@ require 'rbconfig'
 #------------------------------------------------------------------------------
 # Envrionment Definitions
 #------------------------------------------------------------------------------
-# Detect the windows platform and provide a task to force posix
-is_windows = (Object.const_get('RUBY_PLATFORM') =~ /mswin|mingw|cygwin/)
-task(:posix){ is_windows = false }
-
 # Define the compiler environment
 Env = Rscons::Environment.new do |env|
   env.build_dir('source/','build/obj/source')
@@ -28,7 +24,7 @@ end
 TestEnv = Env.clone  do |env|
   env.build_dir('source','build/obj/test_source')
   env.build_dir('tests','build/obj/tests/source')
-  env['CFLAGS']  += ['-DLEAK_DETECTION']
+  env['CFLAGS']  += ['-DLEAK_DETECT_LEVEL=1']
   env['CPPPATH'] += Dir['tests/']
 end
 
