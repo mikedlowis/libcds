@@ -158,6 +158,8 @@ void mem_release(void* p_obj)
     {
         #if (LEAK_DETECT_LEVEL == 2)
         deregister_block(p_obj);
+        #elif (LEAK_DETECT_LEVEL == 1)
+        Num_Allocations--;
         #endif
         if(p_hdr->p_finalize)
         {
