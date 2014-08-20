@@ -28,7 +28,7 @@ end
 TestEnv = Env.clone  do |env|
   env.build_dir('source','build/obj/test_source')
   env.build_dir('tests','build/obj/tests/source')
-  #env['CFLAGS']  += ['-DLEAK_DETECT_LEVEL=1']
+  env['CFLAGS']  += ['-DLEAK_DETECT_LEVEL=1']
   env['CPPPATH'] += Dir['tests/']
 end
 
