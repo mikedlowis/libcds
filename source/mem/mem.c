@@ -83,10 +83,11 @@ void* mem_allocate_ld(size_t size, destructor_t p_destruct_fn, const char* p_fil
 }
 #endif
 
-void mem_retain(void* p_obj)
+void* mem_retain(void* p_obj)
 {
     obj_t* p_hdr = (((obj_t*)p_obj)-1);
     p_hdr->refcount += 1;
+    return p_obj;
 }
 
 #ifdef LEAK_DETECTION

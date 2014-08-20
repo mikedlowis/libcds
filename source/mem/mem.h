@@ -54,7 +54,7 @@ int mem_num_references(void* p_obj);
  *
  * @param p_obj The object to be retained.
  */
-void mem_retain(void* p_obj);
+void* mem_retain(void* p_obj);
 
 /**
  * @brief Decrements the reference count for a given object.
