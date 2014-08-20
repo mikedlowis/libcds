@@ -20,7 +20,6 @@ TEST_SUITE(List) {
         CHECK( NULL != list );
         CHECK( NULL == list->head );
         CHECK( NULL == list->tail );
-        mem_release( list );
     }
 
     //-------------------------------------------------------------------------
