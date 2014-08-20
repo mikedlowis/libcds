@@ -89,8 +89,6 @@ str_t* str_insert(str_t* p_str1, size_t index, str_t* p_str2)
     return p_newstr;
 }
 
-#include <stdio.h>
-
 str_t* str_erase(str_t* p_str, size_t start, size_t end)
 {
     str_t* p_newstr = NULL;
@@ -122,9 +120,7 @@ str_t* str_substr(str_t* p_str, size_t start, size_t end)
 
 int str_compare(str_t* p_str1, str_t* p_str2)
 {
-    (void)p_str1;
-    (void)p_str2;
-    return 0;
+    return strcmp(p_str1->data, p_str2->data);
 }
 
 size_t str_find(str_t* p_str1, str_t* p_str2)
