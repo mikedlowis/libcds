@@ -110,10 +110,14 @@ str_t* str_erase(str_t* p_str, size_t start, size_t end)
 
 str_t* str_substr(str_t* p_str, size_t start, size_t end)
 {
-    (void)p_str;
-    (void)start;
-    (void)end;
-    return NULL;
+    str_t* p_newstr = NULL;
+    assert(NULL != p_str);
+    assert(start <= end);
+    p_newstr = (str_t*)mem_allocate(sizeof(str_t) + (end - start) + 1, NULL);
+    p_newstr->size = (end-start);
+    memcpy(p_newstr->data, &(p_str->data[start]), end - start);
+    p_newstr->data[p_newstr->size] = '\0';
+    return p_newstr;
 }
 
 int str_compare(str_t* p_str1, str_t* p_str2)
