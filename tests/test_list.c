@@ -640,7 +640,7 @@ TEST_SUITE(List) {
     TEST(Verify_delete_does_nothing_if_list_is_empty)
     {
         list_t* list = list_new();
-        CHECK( NULL == list_delete( list, 0) );
+        list_delete(list, 0);
         mem_release( list );
     }
 
@@ -649,7 +649,7 @@ TEST_SUITE(List) {
         list_t* list = list_new();
         list_node_t* doomed = list_push_back(list, mem_box(0x1234));
         mem_retain(doomed);
-        CHECK( NULL == list_delete( list, 0) );
+        list_delete(list, 0);
         CHECK( list->head == NULL );
         CHECK( list->tail == NULL );
         CHECK( 1 == mem_num_references(doomed) );
@@ -665,7 +665,7 @@ TEST_SUITE(List) {
         list_node_t* doomed = list_push_back(list, mem_box(0x1234));
         list_node_t* node1 = list_push_back(list, mem_box(0x1235));
         mem_retain(doomed);
-        CHECK( node1 == list_delete( list, 0) );
+        list_delete( list, 0);
         CHECK( list->head == node1 );
         CHECK( list->tail == node1 );
         CHECK( NULL == node1->next );
@@ -685,7 +685,7 @@ TEST_SUITE(List) {
         list_node_t* doomed = list_push_back(list, mem_box(0x1235));
         list_node_t* node2 = list_push_back(list, mem_box(0x1236));
         mem_retain(doomed);
-        CHECK( node2 == list_delete( list, 1) );
+        list_delete( list, 1);
         CHECK( 2 == list_size( list ) );
         CHECK( list->head == node1 );
         CHECK( list->tail == node2 );
@@ -706,7 +706,7 @@ TEST_SUITE(List) {
         list_node_t* node1 = list_push_back(list,mem_box(0x1234));
         list_node_t* doomed = list_push_back(list,mem_box(0x1235));
         mem_retain(doomed);
-        CHECK( NULL == list_delete( list, 1) );
+        list_delete( list, 1);
         CHECK( list->head == node1 );
         CHECK( list->tail == node1 );
         CHECK( NULL == node1->next );

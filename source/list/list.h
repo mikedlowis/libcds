@@ -208,10 +208,8 @@ list_node_t* list_insert_after( list_t* list, list_node_t* node, void* contents)
  *
  * @param list          The list to operate on.
  * @param index         The index of the node to delete.
- *
- * @return Pointer to the node that is now at the supplied index.
  **/
-list_node_t* list_delete(list_t* list, size_t index);
+void list_delete(list_t* list, size_t index);
 
 /**
  * @brief Delete a node from the supplied list.
