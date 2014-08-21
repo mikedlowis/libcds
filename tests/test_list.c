@@ -634,13 +634,6 @@ TEST_SUITE(List) {
     //-------------------------------------------------------------------------
     // Test list_delete function
     //-------------------------------------------------------------------------
-    TEST(Verify_delete_does_nothing_if_list_is_empty)
-    {
-        list_t* list = list_new();
-        list_delete(list, 0);
-        mem_release( list );
-    }
-
     TEST(Verify_delete_deletes_the_first_element_of_a_list_of_length_1)
     {
         list_t* list = list_new();

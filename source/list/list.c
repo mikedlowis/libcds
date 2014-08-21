@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <assert.h>
 #include "list.h"
 #include "mem.h"
 
@@ -25,21 +26,25 @@ list_node_t* list_new_node(void* contents)
 
 list_node_t* list_front( list_t* list )
 {
+    assert(NULL != list);
     return list->head;
 }
 
 list_node_t* list_back( list_t* list )
 {
+    assert(NULL != list);
     return list->tail;
 }
 
 size_t list_size(list_t* list)
 {
+    assert(NULL != list);
     return list_index_of(list, NULL);
 }
 
 bool list_empty(list_t* list)
 {
+    assert(NULL != list);
     return NULL == list->head;
 }
 
@@ -50,8 +55,10 @@ list_node_t* list_prev(list_t* list, list_node_t* node){
 
 list_node_t* list_at(list_t* list, size_t index)
 {
-    list_node_t* node = list->head;
+    list_node_t* node;
     size_t cur_index = 0;
+    assert(NULL != list);
+    node = list->head;
     while( NULL != node && cur_index != index)
     {
         node = node->next;
@@ -63,7 +70,9 @@ list_node_t* list_at(list_t* list, size_t index)
 int list_index_of(list_t* list, list_node_t* node)
 {
     int i = 0;
-    list_node_t* edon = list->head;
+    list_node_t* edon;
+    assert(NULL != list);
+    edon = list->head;
     while( NULL != edon && edon != node)
     {
         edon = edon->next;
@@ -84,7 +93,9 @@ list_node_t* list_push_back( list_t* list, void* contents )
 
 list_node_t* list_pop_front( list_t* list )
 {
-    list_node_t* node = list->head;
+    list_node_t* node;
+    assert(NULL != list);
+    node = list->head;
     if(node)
     {
         mem_retain(node);
@@ -95,7 +106,9 @@ list_node_t* list_pop_front( list_t* list )
 
 list_node_t* list_pop_back( list_t* list )
 {
-    list_node_t* node = list->tail;
+    list_node_t* node;
+    assert(NULL != list);
+    node = list->tail;
     if(node)
     {
         mem_retain(node);
@@ -106,8 +119,9 @@ list_node_t* list_pop_back( list_t* list )
 
 list_node_t* list_insert( list_t* list, size_t index, void* contents)
 {
-    list_node_t* new_node = NULL;
-    list_node_t* prev = (index > 0 ? list_at(list, index-1) : NULL);
+    list_node_t *prev, *new_node = NULL;
+    assert(NULL != list);
+    prev = (index > 0 ? list_at(list, index-1) : NULL);
     if(prev || index == 0)
         new_node = list_insert_after(list, prev, contents);
     else
@@ -117,39 +131,39 @@ list_node_t* list_insert( list_t* list, size_t index, void* contents)
 
 list_node_t* list_insert_after( list_t* list, list_node_t* node, void* contents)
 {
-    list_node_t* new_node = list_new_node(contents);
-    list_node_t* next = (node ? node->next : list->head);
-    list_node_t** next_ptr = (node ? &(node->next) : &(list->head));
-    list_node_t** prev_ptr = (next ? &(next->prev) : &(list->tail));
+    list_node_t *next, *new_node = list_new_node(contents);
+    assert(NULL != list);
+    assert(NULL != new_node);
+    next = (node ? node->next : list->head);
     new_node->prev = node;
     new_node->next = next;
-    *next_ptr = new_node;
-    *prev_ptr = new_node;
+    *(node ? &(node->next) : &(list->head)) = new_node;
+    *(next ? &(next->prev) : &(list->tail)) = new_node;
     return new_node;
 }
 
 void list_delete( list_t* list, size_t index)
 {
+    assert(NULL != list);
     list_delete_node(list, list_at(list, index));
 }
 
 void list_delete_node(list_t* list, list_node_t* node)
 {
-    if(NULL != list && NULL != node)
-    {
-        list_node_t** ptr_to_next = (node->prev ? &(node->prev->next) : &(list->head));
-        list_node_t** ptr_to_prev = (node->next ? &(node->next->prev) : &(list->tail));
-        *ptr_to_next = node->next;
-        *ptr_to_prev = node->prev;
-        node->next = NULL;
-        node->prev = NULL;
-        mem_release(node);
-    }
+    assert(NULL != list);
+    assert(NULL != node);
+    *(node->prev ? &(node->prev->next) : &(list->head)) = node->next;
+    *(node->next ? &(node->next->prev) : &(list->tail)) = node->prev;
+    node->next = NULL;
+    node->prev = NULL;
+    mem_release(node);
 }
 
 void list_clear(list_t* list)
 {
-    list_node_t* node = list->tail;
+    list_node_t* node;
+    assert(NULL != list);
+    node = list->tail;
     while(NULL != node)
     {
         list_node_t* p = node->prev;
@@ -164,15 +178,19 @@ void list_clear(list_t* list)
 
 static void list_free(void* p_list)
 {
-    if (NULL != ((list_t*)p_list)->head)
-        mem_release(((list_t*)p_list)->head);
+    list_t* list = (list_t*)p_list;
+    assert(NULL != list);
+    if (NULL != list->head)
+        mem_release(list->head);
 }
 
 static void list_node_free(void* p_node)
 {
-    if (NULL != ((list_node_t*)p_node)->contents)
-        mem_release(((list_node_t*)p_node)->contents);
-    if (NULL != ((list_node_t*)p_node)->next)
-        mem_release(((list_node_t*)p_node)->next);
+    list_node_t* node = (list_node_t*)p_node;
+    assert(NULL != node);
+    if (NULL != node->contents)
+        mem_release(node->contents);
+    if (NULL != node->next)
+        mem_release(node->next);
 }
 
