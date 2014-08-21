@@ -512,6 +512,17 @@ TEST_SUITE(List) {
         CHECK( node == NULL );
         mem_release(list);
     }
+    TEST(Verify_insert_releases_if_index_out_of_bounds)
+    {
+        list_t* list = list_new();
+        void* box88 = mem_box(88);
+        list_push_back(list, mem_box(0x1234));
+        mem_retain(box88);
+        list_insert(list, 8, box88);
+        CHECK(1 == mem_num_references(box88))
+        mem_release(list);
+        mem_release(box88);
+    }
 
     //-------------------------------------------------------------------------
     // Test list_insert_after function
