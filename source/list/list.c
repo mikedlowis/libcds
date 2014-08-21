@@ -106,6 +106,7 @@ list_node_t* list_pop_front( list_t* list )
         {
             list->tail = NULL;
         }
+        node->next = NULL;
     }
     return node;
 }
