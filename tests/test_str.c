@@ -40,6 +40,7 @@ TEST_SUITE(String) {
         str_t* p_str2 = str_copy(p_str1);
         CHECK(p_str1 != p_str2);
         CHECK(0 == strcmp(str_cstr(p_str1), str_cstr(p_str2)));
+        CHECK(3 == str_size(p_str));
         mem_release(p_str1);
         mem_release(p_str2);
     }
@@ -77,8 +78,8 @@ TEST_SUITE(String) {
         str_t* p_str2 = str_set(p_str1, 2, 'd');
         CHECK(p_str1 != p_str2);
         CHECK(0 == strcmp(str_cstr(p_str1),"abc"));
-        CHECK(0 == strcmp(str_cstr(p_str2),"abd"));
         CHECK(3 == str_size(p_str1));
+        CHECK(0 == strcmp(str_cstr(p_str2),"abd"));
         CHECK(3 == str_size(p_str2));
         mem_release(p_str1);
         mem_release(p_str2);
