@@ -119,18 +119,12 @@ list_node_t* list_insert_after( list_t* list, list_node_t* node, void* contents)
 {
     list_node_t* new_node = list_new_node(contents);
     list_node_t* next = (node ? node->next : list->head);
+    list_node_t** next_ptr = (node ? &(node->next) : &(list->head));
+    list_node_t** prev_ptr = (next ? &(next->prev) : &(list->tail));
     new_node->prev = node;
     new_node->next = next;
-    //node's next ptr or list's head
-    if(node)
-        node->next = new_node;
-    else
-        list->head = new_node;
-    //next's prev ptr or list's tail
-    if(next)
-        next->prev = new_node;
-    else
-        list->tail = new_node;
+    *next_ptr = new_node;
+    *prev_ptr = new_node;
     return new_node;
 }
 
@@ -143,14 +137,10 @@ void list_delete_node(list_t* list, list_node_t* node)
 {
     if(NULL != list && NULL != node)
     {
-        if(NULL != node->prev)
-            node->prev->next = node->next;
-        else
-            list->head = node->next;
-        if(NULL != node->next)
-            node->next->prev = node->prev;
-        else
-            list->tail = node->prev;
+        list_node_t** ptr_to_next = (node->prev ? &(node->prev->next) : &(list->head));
+        list_node_t** ptr_to_prev = (node->next ? &(node->next->prev) : &(list->tail));
+        *ptr_to_next = node->next;
+        *ptr_to_prev = node->prev;
         node->next = NULL;
         node->prev = NULL;
         mem_release(node);
