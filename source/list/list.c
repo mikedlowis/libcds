@@ -18,6 +18,7 @@ list_node_t* list_new_node(void* contents)
 {
     list_node_t* node = (list_node_t*)mem_allocate(sizeof(list_node_t), &list_node_free);
     node->contents = contents;
+    node->prev = NULL;
     node->next = NULL;
     return node;
 }

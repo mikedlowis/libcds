@@ -13,8 +13,10 @@ typedef struct list_node_t
 {
     /** Pointer to the contents the node */
     void* contents;
-    /** Pointer to next node in the list. */
+    /** Pointer to next node in the list */
     struct list_node_t* next;
+    /** pointer to prev node in the list */
+    struct list_node_t* prev;
 } list_node_t;
 
 /** A singly linked list */

@@ -32,6 +32,7 @@ TEST_SUITE(List) {
         CHECK( NULL != node );
         CHECK( 88 == mem_unbox(node->contents) );
         CHECK( NULL == node->next );
+        CHECK( NULL == node->prev );
         mem_release( node );
     }
 
@@ -273,6 +274,7 @@ TEST_SUITE(List) {
         CHECK( NULL != node );
         CHECK( 0x1234 == mem_unbox(node->contents) );
         CHECK( NULL == node->next );
+        CHECK( NULL == node->prev );
         CHECK( node == list->head );
         CHECK( node == list->tail );
         mem_release(list);
@@ -284,9 +286,12 @@ TEST_SUITE(List) {
         list_node_t* node1 = list_push_front( list, mem_box(0x1234) );
         list_node_t* node2 = list_push_front( list, mem_box(0x1235) );
         CHECK( 0x1235 == mem_unbox(list->head->contents) );
-        CHECK( node1 == list->head->next );
         CHECK( node2 == list->head );
         CHECK( node1 == list->tail );
+        CHECK( NULL == node2->prev );
+        CHECK( node1 == node2->next );
+        CHECK( node2 == node1->prev );
+        CHECK( NULL == node1->next );
         mem_release(list);
     }
 
@@ -300,6 +305,7 @@ TEST_SUITE(List) {
         CHECK( NULL != node );
         CHECK( 0x1234 == mem_unbox(node->contents) );
         CHECK( NULL == node->next );
+        CHECK( NULL == node->prev );
         CHECK( node == list->head );
         CHECK( node == list->tail );
         mem_release(list);
@@ -308,13 +314,16 @@ TEST_SUITE(List) {
     TEST(Verify_list_push_back_pushes_to_back_of_list_of_length_1)
     {
         list_t* list = list_new();
-        list_push_back( list, mem_box(0x1234) );
-        list_node_t* node = list_push_back( list, mem_box(0x1235) );
-        CHECK( NULL != node );
-        CHECK( 0x1235 == mem_unbox(node->contents) );
-        CHECK( NULL == node->next );
-        CHECK( node != list->head );
-        CHECK( node == list->tail );
+        list_node_t* node1 = list_push_back( list, mem_box(0x1234) );
+        list_node_t* node2 = list_push_back( list, mem_box(0x1235) );
+        CHECK( NULL != node2 );
+        CHECK( 0x1235 == mem_unbox(node2->contents) );
+        CHECK( node1 == list->head );
+        CHECK( node2 == list->tail );
+        CHECK( NULL == node1->prev );
+        CHECK( node2 == node1->next );
+        CHECK( node1 == node2->prev );
+        CHECK( NULL == node2->next );
         mem_release(list);
     }
 
@@ -336,6 +345,7 @@ TEST_SUITE(List) {
         CHECK( NULL == list->head );
         CHECK( NULL == list->tail );
         CHECK( NULL == node1->next );
+        CHECK( NULL == node1->prev );
         mem_release( node1 );
         mem_release( list );
     }
@@ -348,7 +358,9 @@ TEST_SUITE(List) {
         CHECK( node1 == list_pop_front( list ) );
         CHECK( node2 == list->head );
         CHECK( node2 == list->tail );
+        CHECK( NULL == node2->prev );
         CHECK( NULL == node1->next );
+        CHECK( NULL == node1->prev );
         mem_release( node1 );
         mem_release( list );
     }
@@ -362,7 +374,9 @@ TEST_SUITE(List) {
         CHECK( node1 == list_pop_front( list ) );
         CHECK( node2 == list->head );
         CHECK( node3 == list->tail );
+        CHECK( NULL == node2->prev );
         CHECK( NULL == node1->next );
+        CHECK( NULL == node1->prev );
         mem_release( node1 );
         mem_release( list );
     }
@@ -385,6 +399,7 @@ TEST_SUITE(List) {
         CHECK( NULL == list->head );
         CHECK( NULL == list->tail );
         CHECK( NULL == node1->next );
+        CHECK( NULL == node1->prev );
         mem_release( node1 );
         mem_release( list );
     }
@@ -397,7 +412,9 @@ TEST_SUITE(List) {
         CHECK( node2 == list_pop_back( list ) );
         CHECK( node1 == list->head );
         CHECK( node1 == list->tail );
-        //TODO: check node2->prev
+        CHECK( node2->prev == NULL);
+        CHECK( node2->next == NULL);
+        CHECK( node1->next == NULL);
         mem_release( node2 );
         mem_release( list );
     }
@@ -411,7 +428,9 @@ TEST_SUITE(List) {
         CHECK( node3 == list_pop_back( list ) );
         CHECK( node1 == list->head );
         CHECK( node2 == list->tail );
-        //TODO: check node3->prev
+        CHECK( node2->next == NULL );
+        CHECK( node3->next == NULL );
+        CHECK( node3->prev == NULL );
         mem_release( node3 );
         mem_release( list );
     }
@@ -425,6 +444,7 @@ TEST_SUITE(List) {
         list_node_t* node = list_insert( list, 0, mem_box(0x1234) );
         CHECK( node != NULL );
         CHECK( node->next == NULL );
+        CHECK( node->prev == NULL );
         CHECK( mem_unbox(node->contents) == 0x1234 );
         CHECK( list->head == node );
         CHECK( list->tail == node );
@@ -434,38 +454,52 @@ TEST_SUITE(List) {
     TEST(Verify_insert_should_push_to_the_front_of_the_list_if_index_is_0)
     {
         list_t* list = list_new();
-        list_insert( list, 0, mem_box(0x1234) );
-        list_node_t* node = list_insert( list, 0, mem_box(0x1235) );
-        CHECK( node != NULL );
-        CHECK( node->next != NULL );
-        CHECK( mem_unbox(list->head->contents) == 0x1235 );
-        CHECK( list->head == node );
-        CHECK( list->tail != node );
+        list_node_t* node2 = list_insert( list, 0, mem_box(0x1234) );
+        list_node_t* node1 = list_insert( list, 0, mem_box(0x8888) );
+        CHECK( node1 != NULL );
+        CHECK( node1->next != node2 );
+        CHECK( node1->prev == NULL );
+        CHECK( node2->prev == node1 );
+        CHECK( list->head == node1 );
+        CHECK( list->tail == node2 );
+        CHECK( mem_unbox(node1->contents) == 0x8888 );
         mem_release(list);
     }
 
     TEST(Verify_insert_should_insert_at_the_given_index_if_index_is_non_zero)
     {
         list_t* list = list_new();
-        list_insert( list, 0, mem_box(0x1236) );
-        list_insert( list, 0, mem_box(0x1235) );
-        list_insert( list, 0, mem_box(0x1234) );
-        list_node_t* node = list_insert( list, 1, mem_box(0x1237) );
-        CHECK( node != NULL );
-        CHECK( node->next != NULL );
-        CHECK( mem_unbox(list->head->next->contents) == 0x1237 );
+        list_node_t* node3 = list_insert( list, 0, mem_box(0x1234) );
+        list_node_t* node2 = list_insert( list, 0, mem_box(0x1235) );
+        list_node_t* node1 = list_insert( list, 0, mem_box(0x1236) );
+        list_node_t* newd = list_insert( list, 1, mem_box(0x1237) );
+        CHECK( newd != NULL );
+        CHECK( NULL == node1->prev );
+        CHECK( newd == node1->next );
+        CHECK( node1 == newd->prev );
+        CHECK( node2 == newd->next );
+        CHECK( newd == node2->prev );
+        CHECK( node3 == node2->next );
+        CHECK( node1 == list->head );
+        CHECK( node3 == list->tail );
+        CHECK( mem_unbox(newd->contents) == 0x1237 );
         mem_release(list);
     }
 
     TEST(Verify_insert_should_set_the_tail_of_the_list_if_index_is_the_last_item)
     {
         list_t* list = list_new();
-        list_insert( list, 0, mem_box(0x1236) );
-        list_insert( list, 0, mem_box(0x1235) );
-        list_node_t* node = list_insert( list, 2, mem_box(0x1234) );
-        CHECK( node != NULL );
-        CHECK( node->next == NULL );
-        CHECK( mem_unbox(list->tail->contents) == 0x1234 );
+        list_node_t* node2 = list_insert( list, 0, mem_box(0x1236) );
+        list_node_t* node1 = list_insert( list, 0, mem_box(0x1235) );
+        list_node_t* newd = list_insert( list, 2, mem_box(0x1234) );
+        CHECK( newd != NULL );
+        CHECK( node1 == list->head );
+        CHECK( newd == list->tail );
+        CHECK( node2->next == newd );
+        CHECK( node2->prev == node1 );
+        CHECK( newd->prev == node2 );
+        CHECK( newd->next == NULL );
+        CHECK( mem_unbox(newd->contents) == 0x1234 );
         mem_release(list);
     }
 
@@ -489,6 +523,7 @@ TEST_SUITE(List) {
         CHECK( node == list->head );
         CHECK( node == list->tail );
         CHECK( NULL == node->next );
+        CHECK( NULL == node->prev );
         mem_release(list);
     }
 
@@ -500,13 +535,18 @@ TEST_SUITE(List) {
         CHECK( node2 == list->head );
         CHECK( node1 == list->tail );
         CHECK( node1 == node2->next );
+        CHECK( NULL == node2->prev );
         CHECK( NULL == node1->next );
+        CHECK( node2 == node1->prev );
         list_node_t* node3 = list_insert_after(list, NULL, mem_box(0x1234));
         CHECK( node3 == list->head );
         CHECK( node1 == list->tail );
         CHECK( node2 == node3->next );
+        CHECK( NULL == node3->prev );
         CHECK( node1 == node2->next );
+        CHECK( node3 == node2->prev );
         CHECK( NULL == node1->next );
+        CHECK( node2 == node1->prev );
         mem_release(list);
     }
 
@@ -517,57 +557,68 @@ TEST_SUITE(List) {
         CHECK( node1 == list->head );
         CHECK( node1 == list->tail );
         CHECK( NULL == node1->next );
+        CHECK( NULL == node1->prev );
         list_node_t* node2 = list_insert_after(list, list->tail, mem_box(0x4321));
         CHECK( node1 == list->head );
         CHECK( node2 == list->tail );
         CHECK( node2 == node1->next );
+        CHECK( NULL == node1->prev );
         CHECK( NULL == node2->next );
+        CHECK( node1 == node2->prev );
         list_node_t* node3 = list_insert_after(list, list->tail, mem_box(0x4242));
         CHECK( node1 == list->head );
         CHECK( node3 == list->tail );
         CHECK( node2 == node1->next );
+        CHECK( NULL == node1->prev );
         CHECK( node3 == node2->next );
+        CHECK( node1 == node2->prev );
         CHECK( NULL == node3->next );
+        CHECK( node2 == node3->prev );
         mem_release(list);
     }
 
     TEST(Verify_insert_after_should_insert_after_the_head_node)
     {
-        list_node_t* node;
         list_t* list = list_new();
-        list_push_back(list, mem_box(0x1234));
-        node = list_insert_after( list, list_front(list), mem_box(0x1235) );
+        list_node_t* head = list_push_back(list, mem_box(0x1234));
+        list_node_t* node = list_insert_after( list, list_front(list), mem_box(0x1235) );
         CHECK( node != NULL );
         CHECK( node->next == NULL );
+        CHECK( node->prev == head );
+        CHECK( head->next == node );
+        CHECK( list->head == head );
         CHECK( list->tail == node );
         mem_release(list);
     }
 
     TEST(Verify_insert_after_should_insert_after_the_tail_node)
     {
-        list_node_t* node;
         list_t* list = list_new();
-        list_push_back(list, mem_box(0x1234));
-        list_push_back(list, mem_box(0x1234));
-        node = list_insert_after( list, list_back(list), mem_box(0x1234) );
-        CHECK( node != NULL );
-        CHECK( node->next == NULL );
-        CHECK( list_at(list, 2) == node );
-        CHECK( list->tail == node );
+        list_node_t* node1 = list_push_back(list, mem_box(0x1234));
+        list_node_t* node2 = list_push_back(list, mem_box(0x4321));
+        list_node_t* newd = list_insert_after( list, list_back(list), mem_box(0x8888) );
+        (void)node1;
+        CHECK( newd != NULL );
+        CHECK( newd->prev == node2 );
+        CHECK( newd->next == NULL );
+        CHECK( list_at(list, 2) == newd );
+        CHECK( list->tail == newd );
         mem_release(list);
     }
 
     TEST(Verify_insert_after_should_insert_after_an_inner_node)
     {
-        list_node_t* node;
         list_t* list = list_new();
-        list_push_back(list, mem_box(0x1234));
-        node = list_push_back(list, mem_box(0x1234));
-        list_push_back(list, mem_box(0x1234));
-        node = list_insert_after( list, node, mem_box(0x1234) );
-        CHECK( node != NULL );
-        CHECK( node->next == list->tail );
-        CHECK( node == list_at(list,2) );
+        list_node_t* node1 = list_push_back(list, mem_box(0x1234));
+        list_node_t* node2 = list_push_back(list, mem_box(0x1234));
+        list_node_t* node3 = list_push_back(list, mem_box(0x1234));
+        list_node_t* newd = list_insert_after( list, node2, mem_box(0x1234) );
+        CHECK( newd != NULL );
+        CHECK( node2->prev == node1 );
+        CHECK( node2->next == newd );
+        CHECK( newd->prev == node2 );
+        CHECK( newd->next == node3 );
+        CHECK( newd == list_at(list,2) );
         mem_release(list);
     }
 
@@ -584,50 +635,74 @@ TEST_SUITE(List) {
     TEST(Verify_delete_deletes_the_first_element_of_a_list_of_length_1)
     {
         list_t* list = list_new();
-        list_push_back(list, mem_box(0x1234));
+        list_node_t* doomed = list_push_back(list, mem_box(0x1234));
+        mem_retain(doomed);
         CHECK( NULL == list_delete( list, 0) );
         CHECK( list->head == NULL );
         CHECK( list->tail == NULL );
+        CHECK( 1 == mem_num_references(doomed) );
+        CHECK( NULL == doomed->next );
+        CHECK( NULL == doomed->prev );
+        mem_release(doomed);
         mem_release(list);
     }
 
     TEST(Verify_delete_deletes_the_first_element_of_a_list_of_length_2)
     {
         list_t* list = list_new();
-        list_push_back(list, mem_box(0x1234));
-        list_push_back(list, mem_box(0x1235));
-        CHECK( NULL != list_delete( list, 0) );
-        CHECK( list->head != NULL );
-        CHECK( list->tail != NULL );
-        CHECK( list->head == list->tail );
+        list_node_t* doomed = list_push_back(list, mem_box(0x1234));
+        list_node_t* node1 = list_push_back(list, mem_box(0x1235));
+        mem_retain(doomed);
+        CHECK( node1 == list_delete( list, 0) );
+        CHECK( list->head == node1 );
+        CHECK( list->tail == node1 );
+        CHECK( NULL == node1->next );
+        CHECK( NULL == node1->prev );
         CHECK( mem_unbox(list->head->contents) == 0x1235 );
+        CHECK( 1 == mem_num_references(doomed) );
+        CHECK( NULL == doomed->next );
+        CHECK( NULL == doomed->prev );
+        mem_release(doomed);
         mem_release(list);
     }
 
     TEST(Verify_delete_deletes_element_1_of_a_list_of_length_3)
     {
         list_t* list = list_new();
-        list_push_back(list, mem_box(0x1234));
-        list_push_back(list, mem_box(0x1235));
-        list_push_back(list, mem_box(0x1236));
-        CHECK( NULL != list_delete( list, 1) );
+        list_node_t* node2 = list_push_back(list, mem_box(0x1234));
+        list_node_t* doomed = list_push_back(list, mem_box(0x1235));
+        list_node_t* node1 = list_push_back(list, mem_box(0x1236));
+        mem_retain(doomed);
+        CHECK( node2 == list_delete( list, 1) );
         CHECK( 2 == list_size( list ) );
-        CHECK( list->head != NULL );
-        CHECK( list->tail != NULL );
-        CHECK( list->head != list->tail );
+        CHECK( list->head == node1 );
+        CHECK( list->tail == node2 );
+        CHECK( node1->prev == NULL );
+        CHECK( node1->next == node2 );
+        CHECK( node2->prev == node1 );
+        CHECK( node2->next == NULL );
+        CHECK( 1 == mem_num_references(doomed) );
+        CHECK( NULL == doomed->next );
+        CHECK( NULL == doomed->prev );
+        mem_release(doomed);
         mem_release(list);
     }
 
     TEST(Verify_delete_deletes_element_1_of_a_list_of_length_2)
     {
         list_t* list = list_new();
-        list_push_back(list,mem_box(0x1234));
-        list_push_back(list,mem_box(0x1235));
+        list_node_t* node1 = list_push_back(list,mem_box(0x1234));
+        list_node_t* doomed = list_push_back(list,mem_box(0x1235));
         CHECK( NULL == list_delete( list, 1) );
-        CHECK( list->head != NULL );
-        CHECK( list->tail != NULL );
-        CHECK( list->head == list->tail );
+        CHECK( list->head == node1 );
+        CHECK( list->tail == node1 );
+        CHECK( NULL == node1->next );
+        CHECK( NULL == node1->prev );
         CHECK( mem_unbox(list->head->contents) == 0x1234 );
+        CHECK( 1 == mem_num_references(doomed) );
+        CHECK( NULL == doomed->next );
+        CHECK( NULL == doomed->prev );
+        mem_release(doomed);
         mem_release(list);
     }
 
@@ -657,8 +732,11 @@ TEST_SUITE(List) {
         list_node_t* bogus = list_new_node(NULL);
         list_delete_node(list, bogus);
         CHECK( node1 == list->head );
+        CHECK( NULL == node1->prev );
         CHECK( node2 == node1->next );
+        CHECK( node1 == node2->prev );
         CHECK( node3 == node2->next );
+        CHECK( node2 == node3->prev );
         CHECK( NULL == node3->next );
         CHECK( node3 == list->tail );
         mem_release(list);
@@ -673,6 +751,7 @@ TEST_SUITE(List) {
         list_delete_node(list, node1);
         CHECK( 1 == mem_num_references(node1) );
         CHECK( NULL == node1->next );
+        CHECK( NULL == node1->prev );
         CHECK( NULL == list->head );
         CHECK( NULL == list->tail );
         mem_release(list);
@@ -688,7 +767,9 @@ TEST_SUITE(List) {
         list_delete_node(list, node1);
         CHECK( 1 == mem_num_references(node1) );
         CHECK( NULL == node1->next );
+        CHECK( NULL == node1->prev );
         CHECK( node2 == list->head );
+        CHECK( NULL == node2->prev );
         CHECK( NULL == node2->next );
         CHECK( node2 == list->tail );
         mem_release(list);
@@ -703,8 +784,10 @@ TEST_SUITE(List) {
         mem_retain(node2);
         list_delete_node(list, node2);
         CHECK( 1 == mem_num_references(node2) );
+        CHECK( NULL == node2->prev );
         CHECK( NULL == node2->next );
         CHECK( node1 == list->head );
+        CHECK( NULL == node1->prev );
         CHECK( NULL == node1->next );
         CHECK( node1 == list->tail );
         mem_release(list);
@@ -720,9 +803,12 @@ TEST_SUITE(List) {
         mem_retain(node1);
         list_delete_node(list, node1);
         CHECK( 1 == mem_num_references(node1) );
+        CHECK( NULL == node1->prev );
         CHECK( NULL == node1->next );
         CHECK( node2 == list->head );
+        CHECK( NULL == node2->prev );
         CHECK( node3 == node2->next );
+        CHECK( node2 == node3->prev );
         CHECK( NULL == node3->next );
         CHECK( node3 == list->tail );
         mem_release(list);
@@ -738,9 +824,12 @@ TEST_SUITE(List) {
         mem_retain(node2);
         list_delete_node(list, node2);
         CHECK( 1 == mem_num_references(node2) );
+        CHECK( NULL == node2->prev );
         CHECK( NULL == node2->next );
         CHECK( node1 == list->head );
+        CHECK( NULL == node1->prev );
         CHECK( node3 == node1->next );
+        CHECK( node1 == node3->prev );
         CHECK( NULL == node3->next );
         CHECK( node3 == list->tail );
         mem_release(list);
@@ -756,9 +845,12 @@ TEST_SUITE(List) {
         mem_retain(node3);
         list_delete_node(list, node3);
         CHECK( 1 == mem_num_references(node3) );
+        CHECK( NULL == node3->prev );
         CHECK( NULL == node3->next );
         CHECK( node1 == list->head );
+        CHECK( NULL == node1->prev );
         CHECK( node2 == node1->next );
+        CHECK( node1 == node2->prev );
         CHECK( NULL == node2->next );
         CHECK( node2 == list->tail );
         mem_release(list);
@@ -780,33 +872,63 @@ TEST_SUITE(List) {
     TEST(Verify_list_clear_clears_a_list_of_length_1)
     {
         list_t* list = list_new();
-        list_push_front(list,mem_box(0x1234));
+        list_node_t* node1 = list_push_front(list,mem_box(0x1234));
+        mem_retain(node1);
         list_clear(list);
+        CHECK( 1 == mem_num_references(node1) );
+        CHECK( NULL == node1->prev );
+        CHECK( NULL == node1->next );
         CHECK( NULL == list->head );
         CHECK( NULL == list->tail );
+        mem_release(node1);
         mem_release(list);
     }
 
     TEST(Verify_list_clear_clears_a_list_of_length_2)
     {
         list_t* list = list_new();
-        list_push_front(list,mem_box(0x1234));
-        list_push_front(list,mem_box(0x1234));
+        list_node_t* node1 = list_push_front(list,mem_box(0x1234));
+        list_node_t* node2 = list_push_front(list,mem_box(0x4321));
+        mem_retain(node1);
+        mem_retain(node2);
         list_clear(list);
+        CHECK( 1 == mem_num_references(node1) );
+        CHECK( NULL == node1->prev );
+        CHECK( NULL == node1->next );
+        CHECK( 1 == mem_num_references(node2) );
+        CHECK( NULL == node2->prev );
+        CHECK( NULL == node2->next );
         CHECK( NULL == list->head );
         CHECK( NULL == list->tail );
+        mem_release(node1);
+        mem_release(node2);
         mem_release(list);
     }
 
     TEST(Verify_list_clear_clears_a_list_of_length_3)
     {
         list_t* list = list_new();
-        list_push_front(list,mem_box(0x1234));
-        list_push_front(list,mem_box(0x1234));
-        list_push_front(list,mem_box(0x1234));
+        list_node_t* node1 = list_push_front(list,mem_box(0x1234));
+        list_node_t* node2 = list_push_front(list,mem_box(0x8888));
+        list_node_t* node3 = list_push_front(list,mem_box(0x4321));
+        mem_retain(node1);
+        mem_retain(node2);
+        mem_retain(node3);
         list_clear(list);
+        CHECK( 1 == mem_num_references(node1) );
+        CHECK( NULL == node1->prev );
+        CHECK( NULL == node1->next );
+        CHECK( 1 == mem_num_references(node2) );
+        CHECK( NULL == node2->prev );
+        CHECK( NULL == node2->next );
+        CHECK( 1 == mem_num_references(node3) );
+        CHECK( NULL == node3->prev );
+        CHECK( NULL == node3->next );
         CHECK( NULL == list->head );
         CHECK( NULL == list->tail );
+        mem_release(node1);
+        mem_release(node2);
+        mem_release(node3);
         mem_release(list);
     }
 }
