@@ -51,9 +51,8 @@ bool list_empty(list_t* list)
 }
 
 list_node_t* list_prev(list_t* list, list_node_t* node){
-    list_node_t* prev = (NULL != list && NULL != node && list->head != node) ? list->head : NULL;
-    while(NULL != prev && prev->next != node) prev = prev->next;
-    return prev;
+    (void)list;
+    return (node ? node->prev : NULL);
 }
 
 list_node_t* list_at(list_t* list, size_t index)
@@ -98,39 +97,20 @@ list_node_t* list_push_back( list_t* list, void* contents )
 
 list_node_t* list_pop_front( list_t* list )
 {
-    list_node_t* node = NULL;
-    if( NULL != list->head )
-    {
-        node = list->head;
-        list->head = node->next;
-        if( node == list->tail )
-        {
-            list->tail = NULL;
-        }
-        node->next = NULL;
+    list_node_t* node = list->head;
+    if(node){
+        mem_retain(node);
+        list_delete_node(list, node);
     }
     return node;
 }
 
 list_node_t* list_pop_back( list_t* list )
 {
-    list_node_t* node = NULL;
-    if ( list->head == list->tail )
-    {
-        node = list->head;
-        list->head = NULL;
-        list->tail = NULL;
-    }
-    else
-    {
-        list_node_t* next_tail = list->head;
-        while( next_tail->next != list->tail )
-        {
-            next_tail = next_tail->next;
-        }
-        node = next_tail->next;
-        next_tail->next = NULL;
-        list->tail = next_tail;
+    list_node_t* node = list->tail;
+    if(node){
+        mem_retain(node);
+        list_delete_node(list, node);
     }
     return node;
 }
@@ -147,14 +127,7 @@ list_node_t* list_insert( list_t* list, size_t index, void* contents)
         list_node_t* prev_node = list_at( list, index - 1 );
         if( NULL != prev_node )
         {
-            list_node_t* next_node = prev_node->next;
-            new_node = list_new_node( contents );
-            new_node->next = next_node;
-            prev_node->next = new_node;
-            if( NULL == next_node )
-            {
-                list->tail = new_node;
-            }
+            new_node = list_insert_after(list, prev_node, contents);
         }
         else
         {
@@ -169,12 +142,15 @@ list_node_t* list_insert_after( list_t* list, list_node_t* node, void* contents)
     list_node_t* new_node = list_new_node(contents);
     if(NULL != node)
     {
+        new_node->prev = node;
         new_node->next = node->next;
+        if(node->next) node->next->prev = new_node;
         node->next = new_node;
     }
     else
     {
         new_node->next = list->head;
+        if(list->head) list->head->prev = new_node;
         list->head = new_node;
     }
     if (node == list->tail)
@@ -186,69 +162,46 @@ list_node_t* list_insert_after( list_t* list, list_node_t* node, void* contents)
 
 list_node_t* list_delete( list_t* list, size_t index)
 {
-    list_node_t* node = NULL;
-
-    if (0 == index)
-    {
-        node = list_pop_front(list);
-        if (NULL != node)
-        {
-            node->next = NULL;
-            mem_release(node);
-            node = list_front(list);
-        }
+    list_node_t* node = list_at(list, index);
+    if(node){
+        list_node_t* next = node->next;
+        list_delete_node(list, node);
+        return next;
     }
-    else
-    {
-        list_node_t* prev = list_at(list,index-1);
-        node = (NULL == prev) ? NULL : prev->next;
-        if (NULL != node)
-        {
-            prev->next = node->next;
-            if (NULL == prev->next)
-            {
-                list->tail = prev;
-            }
-            node->next = NULL;
-            mem_release(node);
-            node = prev->next;
-        }
+    else{
+        return NULL;
     }
-
-    return node;
 }
 
 void list_delete_node(list_t* list, list_node_t* node)
 {
-    if (NULL != list && NULL != node)
+    if(NULL != list && NULL != node)
     {
-        /* not using list_prev so node not found case can be handled properly */
-        list_node_t* prev = NULL;
-        list_node_t* edon = list->head;
-        while(NULL != edon && edon != node)
-        {
-            prev = edon;
-            edon = edon->next;
-        }
-        if( NULL != edon)
-        {
-            if(NULL != prev) prev->next = node->next;
-            if(list->head == node) list->head = node->next;
-            if(list->tail == node) list->tail = prev;
+        int idx = list_index_of(list, node); //TODO: why the fuck is this necessary?
+        if(idx > -1){
+            if(NULL != node->prev) node->prev->next = node->next;
+            else list->head = node->next;
+            if(NULL != node->next) node->next->prev = node->prev;
+            else list->tail = node->prev;
             node->next = NULL;
+            node->prev = NULL;
             mem_release(node);
-        } /* else node not found, do nothing. */
+        }
     }
 }
 
 void list_clear(list_t* list)
 {
-    if (NULL != list->head)
-    {
-        mem_release((void*)list->head);
-        list->head = NULL;
-        list->tail = NULL;
+    list_node_t* node = list->tail;
+    while(NULL != node){
+        list_node_t* p = node->prev;
+        node->prev = NULL;
+        node->next = NULL;
+        mem_release((void*) node);
+        node = p;
     }
+    list->head = NULL;
+    list->tail = NULL;
 }
 
 static void list_free(void* p_list)
@@ -264,3 +217,4 @@ static void list_node_free(void* p_node)
     if (NULL != ((list_node_t*)p_node)->next)
         mem_release(((list_node_t*)p_node)->next);
 }
+

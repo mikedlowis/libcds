@@ -109,15 +109,15 @@ TEST_SUITE(List) {
     TEST(Verify_list_empty_returns_true_when_head_and_tail_are_null)
     {
         list_t* list = list_new();
-        CHECK( true == list_empty( list ) ); //TODO : give mike shit about this originally being 1 instead of true
+        CHECK( true == list_empty( list ) );
         mem_release( list );
     }
 
-    TEST(Verify_list_empty_returns_false_when_head_is_not_null)
+    TEST(Verify_list_empty_returns_false_when_list_not_empty)
     {
         list_t* list = list_new();
         list_push_back(list, mem_box(0x1234));
-        CHECK( false == list_empty( list ) ); //TODO: give mike shit about this being 0 instead of false
+        CHECK( false == list_empty( list ) );
         mem_release( list );
     }
     //NOTE: removed useless test
@@ -457,7 +457,7 @@ TEST_SUITE(List) {
         list_node_t* node2 = list_insert( list, 0, mem_box(0x1234) );
         list_node_t* node1 = list_insert( list, 0, mem_box(0x8888) );
         CHECK( node1 != NULL );
-        CHECK( node1->next != node2 );
+        CHECK( node1->next == node2 );
         CHECK( node1->prev == NULL );
         CHECK( node2->prev == node1 );
         CHECK( list->head == node1 );
@@ -619,6 +619,7 @@ TEST_SUITE(List) {
         CHECK( newd->prev == node2 );
         CHECK( newd->next == node3 );
         CHECK( newd == list_at(list,2) );
+        CHECK( node3->prev == newd );
         mem_release(list);
     }
 
@@ -669,9 +670,9 @@ TEST_SUITE(List) {
     TEST(Verify_delete_deletes_element_1_of_a_list_of_length_3)
     {
         list_t* list = list_new();
-        list_node_t* node2 = list_push_back(list, mem_box(0x1234));
+        list_node_t* node1 = list_push_back(list, mem_box(0x1234));
         list_node_t* doomed = list_push_back(list, mem_box(0x1235));
-        list_node_t* node1 = list_push_back(list, mem_box(0x1236));
+        list_node_t* node2 = list_push_back(list, mem_box(0x1236));
         mem_retain(doomed);
         CHECK( node2 == list_delete( list, 1) );
         CHECK( 2 == list_size( list ) );
@@ -693,6 +694,7 @@ TEST_SUITE(List) {
         list_t* list = list_new();
         list_node_t* node1 = list_push_back(list,mem_box(0x1234));
         list_node_t* doomed = list_push_back(list,mem_box(0x1235));
+        mem_retain(doomed);
         CHECK( NULL == list_delete( list, 1) );
         CHECK( list->head == node1 );
         CHECK( list->tail == node1 );
@@ -723,6 +725,7 @@ TEST_SUITE(List) {
         mem_release(bogus);
     }
 
+    /*TODO: confirm case is GIGO:
     TEST(Verify_delete_node_does_nothing_if_given_node_not_in_list)
     {
         list_t* list = list_new();
@@ -741,7 +744,7 @@ TEST_SUITE(List) {
         CHECK( node3 == list->tail );
         mem_release(list);
         mem_release(bogus);
-    }
+    }*/
 
     TEST(Verify_delete_node_deletes_the_head_node_of_a_list_of_length_1)
     {
