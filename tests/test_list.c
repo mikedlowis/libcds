@@ -120,7 +120,6 @@ TEST_SUITE(List) {
         CHECK( false == list_empty( list ) );
         mem_release( list );
     }
-    //NOTE: removed useless test
 
     //-------------------------------------------------------------------------
     // Test list_prev function
@@ -200,7 +199,6 @@ TEST_SUITE(List) {
         mem_release( list );
     }
 
-    //NOTE: condensed three tests to one
     TEST(Verify_list_at_returns_node_at_given_index)
     {
         list_t* list = list_new();
@@ -250,7 +248,6 @@ TEST_SUITE(List) {
         mem_release( list );
     }
 
-    //NOTE: condensed three tests to one
     TEST(Verify_list_index_of_returns_index_of_item_in_list)
     {
         list_t* list = list_new();
@@ -722,41 +719,6 @@ TEST_SUITE(List) {
     //-------------------------------------------------------------------------
     // Test list_delete_node function
     //-------------------------------------------------------------------------
-    /*TODO: confirm case is GIGO:
-    TEST(Verify_delete_node_does_nothing_if_list_is_empty)
-    {
-        list_t* list = list_new();
-        list_node_t* bogus = list_new_node(NULL);
-        list_delete_node(list, NULL);
-        CHECK( NULL == list->head);
-        CHECK( NULL == list->tail);
-        list_delete_node(list, bogus);
-        CHECK( NULL == list->head);
-        CHECK( NULL == list->tail);
-        mem_release(list);
-        mem_release(bogus);
-    }
-
-    TODO: confirm case is GIGO:
-    TEST(Verify_delete_node_does_nothing_if_given_node_not_in_list)
-    {
-        list_t* list = list_new();
-        list_node_t* node3 = list_insert_after(list, NULL, mem_box(0x4321));
-        list_node_t* node2 = list_insert_after(list, NULL, mem_box(0x4242));
-        list_node_t* node1 = list_insert_after(list, NULL, mem_box(0x1234));
-        list_node_t* bogus = list_new_node(NULL);
-        list_delete_node(list, bogus);
-        CHECK( node1 == list->head );
-        CHECK( NULL == node1->prev );
-        CHECK( node2 == node1->next );
-        CHECK( node1 == node2->prev );
-        CHECK( node3 == node2->next );
-        CHECK( node2 == node3->prev );
-        CHECK( NULL == node3->next );
-        CHECK( node3 == list->tail );
-        mem_release(list);
-        mem_release(bogus);
-    }*/
 
     TEST(Verify_delete_node_deletes_the_head_node_of_a_list_of_length_1)
     {
