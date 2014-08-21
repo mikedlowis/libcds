@@ -17,6 +17,7 @@ TEST_SUITE(String) {
     {
         str_t* p_str = str_new("foo");
         CHECK(0 == strcmp(str_cstr(p_str), "foo"));
+        CHECK(3 == str_size(p_str));
         mem_release(p_str);
     }
 
@@ -77,6 +78,8 @@ TEST_SUITE(String) {
         CHECK(p_str1 != p_str2);
         CHECK(0 == strcmp(str_cstr(p_str1),"abc"));
         CHECK(0 == strcmp(str_cstr(p_str2),"abd"));
+        CHECK(3 == str_size(p_str1));
+        CHECK(3 == str_size(p_str2));
         mem_release(p_str1);
         mem_release(p_str2);
     }
@@ -93,6 +96,7 @@ TEST_SUITE(String) {
         CHECK(0 == strcmp(str_cstr(p_str1), "abc"));
         CHECK(0 == strcmp(str_cstr(p_str2), "def"));
         CHECK(0 == strcmp(str_cstr(p_str3), "abcdef"));
+        CHECK(6 == str_size(p_str3));
         mem_release(p_str1);
         mem_release(p_str2);
         mem_release(p_str3);
@@ -110,6 +114,7 @@ TEST_SUITE(String) {
         CHECK(0 == strcmp(str_cstr(p_str1), "abc"));
         CHECK(0 == strcmp(str_cstr(p_str2), "def"));
         CHECK(0 == strcmp(str_cstr(p_str3), "defabc"));
+        CHECK(6 == str_size(p_str3));
         mem_release(p_str1);
         mem_release(p_str2);
         mem_release(p_str3);
@@ -124,6 +129,7 @@ TEST_SUITE(String) {
         CHECK(0 == strcmp(str_cstr(p_str1), "abc"));
         CHECK(0 == strcmp(str_cstr(p_str2), "def"));
         CHECK(0 == strcmp(str_cstr(p_str3), "adefbc"));
+        CHECK(6 == str_size(p_str3));
         mem_release(p_str1);
         mem_release(p_str2);
         mem_release(p_str3);
@@ -138,6 +144,7 @@ TEST_SUITE(String) {
         CHECK(0 == strcmp(str_cstr(p_str1), "abc"));
         CHECK(0 == strcmp(str_cstr(p_str2), "def"));
         CHECK(0 == strcmp(str_cstr(p_str3), "abdefc"));
+        CHECK(6 == str_size(p_str3));
         mem_release(p_str1);
         mem_release(p_str2);
         mem_release(p_str3);
@@ -152,6 +159,7 @@ TEST_SUITE(String) {
         CHECK(0 == strcmp(str_cstr(p_str1), "abc"));
         CHECK(0 == strcmp(str_cstr(p_str2), "def"));
         CHECK(0 == strcmp(str_cstr(p_str3), "abcdef"));
+        CHECK(6 == str_size(p_str3));
         mem_release(p_str1);
         mem_release(p_str2);
         mem_release(p_str3);
@@ -239,18 +247,208 @@ TEST_SUITE(String) {
     }
 
     //-------------------------------------------------------------------------
-    // Test str_ function
+    // Test str_substr function
     //-------------------------------------------------------------------------
+    TEST(Verify_str_substr_should_return_a_copy_of_the_string)
+    {
+        str_t* p_str1 = str_new("abcdef");
+        str_t* p_str2 = str_substr(p_str1, 0, str_size(p_str1));
+        CHECK(p_str1 != p_str2);
+        CHECK(0 == str_compare(p_str1,p_str2));
+        CHECK(6 == str_size(p_str2));
+        mem_release(p_str1);
+        mem_release(p_str2);
+    }
+
+    TEST(Verify_str_substr_should_return_index_1_to_the_end)
+    {
+        str_t* p_str1 = str_new("abcdef");
+        str_t* p_str2 = str_substr(p_str1, 1, str_size(p_str1));
+        CHECK(p_str1 != p_str2);
+        CHECK(0 == strcmp(str_cstr(p_str2), "bcdef"));
+        CHECK(5 == str_size(p_str2));
+        mem_release(p_str1);
+        mem_release(p_str2);
+    }
+
+    TEST(Verify_str_substr_should_return_index_0_to_one_before_the_end)
+    {
+        str_t* p_str1 = str_new("abcdef");
+        str_t* p_str2 = str_substr(p_str1, 0, str_size(p_str1)-1);
+        CHECK(p_str1 != p_str2);
+        CHECK(0 == strcmp(str_cstr(p_str2), "abcde"));
+        CHECK(5 == str_size(p_str2));
+        mem_release(p_str1);
+        mem_release(p_str2);
+    }
+
+    TEST(Verify_str_substr_should_return_index_1_to_3)
+    {
+        str_t* p_str1 = str_new("abcdef");
+        str_t* p_str2 = str_substr(p_str1, 1, 4);
+        CHECK(p_str1 != p_str2);
+        CHECK(0 == strcmp(str_cstr(p_str2), "bcd"));
+        CHECK(3 == str_size(p_str2));
+        mem_release(p_str1);
+        mem_release(p_str2);
+    }
+
+    TEST(Verify_str_substr_should_return_index_1_to_2)
+    {
+        str_t* p_str1 = str_new("abcdef");
+        str_t* p_str2 = str_substr(p_str1, 1, 3);
+        CHECK(p_str1 != p_str2);
+        CHECK(0 == strcmp(str_cstr(p_str2), "bc"));
+        CHECK(2 == str_size(p_str2));
+        mem_release(p_str1);
+        mem_release(p_str2);
+    }
+
+    TEST(Verify_str_substr_should_return_index_1_to_1)
+    {
+        str_t* p_str1 = str_new("abcdef");
+        str_t* p_str2 = str_substr(p_str1, 1, 2);
+        CHECK(p_str1 != p_str2);
+        CHECK(0 == strcmp(str_cstr(p_str2), "b"));
+        CHECK(1 == str_size(p_str2));
+        mem_release(p_str1);
+        mem_release(p_str2);
+    }
+
+    TEST(Verify_str_substr_should_return_an_empty_string_for_a_range_of_0)
+    {
+        str_t* p_str1 = str_new("abcdef");
+        str_t* p_str2 = str_substr(p_str1, 1, 1);
+        CHECK(p_str1 != p_str2);
+        CHECK(0 == strcmp(str_cstr(p_str2), ""));
+        CHECK(0 == str_size(p_str2));
+        mem_release(p_str1);
+        mem_release(p_str2);
+    }
 
     //-------------------------------------------------------------------------
-    // Test str_ function
+    // Test str_compare function
     //-------------------------------------------------------------------------
+    TEST(Verify_str_compare_should_return_0_on_match)
+    {
+        str_t* p_str1 = str_new("abc");
+        str_t* p_str2 = str_new("abc");
+        CHECK(0 == str_compare(p_str1, p_str2));
+        mem_release(p_str1);
+        mem_release(p_str2);
+    }
+
+    TEST(Verify_str_compare_should_return_negative_1_on_mismatch)
+    {
+        str_t* p_str1 = str_new("abc");
+        str_t* p_str2 = str_new("abd");
+        CHECK(-1 == str_compare(p_str1, p_str2));
+        mem_release(p_str1);
+        mem_release(p_str2);
+    }
+
+    TEST(Verify_str_compare_should_return_positive_1_on_mismatch)
+    {
+        str_t* p_str1 = str_new("abd");
+        str_t* p_str2 = str_new("abc");
+        CHECK(1 == str_compare(p_str1, p_str2));
+        mem_release(p_str1);
+        mem_release(p_str2);
+    }
 
     //-------------------------------------------------------------------------
-    // Test str_ function
+    // Test str_find function
     //-------------------------------------------------------------------------
+    TEST(Verify_str_find_should_find_a_string_at_index_0)
+    {
+        str_t* p_str1 = str_new("abcdcba");
+        str_t* p_str2 = str_new("abc");
+        CHECK(0 == str_find(p_str1, p_str2));
+        mem_release(p_str1);
+        mem_release(p_str2);
+    }
+
+    TEST(Verify_str_find_should_find_a_string_at_index_1)
+    {
+        str_t* p_str1 = str_new("abcdcba");
+        str_t* p_str2 = str_new("bcd");
+        CHECK(1 == str_find(p_str1, p_str2));
+        mem_release(p_str1);
+        mem_release(p_str2);
+    }
+
+    TEST(Verify_str_find_should_find_a_string_in_the_middle)
+    {
+        str_t* p_str1 = str_new("abcdcba");
+        str_t* p_str2 = str_new("cdc");
+        CHECK(2 == str_find(p_str1, p_str2));
+        mem_release(p_str1);
+        mem_release(p_str2);
+    }
+
+    TEST(Verify_str_find_should_find_a_string_1_from_the_end)
+    {
+        str_t* p_str1 = str_new("abcdcba");
+        str_t* p_str2 = str_new("dcb");
+        CHECK(3 == str_find(p_str1, p_str2));
+        mem_release(p_str1);
+        mem_release(p_str2);
+    }
+
+    TEST(Verify_str_find_should_find_a_string_at_the_end)
+    {
+        str_t* p_str1 = str_new("abcdcba");
+        str_t* p_str2 = str_new("cba");
+        CHECK(4 == str_find(p_str1, p_str2));
+        mem_release(p_str1);
+        mem_release(p_str2);
+    }
 
     //-------------------------------------------------------------------------
-    // Test str_ function
+    // Test str_rfind function
     //-------------------------------------------------------------------------
+    TEST(Verify_str_rfind_should_find_a_string_at_index_0)
+    {
+        str_t* p_str1 = str_new("abcdcba");
+        str_t* p_str2 = str_new("abc");
+        CHECK(0 == str_rfind(p_str1, p_str2));
+        mem_release(p_str1);
+        mem_release(p_str2);
+    }
+
+    TEST(Verify_str_rfind_should_find_a_string_at_index_1)
+    {
+        str_t* p_str1 = str_new("abcdcba");
+        str_t* p_str2 = str_new("bcd");
+        CHECK(1 == str_rfind(p_str1, p_str2));
+        mem_release(p_str1);
+        mem_release(p_str2);
+    }
+
+    TEST(Verify_str_rfind_should_find_a_string_in_the_middle)
+    {
+        str_t* p_str1 = str_new("abcdcba");
+        str_t* p_str2 = str_new("cdc");
+        CHECK(2 == str_rfind(p_str1, p_str2));
+        mem_release(p_str1);
+        mem_release(p_str2);
+    }
+
+    TEST(Verify_str_rfind_should_find_a_string_1_from_the_end)
+    {
+        str_t* p_str1 = str_new("abcdcba");
+        str_t* p_str2 = str_new("dcb");
+        CHECK(3 == str_rfind(p_str1, p_str2));
+        mem_release(p_str1);
+        mem_release(p_str2);
+    }
+
+    TEST(Verify_str_rfind_should_find_a_string_at_the_end)
+    {
+        str_t* p_str1 = str_new("abcdcba");
+        str_t* p_str2 = str_new("cba");
+        CHECK(4 == str_rfind(p_str1, p_str2));
+        mem_release(p_str1);
+        mem_release(p_str2);
+    }
 }

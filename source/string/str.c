@@ -84,7 +84,8 @@ str_t* str_insert(str_t* p_str1, size_t index, str_t* p_str2)
         memcpy(&(p_newstr->data[0]), p_str1->data, index);
         memcpy(&(p_newstr->data[index]), p_str2->data, p_str2->size);
         memcpy(&(p_newstr->data[index+p_str2->size]), &(p_str1->data[index]), p_str1->size-index);
-        p_newstr->data[p_str1->size + p_str2->size] = '\0';
+        p_newstr->size = p_str1->size + p_str2->size;
+        p_newstr->data[p_newstr->size] = '\0';
     }
     return p_newstr;
 }
@@ -125,15 +126,25 @@ int str_compare(str_t* p_str1, str_t* p_str2)
 
 size_t str_find(str_t* p_str1, str_t* p_str2)
 {
-    (void)p_str1;
-    (void)p_str2;
-    return 0;
+    size_t idx = -1;
+    for(size_t i = 0; i < p_str1->size; i++) {
+        if(0 == strncmp(&(p_str1->data[i]), p_str2->data, p_str2->size)) {
+            idx = i;
+            break;
+        }
+    }
+    return idx;
 }
 
 size_t str_rfind(str_t* p_str1, str_t* p_str2)
 {
-    (void)p_str1;
-    (void)p_str2;
-    return 0;
+    size_t idx = -1;
+    for(size_t i = p_str1->size; i > 0; i--) {
+        if(0 == strncmp(&(p_str1->data[i-1]), p_str2->data, p_str2->size)) {
+            idx = i-1;
+            break;
+        }
+    }
+    return idx;
 }
 
