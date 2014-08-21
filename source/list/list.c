@@ -177,16 +177,13 @@ void list_delete_node(list_t* list, list_node_t* node)
 {
     if(NULL != list && NULL != node)
     {
-        int idx = list_index_of(list, node); //TODO: why the fuck is this necessary?
-        if(idx > -1){
-            if(NULL != node->prev) node->prev->next = node->next;
-            else list->head = node->next;
-            if(NULL != node->next) node->next->prev = node->prev;
-            else list->tail = node->prev;
-            node->next = NULL;
-            node->prev = NULL;
-            mem_release(node);
-        }
+        if(NULL != node->prev) node->prev->next = node->next;
+        else list->head = node->next;
+        if(NULL != node->next) node->next->prev = node->prev;
+        else list->tail = node->prev;
+        node->next = NULL;
+        node->prev = NULL;
+        mem_release(node);
     }
 }
 

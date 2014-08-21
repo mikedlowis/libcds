@@ -711,6 +711,7 @@ TEST_SUITE(List) {
     //-------------------------------------------------------------------------
     // Test list_delete_node function
     //-------------------------------------------------------------------------
+    /*TODO: confirm case is GIGO:
     TEST(Verify_delete_node_does_nothing_if_list_is_empty)
     {
         list_t* list = list_new();
@@ -725,7 +726,7 @@ TEST_SUITE(List) {
         mem_release(bogus);
     }
 
-    /*TODO: confirm case is GIGO:
+    TODO: confirm case is GIGO:
     TEST(Verify_delete_node_does_nothing_if_given_node_not_in_list)
     {
         list_t* list = list_new();
