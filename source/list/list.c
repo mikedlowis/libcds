@@ -35,14 +35,7 @@ list_node_t* list_back( list_t* list )
 
 size_t list_size(list_t* list)
 {
-    size_t length = 0;
-    list_node_t* node = list->head;
-    while( NULL != node )
-    {
-        node = node->next;
-        length++;
-    }
-    return length;
+    return list_index_of(list, NULL);
 }
 
 bool list_empty(list_t* list)
