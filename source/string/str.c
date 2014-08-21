@@ -8,20 +8,27 @@
 #include <assert.h>
 
 /* Forward declare our struct */
-struct str_t {
+struct str_t
+{
     size_t size;
     char data[];
 };
 
+static str_t* str_allocate(size_t len)
+{
+    size_t block_size = sizeof(str_t) + (sizeof(char) * (len + 1));
+    str_t* p_str = (str_t*)mem_allocate(block_size, NULL);
+    p_str->size = len;
+    p_str->data[p_str->size] = '\0';
+    return p_str;
+}
+
 str_t* str_new(const char* p_cstr)
 {
     str_t* p_str = NULL;
-    size_t len   = 0;
     assert(NULL != p_cstr);
-    len   = strlen(p_cstr);
-    p_str = (str_t*)mem_allocate(sizeof(str_t) + len + 1, NULL);
-    p_str->size = len;
-    memcpy(p_str->data, p_cstr, len+1);
+    p_str = str_allocate(strlen(p_cstr));
+    memcpy(p_str->data, p_cstr, p_str->size+1);
     return p_str;
 }
 
@@ -39,12 +46,8 @@ const char* str_cstr(str_t* p_str)
 
 str_t* str_copy(str_t* p_str)
 {
-    str_t* p_newstr;
     assert(NULL != p_str);
-    p_newstr = (str_t*)mem_allocate(sizeof(str_t) + p_str->size + 1, NULL);
-    memcpy(p_newstr->data, p_str->data, p_str->size+1);
-    p_newstr->size = p_str->size;
-    return p_newstr;
+    return str_substr(p_str, 0, p_str->size);
 }
 
 char str_at(str_t* p_str, size_t index)
@@ -79,13 +82,10 @@ str_t* str_insert(str_t* p_str1, size_t index, str_t* p_str2)
     assert(NULL != p_str2);
     if (index <= p_str1->size)
     {
-        size_t newsize = sizeof(str_t) + p_str1->size + p_str2->size + 1;
-        p_newstr = (str_t*)mem_allocate(newsize, NULL);
+        p_newstr = str_allocate(p_str1->size + p_str2->size);
         memcpy(&(p_newstr->data[0]), p_str1->data, index);
         memcpy(&(p_newstr->data[index]), p_str2->data, p_str2->size);
         memcpy(&(p_newstr->data[index+p_str2->size]), &(p_str1->data[index]), p_str1->size-index);
-        p_newstr->size = p_str1->size + p_str2->size;
-        p_newstr->data[p_newstr->size] = '\0';
     }
     return p_newstr;
 }
@@ -93,17 +93,13 @@ str_t* str_insert(str_t* p_str1, size_t index, str_t* p_str2)
 str_t* str_erase(str_t* p_str, size_t start, size_t end)
 {
     str_t* p_newstr = NULL;
-    size_t newsize  = 0;
     size_t endbytes = 0;
     assert(NULL != p_str);
     assert(start <= end);
     endbytes = (end >= p_str->size) ? 0 : (p_str->size - end);
-    newsize = start + endbytes;
-    p_newstr = (str_t*)mem_allocate(sizeof(str_t) + newsize + 1, NULL);
+    p_newstr = str_allocate(start + endbytes);
     memcpy(&(p_newstr->data[0]),     p_str->data,         start);
     memcpy(&(p_newstr->data[start]), &(p_str->data[end]), endbytes);
-    p_newstr->size = newsize;
-    p_newstr->data[newsize] = '\0';
     return p_newstr;
 }
 
@@ -112,10 +108,8 @@ str_t* str_substr(str_t* p_str, size_t start, size_t end)
     str_t* p_newstr = NULL;
     assert(NULL != p_str);
     assert(start <= end);
-    p_newstr = (str_t*)mem_allocate(sizeof(str_t) + (end - start) + 1, NULL);
-    p_newstr->size = (end-start);
+    p_newstr = str_allocate(end - start);
     memcpy(p_newstr->data, &(p_str->data[start]), end - start);
-    p_newstr->data[p_newstr->size] = '\0';
     return p_newstr;
 }
 
@@ -128,7 +122,8 @@ size_t str_find(str_t* p_str1, str_t* p_str2)
 {
     size_t idx = -1;
     for(size_t i = 0; i < p_str1->size; i++) {
-        if(0 == strncmp(&(p_str1->data[i]), p_str2->data, p_str2->size)) {
+        if(0 == strncmp(&(p_str1->data[i]), p_str2->data, p_str2->size))
+        {
             idx = i;
             break;
         }
@@ -140,7 +135,8 @@ size_t str_rfind(str_t* p_str1, str_t* p_str2)
 {
     size_t idx = -1;
     for(size_t i = p_str1->size; i > 0; i--) {
-        if(0 == strncmp(&(p_str1->data[i-1]), p_str2->data, p_str2->size)) {
+        if(0 == strncmp(&(p_str1->data[i-1]), p_str2->data, p_str2->size))
+        {
             idx = i-1;
             break;
         }
