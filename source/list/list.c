@@ -47,7 +47,7 @@ size_t list_size(list_t* list)
 
 bool list_empty(list_t* list)
 {
-    return ((NULL == list->head) && (NULL == list->tail));
+    return NULL == list->head;
 }
 
 list_node_t* list_prev(list_t* list, list_node_t* node){
@@ -57,17 +57,11 @@ list_node_t* list_prev(list_t* list, list_node_t* node){
 
 list_node_t* list_at(list_t* list, size_t index)
 {
-    list_node_t* node = NULL;
+    list_node_t* node = list->head;
     size_t cur_index = 0;
-    list_node_t* cur_node = list->head;
-    while( NULL != cur_node )
+    while( NULL != node && cur_index != index)
     {
-        if( cur_index == index )
-        {
-            node = cur_node;
-            break;
-        }
-        cur_node = cur_node->next;
+        node = node->next;
         cur_index++;
     }
     return node;
@@ -118,59 +112,35 @@ list_node_t* list_pop_back( list_t* list )
 list_node_t* list_insert( list_t* list, size_t index, void* contents)
 {
     list_node_t* new_node = NULL;
-    if( 0 == index )
-    {
-        new_node = list_push_front( list, contents );
-    }
-    else
-    {
-        list_node_t* prev_node = list_at( list, index - 1 );
-        if( NULL != prev_node )
-        {
-            new_node = list_insert_after(list, prev_node, contents);
-        }
-        else
-        {
-            mem_release(contents);
-        }
-    }
+    list_node_t* prev = (index > 0 ? list_at(list, index-1) : NULL);
+    if(prev || index == 0) new_node = list_insert_after(list, prev, contents);
+    else mem_release(contents);
     return new_node;
 }
 
 list_node_t* list_insert_after( list_t* list, list_node_t* node, void* contents)
 {
     list_node_t* new_node = list_new_node(contents);
-    if(NULL != node)
-    {
-        new_node->prev = node;
-        new_node->next = node->next;
-        if(node->next) node->next->prev = new_node;
-        node->next = new_node;
-    }
-    else
-    {
-        new_node->next = list->head;
-        if(list->head) list->head->prev = new_node;
-        list->head = new_node;
-    }
-    if (node == list->tail)
-    {
-        list->tail = new_node;
-    }
+    list_node_t* next = (node ? node->next : list->head);
+    new_node->prev = node;
+    new_node->next = next;
+    //node's next ptr or list's head
+    if(node) node->next = new_node;
+    else list->head = new_node;
+    //next's prev ptr or list's tail
+    if(next) next->prev = new_node;
+    else list->tail = new_node;
     return new_node;
 }
 
 list_node_t* list_delete( list_t* list, size_t index)
 {
     list_node_t* node = list_at(list, index);
-    if(node){
-        list_node_t* next = node->next;
-        list_delete_node(list, node);
-        return next;
-    }
-    else{
-        return NULL;
-    }
+    list_node_t* next = node ? node->next : NULL;
+    list_delete_node(list, node);
+    return next; //TODO: this return is stoopid. why is this happening?
+    //this function should be one line and return void:
+    //list_delete_node(list, list_at(list, index));
 }
 
 void list_delete_node(list_t* list, list_node_t* node)
