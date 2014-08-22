@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#include <string.h>
+#include <stddef.h>
 #include <stdbool.h>
 
 /** A linked list node. */
