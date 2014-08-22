@@ -1,5 +1,6 @@
 #include "mem.h"
 #include <stdlib.h>
+#include <assert.h>
 #ifdef LEAK_DETECT_LEVEL
 #include <stdbool.h>
 #include <stdio.h>
@@ -139,20 +140,26 @@ void* mem_allocate(size_t size, destructor_t p_destruct_fn)
 
 int mem_num_references(void* p_obj)
 {
-    obj_t* p_hdr = (((obj_t*)p_obj)-1);
+    obj_t* p_hdr;
+    assert(NULL != p_obj);
+    p_hdr = (((obj_t*)p_obj)-1);
     return p_hdr->refcount;
 }
 
 void* mem_retain(void* p_obj)
 {
-    obj_t* p_hdr = (((obj_t*)p_obj)-1);
+    obj_t* p_hdr;
+    assert(NULL != p_obj);
+    p_hdr = (((obj_t*)p_obj)-1);
     p_hdr->refcount += 1;
     return p_obj;
 }
 
 void mem_release(void* p_obj)
 {
-    obj_t* p_hdr = (((obj_t*)p_obj)-1);
+    obj_t* p_hdr;
+    assert(NULL != p_obj);
+    p_hdr = (((obj_t*)p_obj)-1);
     p_hdr->refcount -= 1;
     if(p_hdr->refcount < 1)
     {
@@ -178,6 +185,7 @@ void* mem_box(intptr_t val)
 
 intptr_t mem_unbox(void* p_box)
 {
+    assert(NULL != p_box);
     return ((box_t*)p_box)->val;
 }
 
