@@ -115,12 +115,16 @@ str_t* str_substr(str_t* p_str, size_t start, size_t end)
 
 int str_compare(str_t* p_str1, str_t* p_str2)
 {
+    assert(NULL != p_str1);
+    assert(NULL != p_str2);
     return strcmp(p_str1->data, p_str2->data);
 }
 
 size_t str_find(str_t* p_str1, str_t* p_str2)
 {
-    size_t idx = -1;
+    size_t idx = SIZE_MAX;
+    assert(NULL != p_str1);
+    assert(NULL != p_str2);
     for(size_t i = 0; i < p_str1->size; i++) {
         if(0 == strncmp(&(p_str1->data[i]), p_str2->data, p_str2->size))
         {
@@ -133,7 +137,9 @@ size_t str_find(str_t* p_str1, str_t* p_str2)
 
 size_t str_rfind(str_t* p_str1, str_t* p_str2)
 {
-    size_t idx = -1;
+    size_t idx = SIZE_MAX;
+    assert(NULL != p_str1);
+    assert(NULL != p_str2);
     for(size_t i = p_str1->size; i > 0; i--) {
         if(0 == strncmp(&(p_str1->data[i-1]), p_str2->data, p_str2->size))
         {
