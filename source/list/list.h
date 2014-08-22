@@ -13,11 +13,13 @@ typedef struct list_node_t
 {
     /** Pointer to the contents the node */
     void* contents;
-    /** Pointer to next node in the list. */
+    /** Pointer to next node in the list */
     struct list_node_t* next;
+    /** pointer to prev node in the list */
+    struct list_node_t* prev;
 } list_node_t;
 
-/** A singly linked list */
+/** A doubly linked list */
 typedef struct list_t
 {
     /** Pointer to the first element in the list */
@@ -81,14 +83,14 @@ size_t list_size(list_t* list);
  */
 bool list_empty(list_t* list);
 
-/**
+/** !!this function is unnecessary now that list is doubly linked.
  * @brief Find the node before the given one in the specified list.
  *
  * @param list          The list to search thru
  * @param node          The node to search for
  *
  * @return Pointer to the node before the given node or
- *         NULL if given node is NULL, not present, or is the head of list
+ *         NULL if given node is NULL, is the head of list
  */
 list_node_t* list_prev(list_t* list, list_node_t* node);
 
@@ -111,7 +113,7 @@ list_node_t* list_at(list_t* list, size_t index);
  * This function loops through the linked list and returns the index in the list
  * that matches the specified node. Returns -1 if the node is not found.
  * Note: since NULL is implicitly at the end of every list, calling this
- * with NULL for the node is essentially equivalent to list_size
+ * with NULL for the node is equivalent to list_size
  *
  * @param list  The list to search thru
  * @param node  The node to look for
@@ -190,6 +192,7 @@ list_node_t* list_insert( list_t* list, size_t index, void* contents);
  *
  * @param list     The list to operate on.
  * @param node     The node after which the item should be inserted.
+ *                 if node is NULL, will insert at the beginning of the list
  * @param contents The contents of the new node.
  *
  * @return Pointer to the newly inserted node
@@ -205,19 +208,14 @@ list_node_t* list_insert_after( list_t* list, list_node_t* node, void* contents)
  *
  * @param list          The list to operate on.
  * @param index         The index of the node to delete.
- *
- * @return Pointer to the node that is now at the supplied index.
  **/
-list_node_t* list_delete(list_t* list, size_t index);
+void list_delete(list_t* list, size_t index);
 
 /**
  * @brief Delete a node from the supplied list.
  *
  * This function differs from the above list_delete in that it is given a
  * pointer to a node to be deleted instead of an index.
- * //TODO: verify node->next should be set to NULL following successful deletion
- * //TODO: verify node->next should not be touched if node not present in list
- * //TODO: verify node should not be freed following deletion
  *
  * @param list          The list to operate on.
  * @param node          A pointer to the node to delete.

@@ -17,12 +17,12 @@ extern "C" {
 /** A function pointer for object destructors */
 typedef void (*destructor_t)(void* p_val);
 
-/* If debug is disabled, disable leak detection as well */
-#ifdef NDEBUG
-#undef LEAK_DETECTION
+/** Unless otherwise specified, no leak detection will occur */
+#ifndef LEAK_DETECT_LEVEL
+#define LEAK_DETECT_LEVEL 0
 #endif
 
-#ifndef LEAK_DETECTION
+#if (LEAK_DETECT_LEVEL < 2)
 /**
  * @brief Allocates a new reference counted object of the given size which will
  *        be destructed with the given function before it's memory is reclaimed.
@@ -54,7 +54,7 @@ int mem_num_references(void* p_obj);
  *
  * @param p_obj The object to be retained.
  */
-void mem_retain(void* p_obj);
+void* mem_retain(void* p_obj);
 
 /**
  * @brief Decrements the reference count for a given object.
@@ -62,19 +62,6 @@ void mem_retain(void* p_obj);
  * @param p_obj The object to be released.
  */
 void mem_release(void* p_obj);
-
-/**
- * @brief Schedules an object to be released at a later time when more convenient.
- *
- * @param p_obj The object to be released.
- */
-void mem_autorelease(void* p_obj);
-
-/**
- * @brief Release all objects scheduled to be released reclaiming their memory
- *        if necessary.
- */
-void mem_releaseall(void);
 
 /**
  * @brief Create a reference counted box holding the given value so that it can
