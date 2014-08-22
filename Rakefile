@@ -13,14 +13,10 @@ require 'rbconfig'
 #------------------------------------------------------------------------------
 # Envrionment Definitions
 #------------------------------------------------------------------------------
-# Detect the windows platform and provide a task to force posix
-is_windows = (Object.const_get('RUBY_PLATFORM') =~ /mswin|mingw|cygwin/)
-task(:posix){ is_windows = false }
-
 # Define the compiler environment
 Env = Rscons::Environment.new do |env|
-  env.build_dir('source','build/obj/source')
-  env["CFLAGS"] += ['-Wall', '-Wextra', '-Werror']
+  env.build_dir('source/','build/obj/source')
+  env["CFLAGS"] += ['--std=c99', '-Wall', '-Wextra', '-Werror']
   env['CPPPATH'] += Dir['source/**/']
 end
 

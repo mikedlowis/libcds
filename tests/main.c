@@ -7,6 +7,7 @@ int main(int argc, char** argv)
     RUN_TEST_SUITE(Vector);
     RUN_TEST_SUITE(List);
     RUN_TEST_SUITE(Buffer);
+    RUN_TEST_SUITE(String);
     RUN_TEST_SUITE(RBT);
     return PRINT_TEST_RESULTS();
 }
