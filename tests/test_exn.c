@@ -89,4 +89,29 @@ TEST_SUITE(Exn) {
         finally { counter++; }
         CHECK(counter == 2);
     }
+
+    //-------------------------------------------------------------------------
+    // Test assertions
+    //-------------------------------------------------------------------------
+    TEST(Verify_successful_assertions_do_not_throw_an_exception)
+    {
+        int counter = 0;
+        try {
+            assert(true);
+            counter++;
+        }
+        catch(AssertionException) { counter--; }
+        CHECK(counter == 1);
+    }
+
+    TEST(Verify_successful_assertions_do_not_throw_an_exception)
+    {
+        int counter = 0;
+        try {
+            assert(false);
+            counter++;
+        }
+        catch(AssertionException) { counter--; }
+        CHECK(counter == -1);
+    }
 }

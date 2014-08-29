@@ -55,13 +55,9 @@ bool exn_process(void) {
 
         case EXN_FINALLY:
             if (!Exn_Handled)
-            {
                 exn_rethrow();
-            }
             else
-            {
                 exn_handler()->state = EXN_DONE;
-            }
             break;
 
         case EXN_DONE:
