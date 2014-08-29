@@ -16,8 +16,7 @@ require 'rbconfig'
 # Define the compiler environment
 Env = Rscons::Environment.new do |env|
   env.build_dir('source','build/obj/source')
-  env["CFLAGS"]  += ['--std=c99', '--pedantic', '--coverage', '-Wall', '-Wextra', '-Werror']
-  env["LDFLAGS"] += ['--coverage']
+  env["CFLAGS"]  += ['--std=c99', '--pedantic', '-Wall', '-Wextra', '-Werror']
   env['CPPPATH'] += Dir['source/**/']
 end
 
@@ -25,7 +24,8 @@ end
 TestEnv = Env.clone  do |env|
   env.build_dir('source','build/obj/test_source')
   env.build_dir('tests','build/obj/tests/source')
-  env['CFLAGS']  += ['-DLEAK_DETECT_LEVEL=1']
+  env['CFLAGS']  += ['-DLEAK_DETECT_LEVEL=1', '--coverage']
+  env["LDFLAGS"] += ['--coverage']
   env['CPPPATH'] += Dir['tests/']
 end
 
