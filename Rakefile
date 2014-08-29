@@ -57,8 +57,7 @@ task :test do
         path = File.dirname(obj)
         gcov = File.basename(obj).ext('c.gcov')
         sh *['gcov', '-abc', obj]
-        FileUtils.cp(gcov,"#{path}/#{gcov}")
-        FileUtils.rm(gcov)
+        FileUtils.mv("./#{gcov}","#{path}/#{gcov}")
     end
 end
 
