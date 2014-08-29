@@ -5,7 +5,6 @@
   $HeadURL$
 */
 #include "str.h"
-#include <assert.h>
 
 /* Forward declare our struct */
 struct str_t

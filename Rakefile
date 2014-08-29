@@ -15,7 +15,7 @@ require 'rbconfig'
 #------------------------------------------------------------------------------
 # Define the compiler environment
 Env = Rscons::Environment.new do |env|
-  env.build_dir('source/','build/obj/source')
+  env.build_dir('source','build/obj/source')
   env["CFLAGS"]  += ['--std=c99', '--pedantic', '--coverage', '-Wall', '-Wextra', '-Werror']
   env["LDFLAGS"] += ['--coverage']
   env['CPPPATH'] += Dir['source/**/']
@@ -51,6 +51,14 @@ task :test do
     TestEnv.Program('build/test_libcds', Dir['source/**/*.c', 'tests/**/*.c'])
     TestEnv.process
     sh "build/test_libcds"
+    FileList['build/obj/test_source/**/*.gcno'].each do |gcno|
+        obj  = gcno.ext('o')
+        path = File.dirname(obj)
+        gcov = File.basename(obj).ext('c.gcov')
+        sh *['gcov', '-abc', obj]
+        FileUtils.cp(gcov,"#{path}/#{gcov}")
+        FileUtils.rm(gcov)
+    end
 end
 
 #------------------------------------------------------------------------------

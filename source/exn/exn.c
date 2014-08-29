@@ -6,7 +6,6 @@
   */
 #include "exn.h"
 #include <stdio.h>
-#include <stdlib.h>
 
 #ifndef EXN_MAX_NUM_HANDLERS
 #define EXN_MAX_NUM_HANDLERS (8)

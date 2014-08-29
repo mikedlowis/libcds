@@ -5,8 +5,7 @@
 extern "C" {
 #endif
 
-#include <stddef.h>
-#include <stdbool.h>
+#include "rt.h"
 
 /** A linked list node. */
 typedef struct list_node_t

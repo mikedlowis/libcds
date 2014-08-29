@@ -1,16 +1,18 @@
 /**
     @file vec.h
-    @brief TODO: Describe this file
+    @brief A vector implementation.
     $Revision$
     $HeadURL$
 */
 #ifndef VEC_H
 #define VEC_H
 
-#include <string.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include "rt.h"
 #include <stdarg.h>
-#include <stdbool.h>
-#include <stddef.h>
 
 /** A vector implementation */
 typedef struct {
@@ -18,10 +20,6 @@ typedef struct {
     size_t capacity;   /*< The size of the internal array */
     void** p_buffer;   /*< Pointer to the array */
 } vec_t;
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /** The default capacity of the vector if no initializing elements have been
  *  provided. */

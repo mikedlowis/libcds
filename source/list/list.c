@@ -1,10 +1,12 @@
-#include <stdlib.h>
-#include <assert.h>
+/**
+  @file list.c
+  @brief See header for details
+  $Revision$
+  $HeadURL$
+  */
 #include "list.h"
-#include "mem.h"
 
 static void list_free(void* p_list);
-
 static void list_node_free(void* p_node);
 
 list_t* list_new(void)

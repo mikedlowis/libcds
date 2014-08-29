@@ -5,6 +5,8 @@
 extern "C" {
 #endif
 
+#include "rt.h"
+
 /** node colors */
 typedef enum {
     RED = 0,

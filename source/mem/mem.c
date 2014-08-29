@@ -1,8 +1,5 @@
 #include "mem.h"
-#include <stdlib.h>
-#include <assert.h>
 #ifdef LEAK_DETECT_LEVEL
-#include <stdbool.h>
 #include <stdio.h>
 #endif
 

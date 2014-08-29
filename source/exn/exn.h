@@ -7,8 +7,12 @@
 #ifndef EXN_H
 #define EXN_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include "rt.h"
 #include <setjmp.h>
-#include <stdbool.h>
 
 typedef struct exn_t {
     const struct exn_t* p_parent;
@@ -68,6 +72,10 @@ void exn_assert(bool expr);
 #define assert(expr) ((void)0)
 #else
 #define assert(expr) exn_assert(expr)
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif /* EXN_H */

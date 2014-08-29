@@ -5,10 +5,6 @@
   $HeadURL$
 */
 #include "vec.h"
-#include "mem.h"
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
 
 static void vec_free(void* p_vec);
 

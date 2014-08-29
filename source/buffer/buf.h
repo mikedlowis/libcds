@@ -11,15 +11,14 @@
 extern "C" {
 #endif
 
-#include <string.h>
-#include <stdbool.h>
+#include "rt.h"
 
 /** A structure defining a circular buffer */
 typedef struct {
     void** buffer; /**< Pointer to the buffer */
-    size_t size    /**< Size of the allocated buffer */;
-    size_t reads   /**< Total number of reads that have occurred */;
-    size_t writes  /**< Total number of writes that have occrurred */;
+    size_t size;   /**< Size of the allocated buffer */
+    size_t reads;  /**< Total number of reads that have occurred */
+    size_t writes; /**< Total number of writes that have occrurred */
 } buf_t;
 
 /**

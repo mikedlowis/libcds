@@ -4,9 +4,7 @@
   $Revision$
   $HeadURL$
   */
-#include <stdlib.h>
 #include "buf.h"
-#include "mem.h"
 
 static void buf_free(void* p_buf);
 

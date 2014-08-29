@@ -11,9 +11,7 @@
 extern "C" {
 #endif
 
-#include <string.h>
-#include <stdbool.h>
-#include "mem.h"
+#include "rt.h"
 
 /* Forward declare our struct */
 struct str_t;
