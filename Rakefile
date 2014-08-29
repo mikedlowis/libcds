@@ -16,7 +16,8 @@ require 'rbconfig'
 # Define the compiler environment
 Env = Rscons::Environment.new do |env|
   env.build_dir('source/','build/obj/source')
-  env["CFLAGS"] += ['--std=c99', '-Wall', '-Wextra', '-Werror']
+  env["CFLAGS"]  += ['--std=c99', '--pedantic', '--coverage', '-Wall', '-Wextra', '-Werror']
+  env["LDFLAGS"] += ['--coverage']
   env['CPPPATH'] += Dir['source/**/']
 end
 
