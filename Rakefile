@@ -59,10 +59,10 @@ task :coverage => [:test] do
         obj  = gcno.ext('o')
         path = File.dirname(obj)
         gcov = File.basename(obj).ext('c.gcov')
-        if File.exist?(gcno.ext('gcda'))
-            sh *['gcov', '-a', '-b', '-c', obj]
+        #if File.exist?(gcno.ext('gcda'))
+        sh *['gcov', '-a', '-b', '-c', obj] and
             FileUtils.mv("./#{gcov}","#{path}/#{gcov}")
-        end
+        #end
     end
 end
 
