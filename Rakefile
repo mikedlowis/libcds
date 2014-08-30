@@ -35,7 +35,7 @@ at_exit { Env.process; TestEnv.process}
 #------------------------------------------------------------------------------
 # Main Build Targets
 #------------------------------------------------------------------------------
-task :default => [:test, :build]
+task :default => [:test, :coverage, :build]
 
 desc "Build the C Data Structures static library"
 task :build do
@@ -59,9 +59,10 @@ task :coverage => [:test] do
         obj  = gcno.ext('o')
         path = File.dirname(obj)
         gcov = File.basename(obj).ext('c.gcov')
-        sh *['gcov', '-abc', obj]
-        FileUtils.cp("./#{gcov}","#{path}/#{gcov}")
-        FileUtils.rm(gcov)
+        if File.exist?(gcno.ext('gcda'))
+            sh *['gcov', '-a', '-b', '-c', obj]
+            FileUtils.mv("./#{gcov}","#{path}/#{gcov}")
+        end
     end
 end
 
