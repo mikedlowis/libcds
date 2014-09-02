@@ -1,3 +1,4 @@
+#include <assert.h>
 #include "mem.h"
 #include "rbt.h"
 
@@ -15,8 +16,10 @@ static int rbt_default_comparator(void* v_a, void* v_b){
 /* rbt_t */
 static void rbt_free(void* v_tree){
 	rbt_t* tree = (rbt_t*) v_tree;
-	if(tree && tree->root) mem_release(tree->root);
+	assert(NULL != tree);
+	if(tree->root) mem_release(tree->root);
 }
+
 rbt_t* rbt_new(comparator_t comparator){
 	rbt_t* tree = mem_allocate(sizeof(rbt_t), &rbt_free);
 	tree->root = NULL;
@@ -27,12 +30,15 @@ rbt_t* rbt_new(comparator_t comparator){
 /* rbt_node_t */
 static void rbt_node_free(void* v_node){
 	rbt_node_t* node = (rbt_node_t*) v_node;
-	if(node){
-		mem_release(node->contents);
-		if(node->left) mem_release(node->left);
-		if(node->right) mem_release(node->right);
-	}
+	assert(NULL != node);
+	mem_release(node->contents);
+	if(node->left) mem_release(node->left);
+	if(node->right) mem_release(node->right);
 }
+
+#ifndef TESTING
+static
+#endif
 rbt_node_t* rbt_node_new(void* contents){
 	rbt_node_t* node = mem_allocate(sizeof(rbt_node_t), &rbt_node_free);
 	node->left = NULL;
@@ -47,7 +53,9 @@ rbt_node_t* rbt_node_new(void* contents){
 /* ---------------------------------------- */
 /*    informational / querying functions    */
 /* ---------------------------------------- */
-
+#ifndef TESTING
+static
+#endif
 rbt_color_t rbt_node_color(rbt_node_t* node){
 	//leaves are NULL and black implicitly
 	return (node ? node->color : BLACK);
@@ -57,9 +65,9 @@ static rbt_node_t* rbt_lookup_node(rbt_t* tree, rbt_node_t* node, void* value){
 	rbt_node_t* ret = NULL;
 	if(node){
 		int c = tree->comp(value, node->contents);
-		if(c == 0) ret = node;
+		if (c < 0) ret = rbt_lookup_node(tree, node->left, value);
 		else if(c > 0) ret = rbt_lookup_node(tree, node->right, value);
-		else if(c < 0) ret = rbt_lookup_node(tree, node->left, value);
+		else ret = node;
 	}
 	return ret;
 }
@@ -75,9 +83,11 @@ static rbt_node_t* rightmost_descendant(rbt_node_t* node){
 static int rbt_count(rbt_node_t* node){
 	return (!node ? 0 : (1 + rbt_count(node->left) + rbt_count(node->right)));
 }
-int rbt_count_nodes(rbt_t* tree){
+
+int rbt_size(rbt_t* tree){
 	return rbt_count(tree->root);
 }
+
 
 /* ----------------------------------------- */
 /*    generally helpful tree manipulation    */
@@ -96,15 +106,14 @@ typedef enum {
 
 static void rbt_rotate(rbt_t* tree, rbt_node_t* node, direction_t direction){
 	rbt_node_t* edon = (direction == LEFT) ? node->right : node->left;
-	if(edon){
-		rbt_node_t** edon_side = (direction == LEFT ? &(edon->left) : &(edon->right));
-		rbt_node_t** node_side = (direction == LEFT ? &(node->right) : &(node->left));
-		rbt_node_replace(tree, node, edon);
-		*node_side = *edon_side; //safe to overwrite; points to edon
-		if(*edon_side) (*edon_side)->parent = node;
-		*edon_side = node;
-		node->parent = edon;
-	} /* else rotation isn't allowed */
+	assert(NULL != edon);
+	rbt_node_t** edon_side = (direction == LEFT ? &(edon->left) : &(edon->right));
+	rbt_node_t** node_side = (direction == LEFT ? &(node->right) : &(node->left));
+	rbt_node_replace(tree, node, edon);
+	*node_side = *edon_side; //safe to overwrite; points to edon
+	if(*edon_side) (*edon_side)->parent = node;
+	*edon_side = node;
+	node->parent = edon;
 }
 
 
@@ -114,7 +123,8 @@ static void rbt_rotate(rbt_t* tree, rbt_node_t* node, direction_t direction){
 
 static void rbt_ins_rebalance(rbt_t* tree, rbt_node_t* node, direction_t heavy_side){
 	rbt_node_t* parent = node->parent;
-	rbt_node_t* grandparent = (parent ? parent->parent : NULL);
+	assert(NULL != parent);
+	rbt_node_t* grandparent = parent->parent;
 	rbt_rotate(tree, grandparent, (heavy_side == LEFT ? RIGHT : LEFT));
 	parent->color = BLACK;
 	grandparent->color = RED;
@@ -178,9 +188,10 @@ static void rbt_del_rebalance(rbt_t* tree, rbt_node_t* node){
 	if(parent){
 		direction_t node_side = (node == parent->left ? LEFT : RIGHT);
 		rbt_node_t* sib = (node_side == LEFT ? parent->right : parent->left);
+		assert(NULL != sib);
 		//nibling: gender neutral term for niece or nephew.
-		rbt_node_t* inside_nibling = sib ? (node_side == LEFT ? sib->left : sib->right) : NULL;
-		rbt_node_t* outside_nibling = sib ? (node_side == LEFT ? sib->right : sib->left) : NULL;
+		rbt_node_t* inside_nibling = node_side == LEFT ? sib->left : sib->right;
+		rbt_node_t* outside_nibling = node_side == LEFT ? sib->right : sib->left;
 		if(RED == rbt_node_color(sib)){
 			//rotate so sib is black & recurse w/ new scenario
 			rbt_rotate(tree, parent, node_side);
@@ -204,8 +215,6 @@ static void rbt_del_rebalance(rbt_t* tree, rbt_node_t* node){
 			parent->color = BLACK;
 			outside_nibling->color = BLACK;
 		}
-	}else{
-		node->color = BLACK; //TODO: verify this is necessary
 	}
 }
 

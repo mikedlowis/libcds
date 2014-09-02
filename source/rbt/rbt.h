@@ -47,26 +47,6 @@ rbt_t* rbt_new(comparator_t comparator);
 
 
 /**
- * @brief creates a new node for a red-black tree
- *
- * @param contents pointer to the contents of the node
- *
- * @return pointer to newly created node
- */
-rbt_node_t* rbt_node_new(void* contents);
-
-
-/**
- * @brief get the color of a given node
- *
- * @param node the node on which to operate
- *
- * @return RED or BLACK. BLACK if node is NULL (a leaf)
- */
-rbt_color_t rbt_node_color(rbt_node_t* node);
-
-
-/**
  * @brief find a value in a red-black tree
  *
  * @param tree  pointer to the tree on which to operate
@@ -85,7 +65,7 @@ rbt_node_t* rbt_lookup(rbt_t* tree, void* value);
  *
  * @return the number of nodes present in the tree
  */
-int rbt_count_nodes(rbt_t* tree);
+int rbt_size(rbt_t* tree);
 
 /**
  * @brief insert a value into a red-black tree
