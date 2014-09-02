@@ -24,7 +24,7 @@ end
 TestEnv = Env.clone  do |env|
   env.build_dir('source','build/obj/test_source')
   env.build_dir('tests','build/obj/tests/source')
-  env['CFLAGS']  += ['-g', '--coverage', '-DLEAK_DETECT_LEVEL=1']
+  env['CFLAGS']  += ['-g', '--coverage', '-DLEAK_DETECT_LEVEL=1', '-DTESTING']
   #env['CFLAGS']  += ['-DNDEBUG'] #disables asserts so they won't effect coverage analysis
   env["LDFLAGS"] += ['--coverage']
   env['CPPPATH'] += Dir['tests/']

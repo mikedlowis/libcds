@@ -7,6 +7,9 @@
 #include "mem.h"
 #include "list.h"
 
+extern rbt_color_t rbt_node_color(rbt_node_t* node);
+extern rbt_node_t* rbt_node_new(void* contents);
+
 static int test_compare(void* a, void* b){
 	int ia = (int)(mem_unbox(a));
 	int ib = (int)(mem_unbox(b));
@@ -82,7 +85,6 @@ TEST_SUITE(RBT) {
 		CHECK(NULL == node->right);
 		CHECK(NULL == node->parent);
 		CHECK(box42 == node->contents);
-		//CHECK(OK == rbt_check_node(node, -1, -1)); //TODO: fix this?
 		mem_release(node);
 	}
 
@@ -417,13 +419,13 @@ TEST_SUITE(RBT) {
 	//-------------------------------------------------------------------------
 	// Test node count function
 	//-------------------------------------------------------------------------
-	TEST(Verify_count_nodes_works){
+	TEST(Verify_size_works){
 		int i=0;
 		rbt_t* tree = rbt_new(NULL);
-		CHECK(0 == rbt_count_nodes(tree));
+		CHECK(0 == rbt_size(tree));
 		for(i = 1; i < 10; i++){
 			rbt_insert(tree, mem_box(i));
-			CHECK(i == rbt_count_nodes(tree));
+			CHECK(i == rbt_size(tree));
 		}
 		mem_release(tree);
 	}
@@ -2534,19 +2536,19 @@ TEST_SUITE(RBT) {
 		//rbt_t* tree = rbt_new(NULL);
 		rbt_delete(tree, target);
 		CHECK(OK == rbt_check_status(tree));
-		CHECK(0 == rbt_count_nodes(tree));
+		CHECK(0 == rbt_size(tree));
 		rbt_insert(tree, box88);
 		rbt_delete(tree, target);
 		CHECK(OK == rbt_check_status(tree));
-		CHECK(1 == rbt_count_nodes(tree));
+		CHECK(1 == rbt_size(tree));
 		rbt_insert(tree, box36);
 		rbt_delete(tree, target);
 		CHECK(OK == rbt_check_status(tree));
-		CHECK(2 == rbt_count_nodes(tree));
+		CHECK(2 == rbt_size(tree));
 		rbt_insert(tree, box99);
 		rbt_delete(tree, target);
 		CHECK(OK == rbt_check_status(tree));
-		CHECK(3 == rbt_count_nodes(tree));
+		CHECK(3 == rbt_size(tree));
 		mem_release(target);
 		mem_release(tree);
 	}
@@ -2566,7 +2568,7 @@ TEST_SUITE(RBT) {
 				mem_retain(foo);
 				rbt_insert(tree, foo);
 				listsize++;
-				CHECK(listsize == rbt_count_nodes(tree));
+				CHECK(listsize == rbt_size(tree));
 			}
 			rbt_status_t status = rbt_check_status(tree);
 			//printf("status after inserts is %d\n", status);
@@ -2578,7 +2580,7 @@ TEST_SUITE(RBT) {
 				rbt_delete(tree, foo);
 				list_delete(vals, idx);
 				listsize--;
-				CHECK(listsize == rbt_count_nodes(tree));
+				CHECK(listsize == rbt_size(tree));
 			}
 			status = rbt_check_status(tree);
 			//printf("status after deletes is %d\n", status);
