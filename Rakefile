@@ -52,12 +52,15 @@ task :test do
     TestEnv.Program('build/test_libcds', Dir['source/**/*.c', 'tests/**/*.c'])
     TestEnv.process
     sh "build/test_libcds"
+end
+
+desc "Generate test coverage reports"
+task :coverage => [:test] do
     FileList['build/obj/test_source/**/*.gcno'].each do |gcno|
         obj  = gcno.ext('o')
         path = File.dirname(obj)
         gcov = File.basename(obj).ext('c.gcov')
-        sh *['gcov', '-abc', obj]
-        FileUtils.mv("./#{gcov}","#{path}/#{gcov}")
+        sh *['gcov', '-abc', obj] and FileUtils.mv("./#{gcov}","#{path}/#{gcov}")
     end
 end
 
