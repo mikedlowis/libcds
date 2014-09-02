@@ -19,6 +19,7 @@ static void rbt_free(void* v_tree){
 	assert(NULL != tree);
 	if(tree->root) mem_release(tree->root);
 }
+
 rbt_t* rbt_new(comparator_t comparator){
 	rbt_t* tree = mem_allocate(sizeof(rbt_t), &rbt_free);
 	tree->root = NULL;
@@ -34,6 +35,7 @@ static void rbt_node_free(void* v_node){
 	if(node->left) mem_release(node->left);
 	if(node->right) mem_release(node->right);
 }
+
 #ifndef TESTING
 static
 #endif
@@ -81,9 +83,11 @@ static rbt_node_t* rightmost_descendant(rbt_node_t* node){
 static int rbt_count(rbt_node_t* node){
 	return (!node ? 0 : (1 + rbt_count(node->left) + rbt_count(node->right)));
 }
+
 int rbt_size(rbt_t* tree){
 	return rbt_count(tree->root);
 }
+
 
 /* ----------------------------------------- */
 /*    generally helpful tree manipulation    */
