@@ -1,8 +1,6 @@
 /**
   @file str.h
   @brief An updated string type for C.
-  $Revision$
-  $HeadURL$
 */
 #ifndef STR_H
 #define STR_H

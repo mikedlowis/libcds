@@ -1,8 +1,6 @@
 /**
   @file vec.c
   @brief See header for details
-  $Revision$
-  $HeadURL$
 */
 #include "vec.h"
 

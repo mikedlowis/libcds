@@ -1,8 +1,6 @@
 /**
   @file exn.c
   @brief See header for details
-  $Revision$
-  $HeadURL$
   */
 #include "exn.h"
 #include <stdio.h>

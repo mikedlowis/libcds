@@ -1,8 +1,6 @@
 /**
     @file vec.h
     @brief A vector implementation.
-    $Revision$
-    $HeadURL$
 */
 #ifndef VEC_H
 #define VEC_H

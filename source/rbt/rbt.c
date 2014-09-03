@@ -1,8 +1,6 @@
 /**
   @file rbt.c
   @brief See header for details
-  $Revision$
-  $HeadURL$
   */
 #include "rbt.h"
 

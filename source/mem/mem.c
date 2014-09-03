@@ -1,3 +1,7 @@
+/**
+  @file mem.c
+  @brief See header for details
+  */
 #include "mem.h"
 #ifdef LEAK_DETECT_LEVEL
 #include <stdio.h>
@@ -40,7 +44,7 @@ size_t Num_Allocations = 0;
 static
 #endif
 void summarize_leaks(void) {
-    #if (LEAK_DETECT_LEVEL == 2)
+#if (LEAK_DETECT_LEVEL == 2)
     bool leak_detected = false;
     block_t* p_curr = Live_Blocks;
     /* Print out all the live blocks and where they were allocated from */
@@ -48,22 +52,22 @@ void summarize_leaks(void) {
     {
         block_t* to_be_freed = p_curr;
         printf("%p %s (line %d): %d references to object\n",
-               p_curr->p_obj,
-               p_curr->p_file,
-               p_curr->line,
-               mem_num_references(p_curr->p_obj));
+            p_curr->p_obj,
+            p_curr->p_file,
+            p_curr->line,
+            mem_num_references(p_curr->p_obj));
         p_curr = p_curr->p_next;
         free(to_be_freed);
         leak_detected = true;
     }
     if(leak_detected)
         puts("Memory leak(s) detected!");
-    #elif (LEAK_DETECT_LEVEL == 1)
+#elif (LEAK_DETECT_LEVEL == 1)
     if(Num_Allocations > 0) {
         puts("Warning: Memory leak(s) detected!");
         printf("\nFor more details set the LEAK_DETECT_LEVEL build option to 2 or run the executable in valgrind.\n");
     }
-    #endif
+#endif
 }
 
 #if (LEAK_DETECT_LEVEL == 2)
@@ -125,7 +129,7 @@ void* mem_allocate(size_t size, destructor_t p_destruct_fn)
     obj_t* p_obj = (obj_t*)malloc(sizeof(obj_t) + size);
     p_obj->refcount = 1;
     p_obj->p_finalize = p_destruct_fn;
-    #if (LEAK_DETECT_LEVEL == 1)
+#if (LEAK_DETECT_LEVEL == 1)
     Num_Allocations++;
     /* If we haven't already, register an exit handler that will printout the
      * unfreed objects before the program quits */
@@ -134,7 +138,7 @@ void* mem_allocate(size_t size, destructor_t p_destruct_fn)
         atexit(summarize_leaks);
         Handler_Registered = true;
     }
-    #endif
+#endif
     return (void*)(p_obj+1);
 }
 
@@ -163,11 +167,11 @@ void mem_release(void* p_obj)
     p_hdr->refcount -= 1;
     if(p_hdr->refcount < 1)
     {
-        #if (LEAK_DETECT_LEVEL == 2)
+#if (LEAK_DETECT_LEVEL == 2)
         deregister_block(p_obj);
-        #elif (LEAK_DETECT_LEVEL == 1)
+#elif (LEAK_DETECT_LEVEL == 1)
         Num_Allocations--;
-        #endif
+#endif
         if(p_hdr->p_finalize)
         {
             p_hdr->p_finalize(p_obj);

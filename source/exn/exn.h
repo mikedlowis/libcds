@@ -1,8 +1,6 @@
 /**
   @file exn.h
   @brief An implementation of exception handling in pure ANSI C.
-  $Revision$
-  $HeadURL$
 */
 #ifndef EXN_H
 #define EXN_H

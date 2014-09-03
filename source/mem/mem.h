@@ -1,8 +1,6 @@
 /**
   @file mem.h
   @brief Implements reference counting routines for C.
-  $Revision$
-  $HeadURL$
   */
 #ifndef MEM_H
 #define MEM_H

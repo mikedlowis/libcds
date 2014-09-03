@@ -1,12 +1,10 @@
 /**
-  @file hdr.h
+  @file rt.h
   @brief A helper file with runtime specific includes used by all files in the
          library.
-  $Revision$
-  $HeadURL$
   */
-#ifndef HDR_H
-#define HDR_H
+#ifndef RT_H
+#define RT_H
 
 #include <stdlib.h>
 #include <stdbool.h>
@@ -17,4 +15,4 @@
 #include "exn.h"
 #include "mem.h"
 
-#endif /* HDR_H */
+#endif /* RT_H */

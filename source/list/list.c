@@ -1,8 +1,6 @@
 /**
   @file list.c
   @brief See header for details
-  $Revision$
-  $HeadURL$
   */
 #include "list.h"
 

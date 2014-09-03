@@ -1,8 +1,6 @@
 /**
   @file str.c
   @brief See header for details
-  $Revision$
-  $HeadURL$
 */
 #include "str.h"
 

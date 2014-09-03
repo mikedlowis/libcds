@@ -1,8 +1,6 @@
 /**
   @file buf.c
   @brief See header for details
-  $Revision$
-  $HeadURL$
   */
 #include "buf.h"
 

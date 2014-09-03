@@ -1,8 +1,6 @@
 /**
     @file buf.h
     @brief Implementation of a circular buffer.
-    $Revision$
-    $HeadURL$
 */
 #ifndef BUF_H
 #define BUF_H
