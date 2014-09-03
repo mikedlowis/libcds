@@ -99,9 +99,7 @@ void exn_throw(const exn_t* p_type) {
 }
 
 void exn_rethrow(void) {
-    printf("rethrowing 1 %p\n", Exn_Handlers);
     exn_pop();
-    printf("rethrowing 2 %p\n", Exn_Handlers);
     exn_throw(Exn_Current);
 }
 
