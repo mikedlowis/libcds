@@ -36,7 +36,10 @@ block_t* Live_Blocks = NULL;
 size_t Num_Allocations = 0;
 #endif
 
-static void summarize_leaks(void) {
+#ifndef TESTING
+static
+#endif
+void summarize_leaks(void) {
     #if (LEAK_DETECT_LEVEL == 2)
     bool leak_detected = false;
     block_t* p_curr = Live_Blocks;

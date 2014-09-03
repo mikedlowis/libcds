@@ -69,9 +69,9 @@ static rbt_node_t* rbt_lookup_node(rbt_t* tree, rbt_node_t* node, void* value){
     rbt_node_t* ret = NULL;
     if(node){
         int c = tree->comp(value, node->contents);
-        if(c == 0) ret = node;
+        if (c < 0) ret = rbt_lookup_node(tree, node->left, value);
         else if(c > 0) ret = rbt_lookup_node(tree, node->right, value);
-        else if(c < 0) ret = rbt_lookup_node(tree, node->left, value);
+        else ret = node;
     }
     return ret;
 }

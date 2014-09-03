@@ -69,3 +69,6 @@ end
 desc "Clean all generated files and directories"
 task(:clean) { Rscons.clean }
 
+desc "Clobber all generated files and directories"
+task(:clobber) { FileUtils.rm_rf('build') }
+

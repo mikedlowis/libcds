@@ -5,7 +5,16 @@
 // File To Test
 #include "exn.h"
 
-static void test_setup(void) { }
+static int Exit_Status = 0;
+void test_exit(int status) {
+    Exit_Status = status;
+    if (NULL != exn_handler())
+        exn_handler()->state = EXN_DONE;
+}
+
+static void test_setup(void) {
+    Exit_Status = 0;
+}
 
 //-----------------------------------------------------------------------------
 // Begin Unit Tests
@@ -113,5 +122,23 @@ TEST_SUITE(Exn) {
         }
         catch(AssertionException) { counter--; }
         CHECK(counter == -1);
+    }
+
+    //-------------------------------------------------------------------------
+    // Test extraordinary conditions
+    //-------------------------------------------------------------------------
+    TEST(Verify_an_uncaught_exception_terminates_the_program)
+    {
+        throw(AssertionException);
+        CHECK( Exit_Status == 1 );
+    }
+
+    TEST(Verify_an_invalid_exception_state_terminates_the_program)
+    {
+        try {
+            exn_handler()->state = EXN_DONE+1;
+            exn_process();
+        }
+        CHECK( Exit_Status == 1 );
     }
 }

@@ -7,9 +7,19 @@
 #include "exn.h"
 #include <stdio.h>
 
-#ifndef EXN_MAX_NUM_HANDLERS
-#define EXN_MAX_NUM_HANDLERS (8)
+#ifdef TESTING
+extern void test_exit(int);
+#define exit(status) test_exit(status)
 #endif
+
+//#ifndef EXN_MAX_NUM_HANDLERS
+//#define EXN_MAX_NUM_HANDLERS (8)
+//#endif
+
+typedef struct exn_stack_t {
+    struct exn_stack_t* p_next;
+    exn_handler_t handler;
+} exn_stack_t;
 
 DEFINE_EXCEPTION(RuntimeException,            NULL);
 DEFINE_EXCEPTION(NullPointerException,        &RuntimeException);
@@ -21,8 +31,7 @@ DEFINE_EXCEPTION(SegmentationException,       &RuntimeException);
 
 static bool Exn_Handled = true;
 static const exn_t* Exn_Current = NULL;
-static int Exn_Num_Handlers = 0;
-static exn_handler_t Exn_Handlers[EXN_MAX_NUM_HANDLERS];
+static exn_stack_t* Exn_Handlers = NULL;
 
 static void exn_uncaught(const exn_t* p_exn) {
     (void)p_exn;
@@ -30,11 +39,17 @@ static void exn_uncaught(const exn_t* p_exn) {
     exit(1);
 }
 
+static void exn_pop(void) {
+    exn_stack_t* p_prev = Exn_Handlers;
+    Exn_Handlers = p_prev->p_next;
+    free(p_prev);
+}
+
 void exn_prep(void) {
-    if((Exn_Num_Handlers+1) > EXN_MAX_NUM_HANDLERS)
-        exn_throw(&RuntimeException);
-    Exn_Handlers[Exn_Num_Handlers].state  = EXN_BEGIN;
-    Exn_Num_Handlers++;
+    exn_stack_t* p_prev = Exn_Handlers;
+    Exn_Handlers = (exn_stack_t*)malloc(sizeof(exn_stack_t));
+    Exn_Handlers->p_next = p_prev;
+    Exn_Handlers->handler.state = EXN_BEGIN;
     Exn_Handled = true;
 }
 
@@ -61,7 +76,7 @@ bool exn_process(void) {
             break;
 
         case EXN_DONE:
-            Exn_Num_Handlers--;
+            exn_pop();
             ret = false;
             break;
 
@@ -74,7 +89,7 @@ bool exn_process(void) {
 }
 
 void exn_throw(const exn_t* p_type) {
-    if (Exn_Num_Handlers == 0) {
+    if (Exn_Handlers == NULL) {
         exn_uncaught(Exn_Current);
     } else {
         Exn_Current = p_type;
@@ -84,7 +99,9 @@ void exn_throw(const exn_t* p_type) {
 }
 
 void exn_rethrow(void) {
-    Exn_Num_Handlers--;
+    printf("rethrowing 1 %p\n", Exn_Handlers);
+    exn_pop();
+    printf("rethrowing 2 %p\n", Exn_Handlers);
     exn_throw(Exn_Current);
 }
 
@@ -106,7 +123,7 @@ const exn_t* exn_current(void) {
 }
 
 exn_handler_t* exn_handler(void) {
-    return &(Exn_Handlers[Exn_Num_Handlers-1]);
+    return (NULL != Exn_Handlers) ? &(Exn_Handlers->handler) : NULL;
 }
 
 void exn_assert(bool expr) {
