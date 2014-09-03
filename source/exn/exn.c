@@ -12,10 +12,6 @@ extern void test_exit(int);
 #define exit(status) test_exit(status)
 #endif
 
-//#ifndef EXN_MAX_NUM_HANDLERS
-//#define EXN_MAX_NUM_HANDLERS (8)
-//#endif
-
 typedef struct exn_stack_t {
     struct exn_stack_t* p_next;
     exn_handler_t handler;

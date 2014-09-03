@@ -31,8 +31,6 @@ typedef struct {
     exn_state_t state;
 } exn_handler_t;
 
-//typedef void (*)(const exn_t* p_exn);
-
 #define DECLARE_EXCEPTION(exname) \
     extern const exn_t exname
 
