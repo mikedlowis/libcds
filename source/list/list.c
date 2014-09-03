@@ -57,10 +57,9 @@ list_node_t* list_prev(list_t* list, list_node_t* node){
 
 list_node_t* list_at(list_t* list, size_t index)
 {
-    list_node_t* node;
-    size_t cur_index = 0;
     assert(NULL != list);
-    node = list->head;
+    list_node_t* node = list->head;
+    size_t cur_index = 0;
     while( NULL != node && cur_index != index)
     {
         node = node->next;
@@ -71,10 +70,9 @@ list_node_t* list_at(list_t* list, size_t index)
 
 int list_index_of(list_t* list, list_node_t* node)
 {
-    int i = 0;
-    list_node_t* edon;
     assert(NULL != list);
-    edon = list->head;
+    int i = 0;
+    list_node_t* edon = list->head;
     while( NULL != edon && edon != node)
     {
         edon = edon->next;
@@ -95,9 +93,8 @@ list_node_t* list_push_back( list_t* list, void* contents )
 
 list_node_t* list_pop_front( list_t* list )
 {
-    list_node_t* node;
     assert(NULL != list);
-    node = list->head;
+    list_node_t* node = list->head;
     if(node)
     {
         mem_retain(node);
@@ -108,9 +105,8 @@ list_node_t* list_pop_front( list_t* list )
 
 list_node_t* list_pop_back( list_t* list )
 {
-    list_node_t* node;
     assert(NULL != list);
-    node = list->tail;
+    list_node_t* node = list->tail;
     if(node)
     {
         mem_retain(node);
@@ -121,9 +117,9 @@ list_node_t* list_pop_back( list_t* list )
 
 list_node_t* list_insert( list_t* list, size_t index, void* contents)
 {
-    list_node_t *prev, *new_node = NULL;
     assert(NULL != list);
-    prev = (index > 0 ? list_at(list, index-1) : NULL);
+    list_node_t* new_node = NULL;
+    list_node_t* prev = (index > 0 ? list_at(list, index-1) : NULL);
     if(prev || index == 0)
         new_node = list_insert_after(list, prev, contents);
     else
@@ -133,10 +129,10 @@ list_node_t* list_insert( list_t* list, size_t index, void* contents)
 
 list_node_t* list_insert_after( list_t* list, list_node_t* node, void* contents)
 {
-    list_node_t *next, *new_node = list_new_node(contents);
     assert(NULL != list);
+    list_node_t* new_node = list_new_node(contents);
     assert(NULL != new_node);
-    next = (node ? node->next : list->head);
+    list_node_t* next = (node ? node->next : list->head);
     new_node->prev = node;
     new_node->next = next;
     *(node ? &(node->next) : &(list->head)) = new_node;
@@ -163,9 +159,8 @@ void list_delete_node(list_t* list, list_node_t* node)
 
 void list_clear(list_t* list)
 {
-    list_node_t* node;
     assert(NULL != list);
-    node = list->tail;
+    list_node_t* node = list->tail;
     while(NULL != node)
     {
         list_node_t* p = node->prev;
