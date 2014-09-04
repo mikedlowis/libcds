@@ -5,6 +5,17 @@
 // File To Test
 #include "exn.h"
 
+typedef struct {
+    unsigned int branch0 : 1;
+    unsigned int branch1 : 1;
+    unsigned int branch2 : 1;
+    unsigned int branch3 : 1;
+    unsigned int branch4 : 1;
+    unsigned int branch5 : 1;
+    unsigned int branch6 : 1;
+    unsigned int branch7 : 1;
+} exn_test_state_t;
+
 static int Exit_Status = 0;
 void test_exit(int status) {
     Exit_Status = status;
@@ -25,51 +36,95 @@ TEST_SUITE(Exn) {
     //-------------------------------------------------------------------------
     TEST(Verify_a_catch_block_will_catch_a_matching_exception)
     {
-        int counter = 0;
-        try { throw(RuntimeException); }
-        catch(RuntimeException) { counter++; }
-        CHECK(counter == 1);
+        exn_test_state_t state = {0,0,0,0,0,0,0,0};
+        try {
+            state.branch0 = 1;
+            throw(RuntimeException);
+            state.branch1 = 1;
+        } catch(RuntimeException) {
+            state.branch2 = 1;
+        }
+        CHECK(state.branch0 == 1);
+        CHECK(state.branch1 == 0);
+        CHECK(state.branch2 == 1);
     }
 
     TEST(Verify_a_catch_block_will_catch_a_matching_exception_by_hierarchy)
     {
-        int counter = 0;
-        try { throw(AssertionException); }
-        catch(RuntimeException) { counter++; }
-        CHECK(counter == 1);
+        exn_test_state_t state = {0,0,0,0,0,0,0,0};
+        try {
+            state.branch0 = 1;
+            throw(AssertionException);
+            state.branch1 = 1;
+        } catch(RuntimeException) {
+            state.branch2 = 1;
+        }
+        CHECK(state.branch0 == 1);
+        CHECK(state.branch1 == 0);
+        CHECK(state.branch2 == 1);
     }
 
     TEST(Verify_the_first_matching_catch_block_is_executed)
     {
-        int counter = 0;
-        try { throw(AssertionException); }
-        catch(RuntimeException) { counter++; }
-        catch(AssertionException) { counter++; }
-        CHECK(counter == 1);
+        exn_test_state_t state = {0,0,0,0,0,0,0,0};
+        try {
+            state.branch0 = 1;
+            throw(AssertionException);
+            state.branch1 = 1;
+        } catch(RuntimeException) {
+            state.branch2 = 1;
+        } catch(AssertionException) {
+            state.branch3 = 1;
+        }
+        CHECK(state.branch0 == 1);
+        CHECK(state.branch1 == 0);
+        CHECK(state.branch2 == 1);
+        CHECK(state.branch3 == 0);
     }
 
     TEST(Verify_non_matching_catch_blocks_are_ignored)
     {
-        int counter = 0;
-        try { throw(AssertionException); }
-        catch(AbortException) { counter++; }
-        catch(RuntimeException) { counter++; }
-        catch(AssertionException) { counter++; }
-        CHECK(counter == 1);
+        exn_test_state_t state = {0,0,0,0,0,0,0,0};
+        try {
+            state.branch0 = 1;
+            throw(AssertionException);
+            state.branch1 = 1;
+        } catch(AbortException) {
+            state.branch2 = 1;
+        } catch(RuntimeException) {
+            state.branch3 = 1;
+        } catch(AssertionException) {
+            state.branch4 = 1;
+        }
+        CHECK(state.branch0 == 1);
+        CHECK(state.branch1 == 0);
+        CHECK(state.branch2 == 0);
+        CHECK(state.branch3 == 1);
+        CHECK(state.branch4 == 0);
     }
 
     TEST(Verify_an_uncaught_exception_will_be_rethrown)
     {
-        int counter = 0;
+        exn_test_state_t state = {0,0,0,0,0,0,0,0};
         try {
-            counter++;
-            try { throw(RuntimeException); }
-            catch(AssertionException) { counter++; }
-            counter++;
+            state.branch0 = 1;
+            try {
+                state.branch1 = 1;
+                throw(RuntimeException);
+                state.branch2 = 1;
+            } catch(AssertionException) {
+                state.branch3 = 1;
+            }
+            state.branch4 = 1;
         } catch(RuntimeException) {
-            counter++;
+            state.branch5 = 1;
         }
-        CHECK(counter == 2);
+        CHECK(state.branch0 == 1);
+        CHECK(state.branch1 == 1);
+        CHECK(state.branch2 == 0);
+        CHECK(state.branch3 == 0);
+        CHECK(state.branch4 == 0);
+        CHECK(state.branch5 == 1);
     }
 
     //-------------------------------------------------------------------------
@@ -77,26 +132,33 @@ TEST_SUITE(Exn) {
     //-------------------------------------------------------------------------
     TEST(Verify_a_finally_block_is_executed_after_an_uncaught_exception_is_thrown)
     {
-        int counter = 0;
+        exn_test_state_t state = {0,0,0,0,0,0,0,0};
         try {
-            counter++;
-            try { throw(RuntimeException); }
-            finally { counter++; }
+            state.branch0 = 1;
+            try {
+                throw(RuntimeException);
+                state.branch1 = 1;
+            } finally { state.branch2 = 1; }
         } catch(RuntimeException) {
-            counter++;
+            state.branch3 = 1;
         }
-        CHECK(counter == 3);
+        CHECK(state.branch0 == 1);
+        CHECK(state.branch1 == 0);
+        CHECK(state.branch2 == 1);
+        CHECK(state.branch3 == 1);
     }
 
     TEST(Verify_a_finally_block_is_executed_after_a_succesful_try_block)
     {
-        int counter = 0;
+        exn_test_state_t state = {0,0,0,0,0,0,0,0};
         try {
-            counter++;
+            state.branch0 = 1;
         }
-        catch(RuntimeException) { counter++; }
-        finally { counter++; }
-        CHECK(counter == 2);
+        catch(RuntimeException) { state.branch1 = 1; }
+        finally { state.branch2 = 1; }
+        CHECK(state.branch0 == 1);
+        CHECK(state.branch1 == 0);
+        CHECK(state.branch2 == 1);
     }
 
     //-------------------------------------------------------------------------
@@ -104,24 +166,27 @@ TEST_SUITE(Exn) {
     //-------------------------------------------------------------------------
     TEST(Verify_successful_assertions_do_not_throw_an_exception)
     {
-        int counter = 0;
+        exn_test_state_t state = {0,0,0,0,0,0,0,0};
         try {
+            state.branch0 = 1;
             assert(true);
-            counter++;
+            state.branch1 = 1;
         }
-        catch(AssertionException) { counter--; }
-        CHECK(counter == 1);
+        catch(AssertionException) { state.branch2 = 1; }
+        CHECK(state.branch0 == 1);
+        CHECK(state.branch1 == 1);
     }
 
     TEST(Verify_successful_assertions_do_not_throw_an_exception)
     {
-        int counter = 0;
+        exn_test_state_t state = {0,0,0,0,0,0,0,0};
         try {
             assert(false);
-            counter++;
+            state.branch0 = 1;
         }
-        catch(AssertionException) { counter--; }
-        CHECK(counter == -1);
+        catch(AssertionException) { state.branch1 = 1; }
+        CHECK(state.branch0 == 0);
+        CHECK(state.branch1 == 1);
     }
 
     //-------------------------------------------------------------------------
