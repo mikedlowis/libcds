@@ -1,8 +1,6 @@
 /**
   @file str.h
   @brief An updated string type for C.
-  $Revision$
-  $HeadURL$
 */
 #ifndef STR_H
 #define STR_H
@@ -11,9 +9,7 @@
 extern "C" {
 #endif
 
-#include <string.h>
-#include <stdbool.h>
-#include "mem.h"
+#include "rt.h"
 
 /* Forward declare our struct */
 struct str_t;

@@ -1,3 +1,7 @@
+/**
+  @file list.h
+  @brief An Implementation of a doubly linked list.
+  */
 #ifndef LIST_H
 #define LIST_H
 
@@ -5,8 +9,7 @@
 extern "C" {
 #endif
 
-#include <stddef.h>
-#include <stdbool.h>
+#include "rt.h"
 
 /** A linked list node. */
 typedef struct list_node_t

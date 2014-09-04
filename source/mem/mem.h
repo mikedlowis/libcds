@@ -1,18 +1,15 @@
 /**
   @file mem.h
-  @brief TODO: Describe this file
-  $Revision$
-  $HeadURL$
+  @brief Implements reference counting routines for C.
   */
 #ifndef MEM_H
 #define MEM_H
 
-#include <stdint.h>
-#include <string.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#include "rt.h"
 
 /** A function pointer for object destructors */
 typedef void (*destructor_t)(void* p_val);

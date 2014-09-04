@@ -283,10 +283,24 @@ TEST_SUITE(Vector) {
         mem_release(p_vec);
     }
 
-    TEST(Verify_vec_erase_should_fail_for_invalid_ranges)
+    TEST(Verify_vec_erase_should_fail_if_start_index_out_of_range)
+    {
+        vec_t* p_vec = vec_new(4, mem_box(1), mem_box(2), mem_box(3), mem_box(4));
+        CHECK(false == vec_erase( p_vec, 4, 4 ));
+        mem_release(p_vec);
+    }
+
+    TEST(Verify_vec_erase_should_fail_if_end_index_is_out_of_range)
     {
         vec_t* p_vec = vec_new(4, mem_box(1), mem_box(2), mem_box(3), mem_box(4));
         CHECK(false == vec_erase( p_vec, 0, 4 ));
+        mem_release(p_vec);
+    }
+
+    TEST(Verify_vec_erase_should_fail_if_start_index_greater_than_end_index)
+    {
+        vec_t* p_vec = vec_new(4, mem_box(1), mem_box(2), mem_box(3), mem_box(4));
+        CHECK(false == vec_erase( p_vec, 2, 1 ));
         mem_release(p_vec);
     }
 
@@ -359,7 +373,7 @@ TEST_SUITE(Vector) {
     //-------------------------------------------------------------------------
     TEST(Verify_vec_clear_clears_the_vector)
     {
-        vec_t* p_vec = vec_new(4, mem_box(1), mem_box(2), mem_box(3), mem_box(4));
+        vec_t* p_vec = vec_new(4, mem_box(1), NULL, mem_box(3), mem_box(4));
         vec_clear(p_vec);
         CHECK( 0 == p_vec->size );
         mem_release(p_vec);

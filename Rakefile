@@ -25,7 +25,6 @@ TestEnv = Env.clone  do |env|
   env.build_dir('source','build/obj/test_source')
   env.build_dir('tests','build/obj/tests/source')
   env['CFLAGS']  += ['-g', '--coverage', '-DLEAK_DETECT_LEVEL=1', '-DTESTING']
-  #env['CFLAGS']  += ['-DNDEBUG'] #disables asserts so they won't effect coverage analysis
   env["LDFLAGS"] += ['--coverage']
   env['CPPPATH'] += Dir['tests/']
 end
@@ -60,7 +59,7 @@ task :coverage => [:test] do
         obj  = gcno.ext('o')
         path = File.dirname(obj)
         gcov = File.basename(obj).ext('c.gcov')
-        sh *['gcov', '-abc', obj] and FileUtils.mv("./#{gcov}","#{path}/#{gcov}")
+        sh *['gcov', '-a', '-b', '-c', obj] and FileUtils.mv("./#{gcov}","#{path}/#{gcov}")
     end
 end
 
@@ -69,4 +68,7 @@ end
 #------------------------------------------------------------------------------
 desc "Clean all generated files and directories"
 task(:clean) { Rscons.clean }
+
+desc "Clobber all generated files and directories"
+task(:clobber) { FileUtils.rm_rf('build') }
 
