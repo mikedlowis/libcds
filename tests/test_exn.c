@@ -177,7 +177,7 @@ TEST_SUITE(Exn) {
         CHECK(state.branch1 == 1);
     }
 
-    TEST(Verify_successful_assertions_do_not_throw_an_exception)
+    TEST(Verify_unsuccessful_assertions_throw_an_exception)
     {
         exn_test_state_t state = {0,0,0,0,0,0,0,0};
         try {
