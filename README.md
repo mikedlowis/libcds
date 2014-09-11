@@ -1,8 +1,8 @@
 C Data Structures Lib
 =====================
 
-    Created By: Michael D. Lowis
-    Email:      mike@mdlowis.com
+    Created By: Michael D. Lowis & A. Bellenir
+    Email:      mike@mdlowis.com; libcds@bellenir.com
 
 About This Project
 ------------------
