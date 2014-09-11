@@ -467,6 +467,15 @@ TEST_SUITE(String) {
         mem_release(p_str2);
     }
 
+    TEST(Verify_str_find_should_not_find_any_occurrence)
+    {
+        str_t* p_str1 = str_new("_abcabc_");
+        str_t* p_str2 = str_new("zzz");
+        CHECK(SIZE_MAX == str_find(p_str1, p_str2));
+        mem_release(p_str1);
+        mem_release(p_str2);
+    }
+
     //-------------------------------------------------------------------------
     // Test str_rfind function
     //-------------------------------------------------------------------------
@@ -520,6 +529,15 @@ TEST_SUITE(String) {
         str_t* p_str1 = str_new("_abcabc_");
         str_t* p_str2 = str_new("abc");
         CHECK(4 == str_rfind(p_str1, p_str2));
+        mem_release(p_str1);
+        mem_release(p_str2);
+    }
+
+    TEST(Verify_str_rfind_should_not_find_any_occurrence)
+    {
+        str_t* p_str1 = str_new("_abcabc_");
+        str_t* p_str2 = str_new("zzz");
+        CHECK(SIZE_MAX == str_rfind(p_str1, p_str2));
         mem_release(p_str1);
         mem_release(p_str2);
     }

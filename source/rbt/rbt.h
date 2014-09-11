@@ -1,38 +1,44 @@
-#ifndef RB_H
-#define RB_H
+/**
+  @file rbt.h
+  @brief Implementation of a Red-Black tree.
+  */
+#ifndef RBT_H
+#define RBT_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+#include "rt.h"
+
 /** node colors */
 typedef enum {
-	RED = 0,
-	BLACK
+    RED = 0,
+    BLACK
 } rbt_color_t;
- 
+
 /** a function pointer for comparing node contents
-should return -1, 0, or 1 if a is <, ==, or > b, respectively */
+  should return -1, 0, or 1 if a is <, ==, or > b, respectively */
 typedef int (*comparator_t)(void* p_a, void* p_b);
 
 /** a red-black tree node */
 typedef struct rbt_node_t {
-	/** pointers to immediate relatives */
-	struct rbt_node_t* left;
-	struct rbt_node_t* right;
-	struct rbt_node_t* parent;
-	/** node color */
-	rbt_color_t color;
-	/** pointer to node contents */
-	void* contents;
+    /** pointers to immediate relatives */
+    struct rbt_node_t* left;
+    struct rbt_node_t* right;
+    struct rbt_node_t* parent;
+    /** node color */
+    rbt_color_t color;
+    /** pointer to node contents */
+    void* contents;
 } rbt_node_t;
 
 /** a red-black tree */
 typedef struct {
-	/** pointer to the root of the tree */
-	rbt_node_t* root;
-	/** function pointer for comparing node contents */
-	comparator_t comp;
+    /** pointer to the root of the tree */
+    rbt_node_t* root;
+    /** function pointer for comparing node contents */
+    comparator_t comp;
 } rbt_t;
 
 
@@ -44,26 +50,6 @@ typedef struct {
  * @return pointer to newly created tree
  */
 rbt_t* rbt_new(comparator_t comparator);
-
-
-/**
- * @brief creates a new node for a red-black tree
- *
- * @param contents pointer to the contents of the node
- *
- * @return pointer to newly created node
- */
-rbt_node_t* rbt_node_new(void* contents);
-
-
-/**
- * @brief get the color of a given node
- *
- * @param node the node on which to operate
- *
- * @return RED or BLACK. BLACK if node is NULL (a leaf)
- */
-rbt_color_t rbt_node_color(rbt_node_t* node);
 
 
 /**
@@ -80,12 +66,12 @@ rbt_node_t* rbt_lookup(rbt_t* tree, void* value);
 
 /**
  * @brief count the number of nodes in a red-black tree
- * 
+ *
  * @param tree  pointer to the tree on which to operate
  *
  * @return the number of nodes present in the tree
  */
-int rbt_count_nodes(rbt_t* tree);
+int rbt_size(rbt_t* tree);
 
 /**
  * @brief insert a value into a red-black tree
@@ -110,5 +96,5 @@ void rbt_delete(rbt_t* tree, void* value);
 }
 #endif
 
-#endif /* RB_H */
+#endif /* RBT_H */
 

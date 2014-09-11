@@ -7,6 +7,9 @@
 #include "mem.h"
 #include "list.h"
 
+extern rbt_color_t rbt_node_color(rbt_node_t* node);
+extern rbt_node_t* rbt_node_new(void* contents);
+
 static int test_compare(void* a, void* b){
 	int ia = (int)(mem_unbox(a));
 	int ib = (int)(mem_unbox(b));
@@ -67,6 +70,7 @@ static rbt_status_t rbt_check_status(rbt_t* tree){
 }
 
 static void test_setup(void) { }
+
 //-----------------------------------------------------------------------------
 // Begin Unit Tests
 //-----------------------------------------------------------------------------
@@ -82,7 +86,6 @@ TEST_SUITE(RBT) {
 		CHECK(NULL == node->right);
 		CHECK(NULL == node->parent);
 		CHECK(box42 == node->contents);
-		//CHECK(OK == rbt_check_node(node, -1, -1)); //TODO: fix this?
 		mem_release(node);
 	}
 
@@ -107,6 +110,7 @@ TEST_SUITE(RBT) {
 		CHECK(OK == rbt_check_status(tree));
 		mem_release(tree);
 	}
+
 	TEST(Verify_tree_is_valid_checks_root_is_always_black_property){
 		void* box88 = mem_box(88);
 		rbt_t* tree = rbt_new(test_compare);
@@ -117,6 +121,7 @@ TEST_SUITE(RBT) {
 		CHECK(BAD_ROOT_COLOR == rbt_check_status(tree));
 		mem_release(tree);
 	}
+
 	TEST(Verify_tree_is_valid_fails_when_nodes_not_sorted_two_nodes){
 		void* box42 = mem_box(42);
 		void* box88 = mem_box(88);
@@ -135,6 +140,7 @@ TEST_SUITE(RBT) {
 		CHECK(OUT_OF_ORDER == rbt_check_status(tree));
 		mem_release(tree);
 	}
+
 	TEST(Verify_tree_is_valid_fails_when_nodes_not_sorted_four_nodes){
 		void* box42 = mem_box(42);
 		void* box88 = mem_box(88);
@@ -171,6 +177,7 @@ TEST_SUITE(RBT) {
 		CHECK(OUT_OF_ORDER == rbt_check_status(tree));
 		mem_release(tree);
 	}
+
 	TEST(Verify_tree_is_valid_fails_when_black_nodes_are_unbalanced_two_nodes){
 		void* box42 = mem_box(42);
 		void* box88 = mem_box(88);
@@ -191,6 +198,7 @@ TEST_SUITE(RBT) {
 		CHECK(OK == rbt_check_status(tree));
 		mem_release(tree);
 	}
+
 	TEST(Verify_tree_is_valid_fails_when_black_nodes_are_unbalanced_three_nodes){
 		void* box42 = mem_box(42);
 		void* box22 = mem_box(22);
@@ -224,6 +232,7 @@ TEST_SUITE(RBT) {
 		CHECK(OK == rbt_check_status(tree));
 		mem_release(tree);
 	}
+
 	TEST(Verify_tree_is_valid_fails_when_black_nodes_are_unbalanced_four_nodes){
 		void* box42 = mem_box(42);
 		void* box22 = mem_box(22);
@@ -265,6 +274,7 @@ TEST_SUITE(RBT) {
 		CHECK(OK == rbt_check_status(tree));
 		mem_release(tree);
 	}
+
 	TEST(Verify_tree_is_valid_fails_when_node_is_unvalid_color){
 		void* box42 = mem_box(42);
 		void* box88 = mem_box(88);
@@ -285,6 +295,7 @@ TEST_SUITE(RBT) {
 		CHECK(OK == rbt_check_status(tree));
 		mem_release(tree);
 	}
+
 	TEST(Verify_tree_is_valid_fails_when_root_parent_pointer_is_not_null){
 		void* box42 = mem_box(42);
 		void* box88 = mem_box(88);
@@ -305,6 +316,7 @@ TEST_SUITE(RBT) {
 		CHECK(OK == rbt_check_status(tree));
 		mem_release(tree);
 	}
+
 	TEST(Verify_tree_is_valid_fails_when_node_parent_poitners_are_wrong_two_nodes){
 		void* box42 = mem_box(42);
 		void* box88 = mem_box(88);
@@ -332,6 +344,7 @@ TEST_SUITE(RBT) {
 		mem_release(tree);
 		mem_release(node3);
 	}
+
 	TEST(Verify_tree_is_valid_fails_when_node_parent_poitners_are_wrong_four_nodes){
 		void* box42 = mem_box(42);
 		void* box22 = mem_box(22);
@@ -370,6 +383,7 @@ TEST_SUITE(RBT) {
 		CHECK(OK == rbt_check_status(tree));
 		mem_release(tree);
 	}
+
 	TEST(Verify_tree_is_valid_fails_when_node_points_to_itself){
 		void* box42 = mem_box(42);
 		void* box22 = mem_box(22);
@@ -417,13 +431,13 @@ TEST_SUITE(RBT) {
 	//-------------------------------------------------------------------------
 	// Test node count function
 	//-------------------------------------------------------------------------
-	TEST(Verify_count_nodes_works){
+	TEST(Verify_size_works){
 		int i=0;
 		rbt_t* tree = rbt_new(NULL);
-		CHECK(0 == rbt_count_nodes(tree));
+		CHECK(0 == rbt_size(tree));
 		for(i = 1; i < 10; i++){
 			rbt_insert(tree, mem_box(i));
-			CHECK(i == rbt_count_nodes(tree));
+			CHECK(i == rbt_size(tree));
 		}
 		mem_release(tree);
 	}
@@ -444,6 +458,7 @@ TEST_SUITE(RBT) {
 		CHECK(OK == rbt_check_status(tree));
 		mem_release(tree);
 	}
+
 	TEST(Verify_rbt_insert_node_to_root_left_works){
 		void* box42 = mem_box(42);
 		void* box31 = mem_box(31);
@@ -461,6 +476,7 @@ TEST_SUITE(RBT) {
 		CHECK(OK == rbt_check_status(tree));
 		mem_release(tree);
 	}
+
 	TEST(Verify_rbt_insert_node_to_root_right_works){
 		void* box42 = mem_box(42);
 		void* box64 = mem_box(64);
@@ -478,6 +494,7 @@ TEST_SUITE(RBT) {
 		CHECK(OK == rbt_check_status(tree));
 		mem_release(tree);
 	}
+
 	TEST(Verify_rbt_insert_first_level_works){
 		void* box42 = mem_box(42);
 		void* box31 = mem_box(31);
@@ -501,6 +518,7 @@ TEST_SUITE(RBT) {
 		CHECK(OK == rbt_check_status(tree));
 		mem_release(tree);
 	}
+
 	TEST(Verify_rbt_insert_below_full_first_level_works){
 		void* box42 = mem_box(42);
 		void* box31 = mem_box(31);
@@ -523,6 +541,7 @@ TEST_SUITE(RBT) {
 		CHECK(OK == rbt_check_status(tree));
 		mem_release(tree);
 	}
+
 	TEST(Verify_rbt_insert_parent_uncle_mismatch_outside_left){
 		void* box42 = mem_box(42);
 		void* box32 = mem_box(32);
@@ -559,6 +578,7 @@ TEST_SUITE(RBT) {
 		CHECK(OK == rbt_check_status(tree));
 		mem_release(tree);
 	}
+
 	TEST(Verify_rbt_insert_parent_uncle_mismatch_outside_right){
 		void* box42 = mem_box(42);
 		void* box53 = mem_box(53);
@@ -594,6 +614,7 @@ TEST_SUITE(RBT) {
 		CHECK(OK == rbt_check_status(tree));
 		mem_release(tree);
 	}
+
 	TEST(Verify_rbt_insert_parent_uncle_mismatch_inside_left){
 		void* box42 = mem_box(42);
 		void* box20 = mem_box(20);
@@ -629,6 +650,7 @@ TEST_SUITE(RBT) {
 		CHECK(OK == rbt_check_status(tree));
 		mem_release(tree);
 	}
+
 	TEST(Verify_rbt_insert_parent_uncle_mismatch_inside_right){
 		void* box42 = mem_box(42);
 		void* box99 = mem_box(99);
@@ -683,6 +705,7 @@ TEST_SUITE(RBT) {
 		mem_release(tree);
 		mem_release(box78);
 	}
+
 	TEST(Verify_rbt_lookup_returns_correct_node){
 		void* box42 = mem_box(42);
 		void* box33 = mem_box(33);
@@ -745,6 +768,7 @@ TEST_SUITE(RBT) {
 		mem_release(node4);
 		mem_release(tree);
 	}
+
 	//case 2: black node, one red child
 	TEST(Verify_rbt_delete_left_black_node_with_single_red_left_child){
 		void* box42 = mem_box(42);
@@ -777,6 +801,7 @@ TEST_SUITE(RBT) {
 		mem_release(node2);
 		mem_release(tree);
 	}
+
 	TEST(Verify_rbt_delete_left_black_node_with_single_red_right_child){
 		void* box42 = mem_box(42);
 		void* box33 = mem_box(33);
@@ -808,6 +833,7 @@ TEST_SUITE(RBT) {
 		mem_release(node2);
 		mem_release(tree);
 	}
+
 	TEST(Verify_rbt_delete_right_black_node_with_single_red_right_child){
 		void* box42 = mem_box(42);
 		void* box33 = mem_box(33);
@@ -839,6 +865,7 @@ TEST_SUITE(RBT) {
 		mem_release(node3);
 		mem_release(tree);
 	}
+
 	TEST(Verify_rbt_delete_right_black_node_with_single_red_left_child){
 		void* box42 = mem_box(42);
 		void* box33 = mem_box(33);
@@ -870,6 +897,7 @@ TEST_SUITE(RBT) {
 		mem_release(node3);
 		mem_release(tree);
 	}
+
 	//case 3: black node, no non-null children, red parent
 	//red parent implies non-null black sibbling
 	//four subcases for sibbling's children
@@ -915,6 +943,7 @@ TEST_SUITE(RBT) {
 		mem_release(node5);
 		mem_release(tree);
 	}
+
 	//3.1.2: test when node being deleted is parent->left and parent is grandparent->left
 	TEST(Verify_rbt_delete_black_node_from_red_parent_sib_no_children_left){
 		void* target = mem_box(15);
@@ -956,6 +985,7 @@ TEST_SUITE(RBT) {
 		mem_release(node5);
 		mem_release(tree);
 	}
+
 	//3.2: sibbling has outside child
 	//3.2.1: test when node being deleted is parent->right and parent is grandparent->right
 	TEST(Verify_rbt_delete_black_node_from_red_parent_sib_has_outside_child_right){
@@ -1002,6 +1032,7 @@ TEST_SUITE(RBT) {
 		mem_release(node5);
 		mem_release(tree);
 	}
+
 	//3.2.2: test when node being deleted is parent->left and parent is grandparent->left
 	TEST(Verify_rbt_delete_black_node_from_red_parent_sib_has_outside_child_left){
 		void* target = mem_box(12);
@@ -1047,6 +1078,7 @@ TEST_SUITE(RBT) {
 		mem_release(node5);
 		mem_release(tree);
 	}
+
 	//3.3: sibbling has inside child
 	//3.3.1: test when node being deleted is parent->right and parent is grandparent->right
 	TEST(Verify_rbt_delete_black_node_from_red_parent_sib_has_inside_child_right){
@@ -1093,6 +1125,7 @@ TEST_SUITE(RBT) {
 		mem_release(node5);
 		mem_release(tree);
 	}
+
 	//3.3.2: test when node being deleted is parent->left and parent is grandparent->left
 	TEST(Verify_rbt_delete_black_node_from_red_parent_sib_has_inside_child_left){
 		void* target = mem_box(15);
@@ -1138,6 +1171,7 @@ TEST_SUITE(RBT) {
 		mem_release(node5);
 		mem_release(tree);
 	}
+
 	//3.4: sibbling has no children
 	//3.4.1: test when node being deleted is parent->right and parent is grandparent->right
 	TEST(Verify_rbt_delete_black_node_from_red_parent_sib_has_two_children_right){
@@ -1188,6 +1222,7 @@ TEST_SUITE(RBT) {
 		mem_release(node5);
 		mem_release(tree);
 	}
+
 	//3.4.2: test when node being deleted is parent->left and parent is grandparent->left
 	TEST(Verify_rbt_delete_black_node_from_red_parent_sib_has_two_children_left){
 		void* target = mem_box(15);
@@ -1237,6 +1272,7 @@ TEST_SUITE(RBT) {
 		mem_release(node5);
 		mem_release(tree);
 	}
+
 	//case 4: black node, no non-null children, black parent
 	//properties of RBT imply node has a sibbling
 	//five subcases
@@ -1274,6 +1310,7 @@ TEST_SUITE(RBT) {
 		mem_release(node2);
 		mem_release(tree);
 	}
+
 	TEST(Verify_rbt_delete_black_node_from_black_parent_sib_has_no_children_left){
 		void* target = mem_box(22);
 		//create tree w/ several nodes
@@ -1307,6 +1344,7 @@ TEST_SUITE(RBT) {
 		mem_release(node2);
 		mem_release(tree);
 	}
+
 	//test tree rebalancing after remove. case 4.1 is the only rm case that requires a structural rebalancing:
 	//trivial case: parent is tree->root (tested above) ; no action required
 	//A: rebalance node w/ red sibbling (rotation moves to have black sibbling to fall in one of the following cases)
@@ -1374,6 +1412,7 @@ TEST_SUITE(RBT) {
 		mem_release(node11);
 		mem_release(tree);
 	}
+
 	TEST(Verify_rbt_delete_rebalance_red_sibbling_right){
 		void* target = mem_box(88);
 		void* box42 = mem_box(42);
@@ -1438,6 +1477,7 @@ TEST_SUITE(RBT) {
 		mem_release(node06);
 		mem_release(tree);
 	}
+
 	//B: rebalance w/ black parent, black sibbling w/ black children
 	TEST(Verify_rbt_delete_rebalance_black_parent_black_sib_with_black_children_left){
 		void* target = mem_box(15);
@@ -1486,6 +1526,7 @@ TEST_SUITE(RBT) {
 		mem_release(node7);
 		mem_release(tree);
 	}
+
 	TEST(Verify_rbt_delete_rebalance_black_parent_black_sib_with_black_children_right){
 		void* target = mem_box(75);
 		void* box42 = mem_box(42);
@@ -1533,6 +1574,7 @@ TEST_SUITE(RBT) {
 		mem_release(node5);
 		mem_release(tree);
 	}
+
 	//C: rebalance w/ red parent, red sibbling w/ black children
 	TEST(Verify_rbt_delete_rebalance_red_parent_black_sib_with_black_children_left){
 		void* target = mem_box(11);
@@ -1598,6 +1640,7 @@ TEST_SUITE(RBT) {
 		mem_release(node11);
 		mem_release(tree);
 	}
+
 	TEST(Verify_rbt_delete_rebalance_red_parent_black_sib_with_black_children_right){
 		void* target = mem_box(99);
 		void* box42 = mem_box(42);
@@ -1662,6 +1705,7 @@ TEST_SUITE(RBT) {
 		mem_release(node06);
 		mem_release(tree);
 	}
+
 	//D: rebalance for sibbling w/ outside red child
 	TEST(Verify_rbt_delete_rebalance_sib_with_red_child_outside_left){
 		void* target = mem_box(11);
@@ -1718,6 +1762,7 @@ TEST_SUITE(RBT) {
 		mem_release(node06);
 		mem_release(tree);
 	}
+
 	TEST(Verify_rbt_delete_rebalance_sib_with_red_child_outside_right){
 		void* target = mem_box(88);
 		void* box42 = mem_box(42);
@@ -1773,6 +1818,7 @@ TEST_SUITE(RBT) {
 		mem_release(node06);
 		mem_release(tree);
 	}
+
 	//E: rebalance for sibbling w/ inside red child
 	TEST(Verify_rbt_delete_rebalance_sib_with_red_child_inside_left){
 		void* target = mem_box(11);
@@ -1829,6 +1875,7 @@ TEST_SUITE(RBT) {
 		mem_release(node06);
 		mem_release(tree);
 	}
+
 	TEST(Verify_rbt_delete_rebalance_sib_with_red_child_inside_right){
 		void* target = mem_box(88);
 		void* box42 = mem_box(42);
@@ -1884,6 +1931,7 @@ TEST_SUITE(RBT) {
 		mem_release(node06);
 		mem_release(tree);
 	}
+
 	//F: rebalance for sibbling with two red children
 	TEST(Verify_rbt_delete_rebalance_sib_with_two_red_children_left){
 		void* target = mem_box(11);
@@ -1948,6 +1996,7 @@ TEST_SUITE(RBT) {
 		mem_release(node06);
 		mem_release(tree);
 	}
+
 	TEST(Verify_rbt_delete_rebalance_sib_with_two_red_children_right){
 		void* target = mem_box(88);
 		void* box42 = mem_box(42);
@@ -2011,6 +2060,7 @@ TEST_SUITE(RBT) {
 		mem_release(node06);
 		mem_release(tree);
 	}
+
 	//4.2: sibbling is black, outside red child
 	TEST(Verify_rbt_delete_black_node_from_black_parent_sib_has_outside_red_child_right){
 		void* target = mem_box(99);
@@ -2049,6 +2099,7 @@ TEST_SUITE(RBT) {
 		mem_release(node2);
 		mem_release(tree);
 	}
+
 	TEST(Verify_rbt_delete_black_node_from_black_parent_sib_has_outside_red_child_left){
 		void* target = mem_box(8);
 		//create tree w/ several nodes
@@ -2086,6 +2137,7 @@ TEST_SUITE(RBT) {
 		mem_release(node2);
 		mem_release(tree);
 	}
+
 	//4.3: sibbling is black, inside red child
 	TEST(Verify_rbt_delete_black_node_from_black_parent_sib_has_inside_red_child_right){
 		void* target = mem_box(99);
@@ -2124,6 +2176,7 @@ TEST_SUITE(RBT) {
 		mem_release(node2);
 		mem_release(tree);
 	}
+
 	TEST(Verify_rbt_delete_black_node_from_black_parent_sib_has_inside_red_child_left){
 		void* target = mem_box(8);
 		//create tree w/ several nodes
@@ -2161,6 +2214,7 @@ TEST_SUITE(RBT) {
 		mem_release(node2);
 		mem_release(tree);
 	}
+
 	//4.4: sibbling is black, two red children
 	TEST(Verify_rbt_delete_black_node_from_black_parent_sib_has_two_children_right){
 		void* target = mem_box(99);
@@ -2203,6 +2257,7 @@ TEST_SUITE(RBT) {
 		mem_release(node2);
 		mem_release(tree);
 	}
+
 	TEST(Verify_rbt_delete_black_node_from_black_parent_sib_has_two_children_left){
 		void* target = mem_box(8);
 		//create tree w/ several nodes
@@ -2244,6 +2299,7 @@ TEST_SUITE(RBT) {
 		mem_release(node2);
 		mem_release(tree);
 	}
+
 	//4.5: sibbling is red, two black children
 	TEST(Verify_rbt_delete_black_node_from_black_parent_red_sib_right){
 		void* target = mem_box(99);
@@ -2286,6 +2342,7 @@ TEST_SUITE(RBT) {
 		mem_release(node2);
 		mem_release(tree);
 	}
+
 	TEST(Verify_rbt_delete_black_node_from_black_parent_red_sib_left){
 		void* target = mem_box(8);
 		//create tree w/ several nodes
@@ -2327,6 +2384,7 @@ TEST_SUITE(RBT) {
 		mem_release(node2);
 		mem_release(tree);
 	}
+
 	//second class: deleting nodes that have two children
 	TEST(Verify_rbt_delete_node_with_two_children_successor_is_left){
 		void* target = mem_box(22);
@@ -2356,6 +2414,7 @@ TEST_SUITE(RBT) {
 		mem_release(doomed);
 		mem_release(tree);
 	}
+
 	TEST(Verify_rbt_delete_node_with_two_children){
 		void* target = mem_box(42);
 		void* box88 = mem_box(88);
@@ -2398,6 +2457,7 @@ TEST_SUITE(RBT) {
 		mem_release(doomed);
 		mem_release(tree);
 	}
+
 	//third class: special cases: deleting root
 	TEST(Verify_rbt_delete_root_node_with_single_red_left_child){
 		void* box88 = mem_box(88);
@@ -2420,6 +2480,7 @@ TEST_SUITE(RBT) {
 		mem_release(node1);
 		mem_release(tree);
 	}
+
 	TEST(Verify_rbt_delete_root_node_with_single_red_right_child){
 		void* box42 = mem_box(42);
 		void* box88 = mem_box(88);
@@ -2441,6 +2502,7 @@ TEST_SUITE(RBT) {
 		mem_release(node1);
 		mem_release(tree);
 	}
+
 	TEST(Verify_rbt_delete_root_node_with_no_children){
 		void* box88 = mem_box(88);
 		rbt_t* tree = rbt_new(test_compare);
@@ -2456,6 +2518,7 @@ TEST_SUITE(RBT) {
 		mem_release(node1);
 		mem_release(tree);
 	}
+
 	TEST(Verify_rbt_delete_root_node_with_two_children){
 		void* target = mem_box(22);
 		void* box42 = mem_box(42);
@@ -2498,6 +2561,7 @@ TEST_SUITE(RBT) {
 		mem_release(doomed);
 		mem_release(tree);
 	}
+
 	TEST(Verify_rbt_delete_node_with_four_nodes){
 		void* target = mem_box(42);
 		void* box88 = mem_box(88);
@@ -2524,6 +2588,7 @@ TEST_SUITE(RBT) {
 		mem_release(doomed);
 		mem_release(tree);
 	}
+
 	//deleting node that is not present
 	TEST(Verify_rbt_delete_node_not_present_does_nothing){
 		void* target = mem_box(42);
@@ -2534,19 +2599,19 @@ TEST_SUITE(RBT) {
 		//rbt_t* tree = rbt_new(NULL);
 		rbt_delete(tree, target);
 		CHECK(OK == rbt_check_status(tree));
-		CHECK(0 == rbt_count_nodes(tree));
+		CHECK(0 == rbt_size(tree));
 		rbt_insert(tree, box88);
 		rbt_delete(tree, target);
 		CHECK(OK == rbt_check_status(tree));
-		CHECK(1 == rbt_count_nodes(tree));
+		CHECK(1 == rbt_size(tree));
 		rbt_insert(tree, box36);
 		rbt_delete(tree, target);
 		CHECK(OK == rbt_check_status(tree));
-		CHECK(2 == rbt_count_nodes(tree));
+		CHECK(2 == rbt_size(tree));
 		rbt_insert(tree, box99);
 		rbt_delete(tree, target);
 		CHECK(OK == rbt_check_status(tree));
-		CHECK(3 == rbt_count_nodes(tree));
+		CHECK(3 == rbt_size(tree));
 		mem_release(target);
 		mem_release(tree);
 	}
@@ -2566,7 +2631,7 @@ TEST_SUITE(RBT) {
 				mem_retain(foo);
 				rbt_insert(tree, foo);
 				listsize++;
-				CHECK(listsize == rbt_count_nodes(tree));
+				CHECK(listsize == rbt_size(tree));
 			}
 			rbt_status_t status = rbt_check_status(tree);
 			//printf("status after inserts is %d\n", status);
@@ -2578,7 +2643,7 @@ TEST_SUITE(RBT) {
 				rbt_delete(tree, foo);
 				list_delete(vals, idx);
 				listsize--;
-				CHECK(listsize == rbt_count_nodes(tree));
+				CHECK(listsize == rbt_size(tree));
 			}
 			status = rbt_check_status(tree);
 			//printf("status after deletes is %d\n", status);

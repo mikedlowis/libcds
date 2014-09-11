@@ -9,5 +9,7 @@ int main(int argc, char** argv)
     RUN_TEST_SUITE(Buffer);
     RUN_TEST_SUITE(String);
     RUN_TEST_SUITE(RBT);
+    RUN_TEST_SUITE(Exn);
+    RUN_TEST_SUITE(Mem);
     return PRINT_TEST_RESULTS();
 }

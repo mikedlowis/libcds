@@ -83,7 +83,7 @@ TEST_SUITE(Buffer) {
     {
         buf_t* buf = buf_new(3);
         buf_write( buf, mem_box(0x1234) );
-        buf_write( buf, mem_box(0x1235) );
+        buf_write( buf, NULL );
         buf_write( buf, mem_box(0x1236) );
         buf_clear( buf );
         CHECK( buf->reads == 0 );
