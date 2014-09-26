@@ -66,6 +66,10 @@ void exn_assert(bool expr);
 
 #define rethrow() exn_rethrow()
 
+
+#ifdef assert
+#undef assert
+#endif
 #ifdef NDEBUG
 #define assert(expr) ((void)0)
 #else
