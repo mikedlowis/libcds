@@ -25,11 +25,17 @@ DEFINE_EXCEPTION(SegmentationException,       &RuntimeException);
 
 static bool Exn_Handled = true;
 static const exn_t* Exn_Current = NULL;
+static const char* Exn_File = NULL;
+static int Exn_Line = 0;
+static const char* Exn_Msg = NULL;
 static exn_stack_t* Exn_Handlers = NULL;
 
 static void exn_uncaught(const exn_t* p_exn) {
     (void)p_exn;
-    fprintf(stderr, "Error: Uncaught Exception\n");
+    if (NULL == Exn_Msg)
+        Exn_Msg = "Uncaught Exception!";
+    fprintf(stderr, "%s:%d:0:(%s) %s\n",
+            Exn_File, Exn_Line, Exn_Current->name, Exn_Msg);
     exit(1);
 }
 
@@ -82,19 +88,22 @@ bool exn_process(void) {
     return ret;
 }
 
-void exn_throw(const exn_t* p_type) {
+void exn_throw(const char* file, int line, const exn_t* p_type, const char* msg) {
+    Exn_Current = p_type;
+    Exn_Handled = false;
+    Exn_File = file;
+    Exn_Line = line;
+    Exn_Msg  = msg;
     if (Exn_Handlers == NULL) {
         exn_uncaught(Exn_Current);
     } else {
-        Exn_Current = p_type;
-        Exn_Handled = false;
         longjmp(exn_handler()->context,1);
     }
 }
 
 void exn_rethrow(void) {
     exn_pop();
-    exn_throw(Exn_Current);
+    exn_throw(Exn_File, Exn_Line, Exn_Current, Exn_Msg);
 }
 
 bool exn_catch(const exn_t* p_type) {
@@ -118,9 +127,9 @@ exn_handler_t* exn_handler(void) {
     return (NULL != Exn_Handlers) ? &(Exn_Handlers->handler) : NULL;
 }
 
-void exn_assert(bool expr) {
+void exn_assert(const char* file, int line, bool expr, const char* msg) {
     if(!expr) {
-        exn_throw(&AssertionException);
+        exn_throw(file, line, &AssertionException, msg);
     }
 }
 

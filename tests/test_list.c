@@ -516,7 +516,7 @@ TEST_SUITE(List) {
         list_push_back(list, mem_box(0x1234));
         mem_retain(box88);
         list_insert(list, 8, box88);
-        CHECK(1 == mem_num_references(box88))
+        CHECK(1 == mem_refcount(box88))
         mem_release(list);
         mem_release(box88);
     }
@@ -642,7 +642,7 @@ TEST_SUITE(List) {
         list_delete(list, 0);
         CHECK( list->head == NULL );
         CHECK( list->tail == NULL );
-        CHECK( 1 == mem_num_references(doomed) );
+        CHECK( 1 == mem_refcount(doomed) );
         CHECK( NULL == doomed->next );
         CHECK( NULL == doomed->prev );
         mem_release(doomed);
@@ -661,7 +661,7 @@ TEST_SUITE(List) {
         CHECK( NULL == node1->next );
         CHECK( NULL == node1->prev );
         CHECK( mem_unbox(list->head->contents) == 0x1235 );
-        CHECK( 1 == mem_num_references(doomed) );
+        CHECK( 1 == mem_refcount(doomed) );
         CHECK( NULL == doomed->next );
         CHECK( NULL == doomed->prev );
         mem_release(doomed);
@@ -683,7 +683,7 @@ TEST_SUITE(List) {
         CHECK( node1->next == node2 );
         CHECK( node2->prev == node1 );
         CHECK( node2->next == NULL );
-        CHECK( 1 == mem_num_references(doomed) );
+        CHECK( 1 == mem_refcount(doomed) );
         CHECK( NULL == doomed->next );
         CHECK( NULL == doomed->prev );
         mem_release(doomed);
@@ -702,7 +702,7 @@ TEST_SUITE(List) {
         CHECK( NULL == node1->next );
         CHECK( NULL == node1->prev );
         CHECK( mem_unbox(list->head->contents) == 0x1234 );
-        CHECK( 1 == mem_num_references(doomed) );
+        CHECK( 1 == mem_refcount(doomed) );
         CHECK( NULL == doomed->next );
         CHECK( NULL == doomed->prev );
         mem_release(doomed);
@@ -719,7 +719,7 @@ TEST_SUITE(List) {
         list_node_t* node1 = list_insert_after(list, NULL, mem_box(0x1337));
         mem_retain(node1);
         list_delete_node(list, node1);
-        CHECK( 1 == mem_num_references(node1) );
+        CHECK( 1 == mem_refcount(node1) );
         CHECK( NULL == node1->next );
         CHECK( NULL == node1->prev );
         CHECK( NULL == list->head );
@@ -735,7 +735,7 @@ TEST_SUITE(List) {
         list_node_t* node1 = list_insert_after(list, NULL, mem_box(0xBEEF));
         mem_retain(node1);
         list_delete_node(list, node1);
-        CHECK( 1 == mem_num_references(node1) );
+        CHECK( 1 == mem_refcount(node1) );
         CHECK( NULL == node1->next );
         CHECK( NULL == node1->prev );
         CHECK( node2 == list->head );
@@ -753,7 +753,7 @@ TEST_SUITE(List) {
         list_node_t* node1 = list_insert_after(list, NULL, mem_box(0xDAD0));
         mem_retain(node2);
         list_delete_node(list, node2);
-        CHECK( 1 == mem_num_references(node2) );
+        CHECK( 1 == mem_refcount(node2) );
         CHECK( NULL == node2->prev );
         CHECK( NULL == node2->next );
         CHECK( node1 == list->head );
@@ -772,7 +772,7 @@ TEST_SUITE(List) {
         list_node_t* node1 = list_insert_after(list, NULL, mem_box(0x4321));
         mem_retain(node1);
         list_delete_node(list, node1);
-        CHECK( 1 == mem_num_references(node1) );
+        CHECK( 1 == mem_refcount(node1) );
         CHECK( NULL == node1->prev );
         CHECK( NULL == node1->next );
         CHECK( node2 == list->head );
@@ -793,7 +793,7 @@ TEST_SUITE(List) {
         list_node_t* node1 = list_insert_after(list, NULL, mem_box(0xBEEF));
         mem_retain(node2);
         list_delete_node(list, node2);
-        CHECK( 1 == mem_num_references(node2) );
+        CHECK( 1 == mem_refcount(node2) );
         CHECK( NULL == node2->prev );
         CHECK( NULL == node2->next );
         CHECK( node1 == list->head );
@@ -814,7 +814,7 @@ TEST_SUITE(List) {
         list_node_t* node1 = list_insert_after(list, NULL, mem_box(0x1337));
         mem_retain(node3);
         list_delete_node(list, node3);
-        CHECK( 1 == mem_num_references(node3) );
+        CHECK( 1 == mem_refcount(node3) );
         CHECK( NULL == node3->prev );
         CHECK( NULL == node3->next );
         CHECK( node1 == list->head );
@@ -845,7 +845,7 @@ TEST_SUITE(List) {
         list_node_t* node1 = list_push_front(list,mem_box(0x1234));
         mem_retain(node1);
         list_clear(list);
-        CHECK( 1 == mem_num_references(node1) );
+        CHECK( 1 == mem_refcount(node1) );
         CHECK( NULL == node1->prev );
         CHECK( NULL == node1->next );
         CHECK( NULL == list->head );
@@ -862,10 +862,10 @@ TEST_SUITE(List) {
         mem_retain(node1);
         mem_retain(node2);
         list_clear(list);
-        CHECK( 1 == mem_num_references(node1) );
+        CHECK( 1 == mem_refcount(node1) );
         CHECK( NULL == node1->prev );
         CHECK( NULL == node1->next );
-        CHECK( 1 == mem_num_references(node2) );
+        CHECK( 1 == mem_refcount(node2) );
         CHECK( NULL == node2->prev );
         CHECK( NULL == node2->next );
         CHECK( NULL == list->head );
@@ -885,13 +885,13 @@ TEST_SUITE(List) {
         mem_retain(node2);
         mem_retain(node3);
         list_clear(list);
-        CHECK( 1 == mem_num_references(node1) );
+        CHECK( 1 == mem_refcount(node1) );
         CHECK( NULL == node1->prev );
         CHECK( NULL == node1->next );
-        CHECK( 1 == mem_num_references(node2) );
+        CHECK( 1 == mem_refcount(node2) );
         CHECK( NULL == node2->prev );
         CHECK( NULL == node2->next );
-        CHECK( 1 == mem_num_references(node3) );
+        CHECK( 1 == mem_refcount(node3) );
         CHECK( NULL == node3->prev );
         CHECK( NULL == node3->next );
         CHECK( NULL == list->head );

@@ -19,7 +19,6 @@ typedef void (*destructor_t)(void* p_val);
 #define LEAK_DETECT_LEVEL 0
 #endif
 
-#if (LEAK_DETECT_LEVEL < 2)
 /**
  * @brief Allocates a new reference counted object of the given size which will
  *        be destructed with the given function before it's memory is reclaimed.
@@ -30,12 +29,6 @@ typedef void (*destructor_t)(void* p_val);
  * @return Pointer to the newly allocated object
  */
 void* mem_allocate(size_t size, destructor_t p_destruct_fn);
-#else
-#define mem_allocate(size,destructor) \
-    mem_allocate_ld(size, destructor, __FILE__, __LINE__)
-
-void* mem_allocate_ld(size_t size, destructor_t p_destruct_fn, const char* p_file, int line);
-#endif
 
 /**
  * @brief Returns the reference count for the given object.
@@ -44,7 +37,7 @@ void* mem_allocate_ld(size_t size, destructor_t p_destruct_fn, const char* p_fil
  *
  * @return Number of references.
  */
-int mem_num_references(void* p_obj);
+int mem_refcount(void* p_obj);
 
 /**
  * @brief Increments the reference count for the given object.
