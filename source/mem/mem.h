@@ -54,6 +54,15 @@ void* mem_retain(void* p_obj);
 void mem_release(void* p_obj);
 
 /**
+ * @brief Replaces the object reference in the given location with the new
+ *        object releasing the old one.
+ *
+ * @param loc Pointer to the location where the reference is kept.
+ * @param obj The new object the location will point to.
+ */
+void mem_swap(void** loc, void* obj);
+
+/**
  * @brief Create a reference counted box holding the given value so that it can
  *        be placed in a container.
  *
