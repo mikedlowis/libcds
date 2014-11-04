@@ -147,3 +147,35 @@ size_t str_rfind(str_t* p_str1, str_t* p_str2)
     return idx;
 }
 
+str_t* str_join(char* joinstr, vec_t* strs) {
+    str_t* ret = str_new("");
+    str_t* jstr = str_new(joinstr);
+    for (size_t idx = 0; idx < vec_size(strs); idx++) {
+        str_t* str = (str_t*)vec_at(strs, idx);
+        if (str_size(ret) > 0)
+            mem_swap((void**)&ret, str_concat(ret, jstr));
+        mem_swap((void**)&ret, str_concat(ret, str));
+    }
+    mem_release(jstr);
+    return ret;
+}
+
+vec_t* str_split(str_t* str, str_t* splitstr) {
+    vec_t* vec = vec_new(0);
+    size_t index = str_find(str, splitstr);
+    if (index != SIZE_MAX) {
+        str_t* therest = str_substr(str, index + str_size(splitstr), str_size(str));
+        vec_push_back( vec, str_substr(str, 0, index) );
+        if (SIZE_MAX != str_find(str, splitstr)) {
+            vec_t* nextsplit = str_split(therest, splitstr);
+            for (size_t idx = 0; idx < vec_size(nextsplit); idx++) {
+                vec_push_back( vec, mem_retain( vec_at(nextsplit, idx) ) );
+            }
+            mem_release(nextsplit);
+        } else {
+            vec_push_back( vec, therest );
+        }
+    }
+    return vec;
+}
+
