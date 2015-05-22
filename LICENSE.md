@@ -1,5 +1,5 @@
 
-Copyright (c) 2012, Michael D. Lowis<br>
+Copyright (c) 2014, Michael D. Lowis & A. Bellenir<br>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
