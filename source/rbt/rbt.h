@@ -10,16 +10,13 @@ extern "C" {
 #endif
 
 #include "rt.h"
+#include "cmp.h"
 
 /** node colors */
 typedef enum {
     RED = 0,
     BLACK
 } rbt_color_t;
-
-/** a function pointer for comparing node contents
-  should return -1, 0, or 1 if a is <, ==, or > b, respectively */
-typedef int (*comparator_t)(void* p_a, void* p_b);
 
 /** a red-black tree node */
 typedef struct rbt_node_t {
@@ -37,20 +34,18 @@ typedef struct rbt_node_t {
 typedef struct {
     /** pointer to the root of the tree */
     rbt_node_t* root;
-    /** function pointer for comparing node contents */
-    comparator_t comp;
+    /** comparator object for comparing node contents */
+    cmp_t* comp;
 } rbt_t;
-
 
 /**
  * @brief creates a new red-black tree
  *
- * @param comparator pointer to the comparator function
+ * @param cmp pointer to the comparator object
  *
  * @return pointer to newly created tree
  */
-rbt_t* rbt_new(comparator_t comparator);
-
+rbt_t* rbt_new(cmp_t* cmp);
 
 /**
  * @brief find a value in a red-black tree
@@ -62,7 +57,6 @@ rbt_t* rbt_new(comparator_t comparator);
  *         NULL if the value is present in the tree
  */
 rbt_node_t* rbt_lookup(rbt_t* tree, void* value);
-
 
 /**
  * @brief count the number of nodes in a red-black tree
@@ -82,7 +76,6 @@ int rbt_size(rbt_t* tree);
  * @return a pointer to the new node
  */
 rbt_node_t* rbt_insert(rbt_t* tree, void* value);
-
 
 /**
  * @brief removes a value from a red-black tree
