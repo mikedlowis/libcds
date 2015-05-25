@@ -1,4 +1,7 @@
-build/*/
 cscope.out
 tags
 project.vim
+Makefile
+build/
+*.o
+.rsconscache
