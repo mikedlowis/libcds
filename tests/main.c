@@ -12,5 +12,6 @@ int main(int argc, char** argv)
     RUN_TEST_SUITE(Exn);
     RUN_TEST_SUITE(Mem);
     RUN_TEST_SUITE(Set);
+    RUN_TEST_SUITE(Map);
     return PRINT_TEST_RESULTS();
 }
