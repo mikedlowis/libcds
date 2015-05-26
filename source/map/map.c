@@ -62,7 +62,9 @@ map_t* map_new(cmp_t* cmp, hashfn_t hash_fn)
 
 bool map_has_key(map_t* map, void* key)
 {
-    return (NULL != map_lookup(map, key));
+    map_pair_t  pair = { map->hash_func(key), key, NULL };
+    rbt_node_t* curr = rbt_lookup(map->tree, &pair);
+    return (NULL != curr);
 }
 
 size_t map_size(map_t* map)
