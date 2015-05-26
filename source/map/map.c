@@ -17,8 +17,10 @@ struct map_t {
 
 static void map_pair_free(void* obj)
 {
-    mem_release(((map_pair_t*)obj)->key);
-    mem_release(((map_pair_t*)obj)->value);
+    if(((map_pair_t*)obj)->key)
+        mem_release(((map_pair_t*)obj)->key);
+    if(((map_pair_t*)obj)->value)
+        mem_release(((map_pair_t*)obj)->value);
 }
 
 static map_pair_t* map_pair_new(uint32_t hash, void* key, void* value)

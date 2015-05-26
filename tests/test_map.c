@@ -131,6 +131,17 @@ TEST_SUITE(Map) {
         mem_release(lup_val);
     }
 
+    TEST(Verify_map_lookup_should_return_NULL_if_the_associated_value_is_null)
+    {
+        map_t* map = map_new(cmp_new(NULL, cmp_int), hash_int);
+        void* lup_val = mem_box(42);
+        map_insert(map, mem_retain(lup_val), NULL);
+        CHECK(map_size(map) == 1);
+        CHECK(map_lookup(map, lup_val) == NULL);
+        mem_release(map);
+        mem_release(lup_val);
+    }
+
     TEST(Verify_map_lookup_should_return_NULL_if_no_association_exists)
     {
         map_t* map = map_new(cmp_new(NULL, cmp_int), hash_int);
