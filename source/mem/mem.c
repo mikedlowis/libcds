@@ -69,20 +69,28 @@ void* mem_retain(void* p_obj)
 void mem_release(void* p_obj)
 {
     obj_t* p_hdr;
-    assert(NULL != p_obj);
-    p_hdr = (((obj_t*)p_obj)-1);
-    p_hdr->refcount -= 1;
-    if(p_hdr->refcount < 1)
-    {
-#if (LEAK_DETECT_LEVEL > 0)
-        Num_Allocations--;
-#endif
-        if(p_hdr->p_finalize)
+    if (NULL != p_obj) {
+        p_hdr = (((obj_t*)p_obj)-1);
+        p_hdr->refcount -= 1;
+        if(p_hdr->refcount < 1)
         {
-            p_hdr->p_finalize(p_obj);
+            #if (LEAK_DETECT_LEVEL > 0)
+            Num_Allocations--;
+            #endif
+            if(p_hdr->p_finalize)
+            {
+                p_hdr->p_finalize(p_obj);
+            }
+            free(p_hdr);
         }
-        free(p_hdr);
     }
+}
+
+void mem_swap(void** loc, void* obj)
+{
+    void* old = *loc;
+    *loc = obj;
+    mem_release(old);
 }
 
 void* mem_box(intptr_t val)

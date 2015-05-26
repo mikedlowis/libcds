@@ -10,6 +10,7 @@ extern "C" {
 #endif
 
 #include "rt.h"
+#include "vec.h"
 
 /* Forward declare our struct */
 struct str_t;
@@ -166,6 +167,19 @@ size_t str_find(str_t* p_str1, str_t* p_str2);
  *         if no match is found.
  */
 size_t str_rfind(str_t* p_str1, str_t* p_str2);
+
+/**
+ * @brief Joins all of the strings in the given vector together separated by the
+ *        join string.
+ *
+ * @param joinstr The string that will be used to separate the strings.
+ * @param strs The vector of strings to be joined.
+ *
+ * @return The newly joined string.
+ */
+str_t* str_join(char* joinstr, vec_t* strs);
+
+vec_t* str_split(str_t* str, str_t* splitstr);
 
 #ifdef __cplusplus
 }
