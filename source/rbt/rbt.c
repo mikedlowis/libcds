@@ -5,9 +5,10 @@
 #include "rbt.h"
 
 //nodes are compared by memory address by default
-static int rbt_default_comparator(void* v_a, void* v_b){
-    uintptr_t a = (intptr_t)v_a;
-    uintptr_t b = (intptr_t)v_b;
+static int rbt_default_compare(void* env, void* v_a, void* v_b){
+    uintptr_t a = (uintptr_t)v_a;
+    uintptr_t b = (uintptr_t)v_b;
+    (void)env;
     return (a == b ? 0 : (a<b ? -1 : 1 ));
 }
 
@@ -20,12 +21,13 @@ static void rbt_free(void* v_tree){
     rbt_t* tree = (rbt_t*) v_tree;
     assert(NULL != tree);
     if(tree->root) mem_release(tree->root);
+    if(tree->comp) mem_release(tree->comp);
 }
 
-rbt_t* rbt_new(comparator_t comparator){
+rbt_t* rbt_new(cmp_t* cmp){
     rbt_t* tree = mem_allocate(sizeof(rbt_t), &rbt_free);
     tree->root = NULL;
-    tree->comp = comparator ? comparator : rbt_default_comparator;
+    tree->comp = cmp ? cmp : cmp_new(NULL, &rbt_default_compare);
     return tree;
 }
 
@@ -66,7 +68,7 @@ rbt_color_t rbt_node_color(rbt_node_t* node){
 static rbt_node_t* rbt_lookup_node(rbt_t* tree, rbt_node_t* node, void* value){
     rbt_node_t* ret = NULL;
     if(node){
-        int c = tree->comp(value, node->contents);
+        int c = cmp_compare(tree->comp, value, node->contents);
         if (c < 0) ret = rbt_lookup_node(tree, node->left, value);
         else if(c > 0) ret = rbt_lookup_node(tree, node->right, value);
         else ret = node;
@@ -160,7 +162,7 @@ static void rbt_insert_node(rbt_t* tree, rbt_node_t* node, rbt_node_t* parent){
         tree->root = node;
         rbt_ins_recolor(tree, node);
     }else{
-        int c = tree->comp(node->contents, parent->contents);
+        int c = cmp_compare(tree->comp, node->contents, parent->contents);
         rbt_node_t** relevant_child = (c<0 ? &(parent->left) : &(parent->right));
         if(*relevant_child){
             rbt_insert_node(tree, node, *relevant_child);

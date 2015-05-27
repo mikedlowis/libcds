@@ -10,9 +10,10 @@
 extern rbt_color_t rbt_node_color(rbt_node_t* node);
 extern rbt_node_t* rbt_node_new(void* contents);
 
-static int test_compare(void* a, void* b){
+static int test_compare(void* env, void* a, void* b){
     int ia = (int)(mem_unbox(a));
     int ib = (int)(mem_unbox(b));
+    (void)env;
     return (ia == ib ? 0 : (ia<ib ? -1 : 1 ));
 }
 
@@ -46,8 +47,8 @@ static rbt_status_t rbt_check_node(rbt_t* tree, rbt_node_t* node, void* min_val,
         if(node->color != RED && node->color != BLACK) ret = UNKNOWN_COLOR;
         else if(node->color == RED && (rbt_node_color(node->left) != BLACK && rbt_node_color(node->right) != BLACK))
             ret = RED_WITH_RED_CHILD;
-        else if(min_val && tree->comp(node->contents, min_val) < 0) ret = OUT_OF_ORDER;
-        else if(max_val && tree->comp(node->contents, max_val) > 0) ret = OUT_OF_ORDER;
+        else if(min_val && cmp_compare(tree->comp, node->contents, min_val) < 0) ret = OUT_OF_ORDER;
+        else if(max_val && cmp_compare(tree->comp, node->contents, max_val) > 0) ret = OUT_OF_ORDER;
         else if(node->left == node || node->right == node) ret = SELF_REFERENCE;
         else if(node->left && node->left->parent != node) ret = BAD_PARENT_POINTER;
         else if(node->right && node->right->parent != node) ret = BAD_PARENT_POINTER;
@@ -93,7 +94,7 @@ TEST_SUITE(RBT) {
     // Test the rbt_new function
     //-------------------------------------------------------------------------
     TEST(Verify_rbt_new_returns_an_empty_red_black_tree){
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         CHECK(NULL != tree);
         CHECK(NULL == tree->root);
         CHECK(OK == rbt_check_status(tree));
@@ -106,14 +107,14 @@ TEST_SUITE(RBT) {
     TEST(Verify_null_and_empty_trees_are_considered_valid){
         rbt_t* tree = NULL;
         CHECK(OK == rbt_check_status(tree));
-        tree = rbt_new(test_compare);
+        tree = rbt_new(cmp_new(NULL,&test_compare));
         CHECK(OK == rbt_check_status(tree));
         mem_release(tree);
     }
 
     TEST(Verify_tree_is_valid_checks_root_is_always_black_property){
         void* box88 = mem_box(88);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_insert(tree, box88);
         CHECK(BLACK == tree->root->color);
         CHECK(OK == rbt_check_status(tree));
@@ -125,7 +126,7 @@ TEST_SUITE(RBT) {
     TEST(Verify_tree_is_valid_fails_when_nodes_not_sorted_two_nodes){
         void* box42 = mem_box(42);
         void* box88 = mem_box(88);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_node_new(box42);
         rbt_node_t* node2 = rbt_node_new(box88);
         tree->root = node1;
@@ -146,7 +147,7 @@ TEST_SUITE(RBT) {
         void* box88 = mem_box(88);
         void* box25 = mem_box(25);
         void* box99 = mem_box(99);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_node_new(box42);
         rbt_node_t* node2 = rbt_node_new(box88);
         rbt_node_t* node3 = rbt_node_new(box25);
@@ -181,7 +182,7 @@ TEST_SUITE(RBT) {
     TEST(Verify_tree_is_valid_fails_when_black_nodes_are_unbalanced_two_nodes){
         void* box42 = mem_box(42);
         void* box88 = mem_box(88);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_node_new(box42);
         rbt_node_t* node2 = rbt_node_new(box88);
         tree->root = node1;
@@ -203,7 +204,7 @@ TEST_SUITE(RBT) {
         void* box42 = mem_box(42);
         void* box22 = mem_box(22);
         void* box88 = mem_box(88);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_node_new(box42);
         rbt_node_t* node2 = rbt_node_new(box22);
         rbt_node_t* node3 = rbt_node_new(box88);
@@ -238,7 +239,7 @@ TEST_SUITE(RBT) {
         void* box22 = mem_box(22);
         void* box88 = mem_box(88);
         void* box33 = mem_box(33);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_node_new(box42);
         rbt_node_t* node2 = rbt_node_new(box22);
         rbt_node_t* node3 = rbt_node_new(box88);
@@ -278,7 +279,7 @@ TEST_SUITE(RBT) {
     TEST(Verify_tree_is_valid_fails_when_node_is_unvalid_color){
         void* box42 = mem_box(42);
         void* box88 = mem_box(88);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_node_new(box42);
         rbt_node_t* node2 = rbt_node_new(box88);
         tree->root = node1;
@@ -299,7 +300,7 @@ TEST_SUITE(RBT) {
     TEST(Verify_tree_is_valid_fails_when_root_parent_pointer_is_not_null){
         void* box42 = mem_box(42);
         void* box88 = mem_box(88);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_node_new(box42);
         rbt_node_t* node2 = rbt_node_new(box88);
         tree->root = node1;
@@ -321,7 +322,7 @@ TEST_SUITE(RBT) {
         void* box42 = mem_box(42);
         void* box88 = mem_box(88);
         void* box99 = mem_box(99);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_node_new(box42);
         rbt_node_t* node2 = rbt_node_new(box88);
         rbt_node_t* node3 = rbt_node_new(box99);
@@ -350,7 +351,7 @@ TEST_SUITE(RBT) {
         void* box22 = mem_box(22);
         void* box88 = mem_box(88);
         void* box33 = mem_box(33);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_node_new(box42);
         rbt_node_t* node2 = rbt_node_new(box22);
         rbt_node_t* node3 = rbt_node_new(box88);
@@ -389,7 +390,7 @@ TEST_SUITE(RBT) {
         void* box22 = mem_box(22);
         void* box88 = mem_box(88);
         void* box33 = mem_box(33);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_node_new(box42);
         rbt_node_t* node2 = rbt_node_new(box22);
         rbt_node_t* node3 = rbt_node_new(box88);
@@ -447,7 +448,7 @@ TEST_SUITE(RBT) {
     //-------------------------------------------------------------------------
     TEST(Verify_rbt_insert_to_an_empty_list_assigns_root){
         void* box42 = mem_box(42);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node = rbt_insert(tree, box42);
         CHECK(NULL != node);
         CHECK(tree->root == node);
@@ -462,7 +463,7 @@ TEST_SUITE(RBT) {
     TEST(Verify_rbt_insert_node_to_root_left_works){
         void* box42 = mem_box(42);
         void* box31 = mem_box(31);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* root = rbt_insert(tree, box42);
         rbt_node_t* node1 = rbt_insert(tree, box31);
         CHECK(NULL != root);
@@ -480,7 +481,7 @@ TEST_SUITE(RBT) {
     TEST(Verify_rbt_insert_node_to_root_right_works){
         void* box42 = mem_box(42);
         void* box64 = mem_box(64);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* root = rbt_insert(tree, box42);
         rbt_node_t* node2 = rbt_insert(tree, box64);
         CHECK(NULL != root);
@@ -499,7 +500,7 @@ TEST_SUITE(RBT) {
         void* box42 = mem_box(42);
         void* box31 = mem_box(31);
         void* box64 = mem_box(64);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* root = rbt_insert(tree, box42);
         rbt_node_t* node1 = rbt_insert(tree, box31);
         rbt_node_t* node2 = rbt_insert(tree, box64);
@@ -524,7 +525,7 @@ TEST_SUITE(RBT) {
         void* box31 = mem_box(31);
         void* box64 = mem_box(64);
         void* box15 = mem_box(15);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* root = rbt_insert(tree, box42);
         rbt_node_t* node1 = rbt_insert(tree, box31);
         rbt_node_t* node2 = rbt_insert(tree, box64);
@@ -546,7 +547,7 @@ TEST_SUITE(RBT) {
         void* box42 = mem_box(42);
         void* box32 = mem_box(32);
         void* box15 = mem_box(15);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box42);
         rbt_node_t* node2 = rbt_insert(tree, box32);
         CHECK(node1 == tree->root);
@@ -583,7 +584,7 @@ TEST_SUITE(RBT) {
         void* box42 = mem_box(42);
         void* box53 = mem_box(53);
         void* box99 = mem_box(99);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box42);
         rbt_node_t* node2 = rbt_insert(tree, box53);
         CHECK(node1 == tree->root);
@@ -619,7 +620,7 @@ TEST_SUITE(RBT) {
         void* box42 = mem_box(42);
         void* box20 = mem_box(20);
         void* box33 = mem_box(33);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box42);
         rbt_node_t* node2 = rbt_insert(tree, box20);
         CHECK(node1 == tree->root);
@@ -655,7 +656,7 @@ TEST_SUITE(RBT) {
         void* box42 = mem_box(42);
         void* box99 = mem_box(99);
         void* box88 = mem_box(88);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box42);
         rbt_node_t* node2 = rbt_insert(tree, box99);
         CHECK(node1 == tree->root);
@@ -696,7 +697,7 @@ TEST_SUITE(RBT) {
         void* box88 = mem_box(88);
         void* box15 = mem_box(15);
         void* box78 = mem_box(78);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_insert(tree, box42);
         rbt_insert(tree, box33);
         rbt_insert(tree, box88);
@@ -711,7 +712,7 @@ TEST_SUITE(RBT) {
         void* box33 = mem_box(33);
         void* box88 = mem_box(88);
         void* box15 = mem_box(15);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box42);
         rbt_node_t* node2 = rbt_insert(tree, box33);
         rbt_node_t* node3 = rbt_insert(tree, box88);
@@ -743,7 +744,7 @@ TEST_SUITE(RBT) {
         void* box33 = mem_box(33);
         void* box88 = mem_box(88);
         void* box15 = mem_box(15);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box42);
         rbt_node_t* node2 = rbt_insert(tree, box33);
         rbt_node_t* node3 = rbt_insert(tree, box88);
@@ -775,7 +776,7 @@ TEST_SUITE(RBT) {
         void* box33 = mem_box(33);
         void* box88 = mem_box(88);
         void* box15 = mem_box(15);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box42);
         rbt_node_t* node2 = rbt_insert(tree, box33);
         rbt_node_t* node3 = rbt_insert(tree, box88);
@@ -807,7 +808,7 @@ TEST_SUITE(RBT) {
         void* box33 = mem_box(33);
         void* box88 = mem_box(88);
         void* box38 = mem_box(38);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box42);
         rbt_node_t* node2 = rbt_insert(tree, box33);
         rbt_node_t* node3 = rbt_insert(tree, box88);
@@ -839,7 +840,7 @@ TEST_SUITE(RBT) {
         void* box33 = mem_box(33);
         void* box88 = mem_box(88);
         void* box98 = mem_box(98);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box42);
         rbt_node_t* node2 = rbt_insert(tree, box33);
         rbt_node_t* node3 = rbt_insert(tree, box88);
@@ -871,7 +872,7 @@ TEST_SUITE(RBT) {
         void* box33 = mem_box(33);
         void* box88 = mem_box(88);
         void* box68 = mem_box(68);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box42);
         rbt_node_t* node2 = rbt_insert(tree, box33);
         rbt_node_t* node3 = rbt_insert(tree, box88);
@@ -910,7 +911,7 @@ TEST_SUITE(RBT) {
         void* box22 = mem_box(22);
         void* box88 = mem_box(88);
         void* box77 = mem_box(77);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box42); //root
         rbt_node_t* node2 = rbt_insert(tree, box22); //untouched
         rbt_node_t* node3 = rbt_insert(tree, box88); //parent
@@ -952,7 +953,7 @@ TEST_SUITE(RBT) {
         void* box99 = mem_box(99);
         void* box42 = mem_box(42);
         void* box55 = mem_box(55);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box88); //root
         rbt_node_t* node2 = rbt_insert(tree, box99); //untouched
         rbt_node_t* node3 = rbt_insert(tree, box42); //parent
@@ -996,7 +997,7 @@ TEST_SUITE(RBT) {
         void* box88 = mem_box(88);
         void* box77 = mem_box(77);
         void* box70 = mem_box(70);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box42); //root
         rbt_node_t* node2 = rbt_insert(tree, box22); //untouched
         rbt_node_t* node3 = rbt_insert(tree, box88); //parent
@@ -1042,7 +1043,7 @@ TEST_SUITE(RBT) {
         void* box42 = mem_box(42);
         void* box55 = mem_box(55);
         void* box64 = mem_box(64);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box88); //root
         rbt_node_t* node2 = rbt_insert(tree, box99); //untouched
         rbt_node_t* node3 = rbt_insert(tree, box42); //parent
@@ -1089,7 +1090,7 @@ TEST_SUITE(RBT) {
         void* box88 = mem_box(88);
         void* box70 = mem_box(70);
         void* box78 = mem_box(78);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box42); //root
         rbt_node_t* node2 = rbt_insert(tree, box22); //untouched
         rbt_node_t* node3 = rbt_insert(tree, box88); //parent
@@ -1135,7 +1136,7 @@ TEST_SUITE(RBT) {
         void* box42 = mem_box(42);
         void* box55 = mem_box(55);
         void* box48 = mem_box(48);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box88); //root
         rbt_node_t* node2 = rbt_insert(tree, box99); //untouched
         rbt_node_t* node3 = rbt_insert(tree, box42); //parent
@@ -1183,7 +1184,7 @@ TEST_SUITE(RBT) {
         void* box70 = mem_box(70);
         void* box78 = mem_box(78);
         void* box64 = mem_box(64);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box42); //root
         rbt_node_t* node2 = rbt_insert(tree, box22); //untouched
         rbt_node_t* node3 = rbt_insert(tree, box88); //parent
@@ -1233,7 +1234,7 @@ TEST_SUITE(RBT) {
         void* box55 = mem_box(55);
         void* box48 = mem_box(48);
         void* box64 = mem_box(64);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box88); //root
         rbt_node_t* node2 = rbt_insert(tree, box99); //untouched
         rbt_node_t* node3 = rbt_insert(tree, box42); //parent
@@ -1282,7 +1283,7 @@ TEST_SUITE(RBT) {
         //create tree w/ several nodes
         void* box88 = mem_box(88);
         void* box42 = mem_box(42);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box88); //root
         rbt_node_t* node2 = rbt_insert(tree, target); //target
         rbt_node_t* node3 = rbt_insert(tree, box42); //sibbling
@@ -1316,7 +1317,7 @@ TEST_SUITE(RBT) {
         //create tree w/ several nodes
         void* box42 = mem_box(42);
         void* box88 = mem_box(88);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box42); //root
         rbt_node_t* node2 = rbt_insert(tree, target); //target
         rbt_node_t* node3 = rbt_insert(tree, box88); //sibbling
@@ -1360,7 +1361,7 @@ TEST_SUITE(RBT) {
         void* box80 = mem_box(80);
         void* box60 = mem_box(60);
         void* box33 = mem_box(33);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node01 = rbt_insert(tree, box42);
         rbt_node_t* node02 = rbt_insert(tree, box22);
         rbt_node_t* node03 = rbt_insert(tree, box70);
@@ -1425,7 +1426,7 @@ TEST_SUITE(RBT) {
         void* box20 = mem_box(20);
         void* box16 = mem_box(16);
         void* box11 = mem_box(11);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node01 = rbt_insert(tree, box42);
         rbt_node_t* node02 = rbt_insert(tree, box66);
         rbt_node_t* node03 = rbt_insert(tree, box22);
@@ -1487,7 +1488,7 @@ TEST_SUITE(RBT) {
         void* box99 = mem_box(99);
         void* box75 = mem_box(75);
         void* box33 = mem_box(33);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box42);
         rbt_node_t* node2 = rbt_insert(tree, box22);
         rbt_node_t* node3 = rbt_insert(tree, box88);
@@ -1535,7 +1536,7 @@ TEST_SUITE(RBT) {
         void* box99 = mem_box(99);
         void* box33 = mem_box(33);
         void* box15 = mem_box(15);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box42);
         rbt_node_t* node2 = rbt_insert(tree, box22);
         rbt_node_t* node3 = rbt_insert(tree, box88);
@@ -1588,7 +1589,7 @@ TEST_SUITE(RBT) {
         void* box33 = mem_box(33);
         void* box20 = mem_box(20);
         void* box16 = mem_box(16);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node01 = rbt_insert(tree, box42);
         rbt_node_t* node02 = rbt_insert(tree, box66);
         rbt_node_t* node03 = rbt_insert(tree, box22);
@@ -1653,7 +1654,7 @@ TEST_SUITE(RBT) {
         void* box60 = mem_box(60);
         void* box33 = mem_box(33);
         void* box15 = mem_box(15);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node01 = rbt_insert(tree, box42);
         rbt_node_t* node02 = rbt_insert(tree, box22);
         rbt_node_t* node03 = rbt_insert(tree, box70);
@@ -1717,7 +1718,7 @@ TEST_SUITE(RBT) {
         void* box30 = mem_box(30);
         void* box89 = mem_box(89);
         void* box95 = mem_box(95);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node01 = rbt_insert(tree, box42);
         rbt_node_t* node02 = rbt_insert(tree, box22);
         rbt_node_t* node03 = rbt_insert(tree, box55);
@@ -1773,7 +1774,7 @@ TEST_SUITE(RBT) {
         void* box50 = mem_box(50);
         void* box17 = mem_box(17);
         void* box11 = mem_box(11);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node01 = rbt_insert(tree, box42);
         rbt_node_t* node02 = rbt_insert(tree, box55);
         rbt_node_t* node03 = rbt_insert(tree, box33);
@@ -1830,7 +1831,7 @@ TEST_SUITE(RBT) {
         void* box30 = mem_box(30);
         void* box50 = mem_box(50);
         void* box65 = mem_box(65);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node01 = rbt_insert(tree, box42);
         rbt_node_t* node02 = rbt_insert(tree, box22);
         rbt_node_t* node03 = rbt_insert(tree, box55);
@@ -1886,7 +1887,7 @@ TEST_SUITE(RBT) {
         void* box50 = mem_box(50);
         void* box37 = mem_box(37);
         void* box28 = mem_box(28);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node01 = rbt_insert(tree, box42);
         rbt_node_t* node02 = rbt_insert(tree, box55);
         rbt_node_t* node03 = rbt_insert(tree, box33);
@@ -1945,7 +1946,7 @@ TEST_SUITE(RBT) {
         void* box65 = mem_box(65);
         void* box89 = mem_box(89);
         void* box99 = mem_box(99);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node01 = rbt_insert(tree, box42);
         rbt_node_t* node02 = rbt_insert(tree, box22);
         rbt_node_t* node03 = rbt_insert(tree, box55);
@@ -2009,7 +2010,7 @@ TEST_SUITE(RBT) {
         void* box28 = mem_box(28);
         void* box17 = mem_box(17);
         void* box11 = mem_box(11);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node01 = rbt_insert(tree, box42);
         rbt_node_t* node02 = rbt_insert(tree, box55);
         rbt_node_t* node03 = rbt_insert(tree, box33);
@@ -2068,7 +2069,7 @@ TEST_SUITE(RBT) {
         void* box88 = mem_box(88);
         void* box42 = mem_box(42);
         void* box22 = mem_box(22);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box88); //root
         rbt_node_t* node2 = rbt_insert(tree, target); //target
         rbt_node_t* node3 = rbt_insert(tree, box42); //sibbling
@@ -2106,7 +2107,7 @@ TEST_SUITE(RBT) {
         void* box42 = mem_box(42);
         void* box88 = mem_box(88);
         void* box123 = mem_box(123);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box42); //root
         rbt_node_t* node2 = rbt_insert(tree, target); //target
         rbt_node_t* node3 = rbt_insert(tree, box88); //sibbling
@@ -2145,7 +2146,7 @@ TEST_SUITE(RBT) {
         void* box88 = mem_box(88);
         void* box42 = mem_box(42);
         void* box55 = mem_box(55);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box88); //root
         rbt_node_t* node2 = rbt_insert(tree, target); //target
         rbt_node_t* node3 = rbt_insert(tree, box42); //sibbling
@@ -2183,7 +2184,7 @@ TEST_SUITE(RBT) {
         void* box42 = mem_box(42);
         void* box88 = mem_box(88);
         void* box70 = mem_box(70);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box42); //root
         rbt_node_t* node2 = rbt_insert(tree, target); //target
         rbt_node_t* node3 = rbt_insert(tree, box88); //sibbling
@@ -2223,7 +2224,7 @@ TEST_SUITE(RBT) {
         void* box42 = mem_box(42);
         void* box22 = mem_box(22);
         void* box55 = mem_box(55);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box88); //root
         rbt_node_t* node2 = rbt_insert(tree, target); //target
         rbt_node_t* node3 = rbt_insert(tree, box42); //sibbling
@@ -2265,7 +2266,7 @@ TEST_SUITE(RBT) {
         void* box88 = mem_box(88);
         void* box70 = mem_box(70);
         void* box123 = mem_box(123);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box42); //root
         rbt_node_t* node2 = rbt_insert(tree, target); //target
         rbt_node_t* node3 = rbt_insert(tree, box88); //sibbling
@@ -2308,7 +2309,7 @@ TEST_SUITE(RBT) {
         void* box42 = mem_box(42);
         void* box22 = mem_box(22);
         void* box55 = mem_box(55);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box88); //root
         rbt_node_t* node2 = rbt_insert(tree, target); //target
         rbt_node_t* node3 = rbt_insert(tree, box42); //sibbling
@@ -2350,7 +2351,7 @@ TEST_SUITE(RBT) {
         void* box88 = mem_box(88);
         void* box70 = mem_box(70);
         void* box123 = mem_box(123);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box42); //root
         rbt_node_t* node2 = rbt_insert(tree, target); //target
         rbt_node_t* node3 = rbt_insert(tree, box88); //sibbling
@@ -2392,7 +2393,7 @@ TEST_SUITE(RBT) {
         void* box88 = mem_box(88);
         void* box33 = mem_box(33);
         void* box15 = mem_box(15);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_insert(tree, box42);
         rbt_insert(tree, box88);
         rbt_node_t* doomed = rbt_insert(tree, target);
@@ -2428,7 +2429,7 @@ TEST_SUITE(RBT) {
         void* box25 = mem_box(25);
         void* box55 = mem_box(55);
         void* box99 = mem_box(99);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* doomed = rbt_insert(tree, target);
         rbt_insert(tree, box88);
         rbt_insert(tree, box22);
@@ -2462,7 +2463,7 @@ TEST_SUITE(RBT) {
     TEST(Verify_rbt_delete_root_node_with_single_red_left_child){
         void* box88 = mem_box(88);
         void* box42 = mem_box(42);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box88);
         rbt_node_t* node2 = rbt_insert(tree, box42);
         mem_retain(node1);
@@ -2484,7 +2485,7 @@ TEST_SUITE(RBT) {
     TEST(Verify_rbt_delete_root_node_with_single_red_right_child){
         void* box42 = mem_box(42);
         void* box88 = mem_box(88);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box42);
         rbt_node_t* node2 = rbt_insert(tree, box88);
         mem_retain(node1);
@@ -2505,7 +2506,7 @@ TEST_SUITE(RBT) {
 
     TEST(Verify_rbt_delete_root_node_with_no_children){
         void* box88 = mem_box(88);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* node1 = rbt_insert(tree, box88);
         mem_retain(node1);
         rbt_delete(tree, box88);
@@ -2532,7 +2533,7 @@ TEST_SUITE(RBT) {
         void* box25 = mem_box(25);
         void* box55 = mem_box(55);
         void* box99 = mem_box(99);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_insert(tree, box42);
         rbt_insert(tree, box88);
         rbt_node_t* doomed = rbt_insert(tree, target);
@@ -2567,7 +2568,7 @@ TEST_SUITE(RBT) {
         void* box88 = mem_box(88);
         void* box22 = mem_box(22);
         void* box33 = mem_box(33);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         rbt_node_t* doomed = rbt_insert(tree, target);
         rbt_insert(tree, box88);
         rbt_insert(tree, box22);
@@ -2595,7 +2596,7 @@ TEST_SUITE(RBT) {
         void* box88 = mem_box(88);
         void* box36 = mem_box(36);
         void* box99 = mem_box(99);
-        rbt_t* tree = rbt_new(test_compare);
+        rbt_t* tree = rbt_new(cmp_new(NULL,&test_compare));
         //rbt_t* tree = rbt_new(NULL);
         rbt_delete(tree, target);
         CHECK(OK == rbt_check_status(tree));
