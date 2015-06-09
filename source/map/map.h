@@ -12,7 +12,7 @@ extern "C" {
 #include "rbt.h"
 
 /** Function pointer that returns the 32-bit hash of the given object. */
-typedef uint32_t (*hashfn_t)(void* obj);
+typedef uint32_t (*map_hashfn_t)(void* obj);
 
 /* map data structure */
 struct map_t;
@@ -28,7 +28,7 @@ typedef struct map_t map_t;
  *
  * @return The new map.
  */
-map_t* map_new(cmp_t* cmp, hashfn_t hash_fn);
+map_t* map_new(cmp_t* cmp, map_hashfn_t hash_fn);
 
 /**
  * @brief Determines whether the map contains the given key or not.

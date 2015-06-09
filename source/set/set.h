@@ -12,7 +12,7 @@ extern "C" {
 #include "rbt.h"
 
 /** Function pointer that returns the 32-bit hash of the given object. */
-typedef uint32_t (*hashfn_t)(void* obj);
+typedef uint32_t (*set_hashfn_t)(void* obj);
 
 /* Set data structure */
 struct set_t;
@@ -31,7 +31,7 @@ typedef struct set_t set_t;
  *
  * @return the newly constructed set.
  */
-set_t* set_new(cmp_t* cmp, hashfn_t hash_fn);
+set_t* set_new(cmp_t* cmp, set_hashfn_t hash_fn);
 
 /**
  * @brief Determines if the value is a member of the set.

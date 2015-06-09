@@ -11,7 +11,7 @@ typedef struct {
 } map_pair_t;
 
 struct map_t {
-    hashfn_t hash_func;
+    map_hashfn_t hash_func;
     rbt_t* tree;
 };
 
@@ -53,7 +53,7 @@ static int map_compare_nodes(void* env, void* p_a, void* p_b)
     return cmp;
 }
 
-map_t* map_new(cmp_t* cmp, hashfn_t hash_fn)
+map_t* map_new(cmp_t* cmp, map_hashfn_t hash_fn)
 {
     map_t* map  = (map_t*)mem_allocate(sizeof(map_t), &map_free);
     cmp_t* comp = cmp_new(cmp, &map_compare_nodes);

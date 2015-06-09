@@ -10,7 +10,7 @@ typedef struct {
 } set_pair_t;
 
 struct set_t {
-    hashfn_t hash_func;
+    set_hashfn_t hash_func;
     rbt_t* tree;
 };
 
@@ -48,7 +48,7 @@ static int set_compare_nodes(void* env, void* p_a, void* p_b)
     return cmp;
 }
 
-set_t* set_new(cmp_t* cmp, hashfn_t hash_fn)
+set_t* set_new(cmp_t* cmp, set_hashfn_t hash_fn)
 {
     set_t* set  = (set_t*)mem_allocate(sizeof(set_t), &set_free);
     cmp_t* comp = cmp_new(cmp, &set_compare_nodes);
