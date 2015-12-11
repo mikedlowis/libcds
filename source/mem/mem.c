@@ -20,9 +20,6 @@ size_t Num_Allocations = 0;
 #endif
 
 #if (LEAK_DETECT_LEVEL > 0)
-#ifndef TESTING
-static
-#endif
 void summarize_leaks(void) {
     if(Num_Allocations > 0) {
         puts("Warning: Memory leak(s) detected!");

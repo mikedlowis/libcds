@@ -47,7 +47,6 @@ TEST_SRCS = tests/main.c      \
             tests/test_list.c \
             tests/test_exn.c  \
             tests/test_str.c  \
-            tests/test_mem.c  \
             tests/test_set.c  \
             tests/test_vec.c  \
             tests/test_rbt.c  \

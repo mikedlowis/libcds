@@ -5,11 +5,6 @@
 #include "exn.h"
 #include <stdio.h>
 
-#ifdef TESTING
-extern void test_exit(int);
-#define exit(status) test_exit(status)
-#endif
-
 typedef struct exn_stack_t {
     struct exn_stack_t* p_next;
     exn_handler_t handler;

@@ -17,7 +17,7 @@ typedef struct {
 } exn_test_state_t;
 
 static int Exit_Status = 0;
-void test_exit(int status) {
+void exit(int status) {
     Exit_Status = status;
     if (NULL != exn_handler())
         exn_handler()->state = EXN_DONE;
