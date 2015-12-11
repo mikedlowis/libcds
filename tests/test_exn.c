@@ -192,18 +192,18 @@ TEST_SUITE(Exn) {
     //-------------------------------------------------------------------------
     // Test extraordinary conditions
     //-------------------------------------------------------------------------
-    TEST(Verify_an_uncaught_exception_terminates_the_program)
-    {
-        throw(AssertionException);
-        CHECK( Exit_Status == 1 );
-    }
+    //TEST(Verify_an_uncaught_exception_terminates_the_program)
+    //{
+    //    throw(AssertionException);
+    //    CHECK( Exit_Status == 1 );
+    //}
 
-    TEST(Verify_an_invalid_exception_state_terminates_the_program)
-    {
-        try {
-            exn_handler()->state = EXN_DONE+1;
-            exn_process();
-        }
-        CHECK( Exit_Status == 1 );
-    }
+    //TEST(Verify_an_invalid_exception_state_terminates_the_program)
+    //{
+    //    try {
+    //        exn_handler()->state = EXN_DONE+1;
+    //        exn_process();
+    //    }
+    //    CHECK( Exit_Status == 1 );
+    //}
 }
