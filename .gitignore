@@ -4,4 +4,10 @@ project.vim
 Makefile
 build/
 *.o
+*.d
+*.gcno
+*.gcda
 .rsconscache
+config.mk
+testcds
+libcds.a
